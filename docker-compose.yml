@@ -1,0 +1,23 @@
+# Site e API de finanças. A porta só aparece onde PORTA (no .env) mandar; o padrão é só esta máquina.
+# Para o celular mandar o push, publique no IP de uma VPN (Tailscale, WireGuard) ou da rede de casa,
+# nunca direto na internet.
+services:
+  financas:
+    build:
+      context: .
+      args:
+        UID: ${UID_HOST:-1000}
+    container_name: financas
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      DATABASE_PATH: /data/financas.db
+      AVISOS_FILA: /avisos-fila
+    ports:
+      - "${PORTA:-127.0.0.1:8095}:8095"
+    volumes:
+      - ${HOME}/.local/share/financas:/data
+      - ${HOME}/.local/state/financas/avisos:/avisos-fila
+    logging:
+      driver: json-file
+      options: {max-size: "10m", max-file: "3"}

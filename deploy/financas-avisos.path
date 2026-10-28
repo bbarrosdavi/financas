@@ -1,0 +1,9 @@
+[Unit]
+Description=Avisos do site de finanças (fila em disco)
+
+[Path]
+DirectoryNotEmpty=%h/.local/state/financas/avisos
+MakeDirectory=yes
+
+[Install]
+WantedBy=default.target

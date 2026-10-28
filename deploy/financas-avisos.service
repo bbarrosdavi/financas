@@ -1,0 +1,9 @@
+[Unit]
+Description=Entrega os avisos do site de finanças
+
+[Service]
+Type=oneshot
+# Comando que entrega o aviso (recebe remetente e texto). Sem ele, vai para o journal.
+#Environment=AVISAR=%h/.local/bin/avisar
+# Ajuste o caminho se o repositório estiver em outro lugar.
+ExecStart=%h/Projetos/financas/deploy/entregar_avisos.sh
