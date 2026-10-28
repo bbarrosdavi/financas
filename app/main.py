@@ -609,8 +609,9 @@ def baixar():
 
 @app.get("/api/celular", dependencies=[api])
 def celular():
-    """O que a macro do MacroDroid precisa, para copiar no celular já logado."""
-    return {"url": f"{settings.URL_PUBLICA}/api/v1/transaction/webhook", "authorization": f"Bearer {settings.API_KEY}",
+    """O que o app Finanças e a macro do MacroDroid precisam, para copiar no celular já logado."""
+    return {"base": settings.URL_PUBLICA, "chave": settings.API_KEY,
+            "url": f"{settings.URL_PUBLICA}/api/v1/transaction/webhook", "authorization": f"Bearer {settings.API_KEY}",
             "corpo": '{"package":"{not_app_package}","title":"{not_title}","text":"{notification}"}'}
 
 
