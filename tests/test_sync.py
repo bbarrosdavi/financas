@@ -15,6 +15,8 @@ def par(con, tmp_path, monkeypatch):
     """Servidor = o banco do fixture `con`; celular = um banco novo, sem o vocabulário de teste."""
     cel = tmp_path / "celular.db"
     db.iniciar(cel)
+    with db.conectar() as s:       # a pessoa inventada dos testes, mesmo onde o vocabulário de teste é outro
+        s.execute("INSERT OR IGNORE INTO pessoas (id, nome, tipo, apelido_extrato) VALUES ('ana', 'Ana', 'colega', 'ANA EXEMPLO DA SILVA')")
     cliente = TestClient(app)
     respostas = {}
 
