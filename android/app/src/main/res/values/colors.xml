@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- As do site: fundo do ícone (web/icon.svg) e o theme-color do tema claro e do escuro (web/app.js). -->
+    <color name="icone_fundo">#121211</color>
+    <color name="fundo_claro">#E9EBEF</color>
+    <color name="fundo_escuro">#101014</color>
+</resources>
