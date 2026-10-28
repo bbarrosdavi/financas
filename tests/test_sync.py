@@ -169,3 +169,14 @@ def test_servidor_antigo_recebe_os_pushes_pelo_webhook(par):
     assert r == {"modo": "webhook", "enviadas": 1, "recebidas": 0, "aceitas": 1, "recusadas": 0}
     assert _um(par.srv, "SELECT title FROM inbox")[0] == "Compra aprovada"
     assert par.trocar()["enviadas"] == 0
+
+
+def test_servidor_sabe_quais_lancamentos_o_celular_mudou(par):
+    par.trocar()
+    with par.cel() as c:
+        servicos.inserir(c, "nubank_conta", "2026-10-13", -12.0, "Banca Exemplo", origem="manual")
+        envio = sync.mudancas(c)
+    with par.srv() as s:
+        r = sync.servir(s, 0, envio)
+        lid = s.execute("SELECT id FROM lancamentos WHERE descricao = 'Banca Exemplo'").fetchone()[0]
+    assert lid in r["lancamentos"]

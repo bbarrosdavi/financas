@@ -122,7 +122,9 @@ def sincronizar(body: Sincronia):
     if body.protocolo != sync.PROTOCOLO:
         raise HTTPException(409, "Versão do app incompatível com a do servidor: atualize os dois.")
     with db.conectar() as con:
-        return sync.servir(con, body.cursor, body.mudancas, settings.TITULAR)
+        r = sync.servir(con, body.cursor, body.mudancas, settings.TITULAR)
+    r.pop("lancamentos")
+    return r
 
 
 # ---------------------------------------------------------------------------

@@ -308,14 +308,14 @@ def _apagar_linha(con, tabela: str, chave: str) -> bool:
 # ---------------------------------------------------------------------------
 # O mesmo dado chegando pelos dois lados
 # ---------------------------------------------------------------------------
-def _casar_por_chave(con, uid: str, dados: dict, alterado_em: str) -> bool:
+def _casar_por_chave(con, uid: str, dados: dict, alterado_em: str) -> list[int]:
     """A mesma linha de extrato importada nos dois aparelhos: fica uma, com o menor uid (os dois lados chegam ao mesmo)."""
     if not dados.get("chave"):
-        return False
+        return []
     row = con.execute("SELECT l.id, s.uid, s.alterado_em FROM lancamentos l JOIN sync_registro s ON s.tabela = 'lancamentos' "
                       "AND s.chave = CAST(l.id AS TEXT) AND s.apagado = 0 WHERE l.chave = ?", (dados["chave"],)).fetchone()
     if not row:
-        return False
+        return []
     lid, uid_local, alt_local = row
     chega_vence = alterado_em > alt_local
     if chega_vence:
@@ -327,20 +327,20 @@ def _casar_por_chave(con, uid: str, dados: dict, alterado_em: str) -> bool:
     igual_ao_outro = fica == uid and chega_vence
     _registrar(con, "lancamentos", fica, str(lid), alterado_em if igual_ao_outro else agora, False, not igual_ao_outro)
     _registrar(con, "lancamentos", sai, f"apagado:{sai}", agora, True, True)
-    return True
+    return [lid]
 
 
-def _casar_push(con, uid: str, dados: dict) -> bool:
+def _casar_push(con, uid: str, dados: dict) -> list[int]:
     """A compra que veio pelo push depois de o extrato com ela já estar aqui: como na importação, fica o lançamento
     do push, confirmado pelo arquivo, e a linha do arquivo sai."""
     if dados.get("origem") != "push" or dados.get("confirmado_por"):
-        return False
+        return []
     q = ",".join("?" * len(ORIGENS_DE_ARQUIVO))
     x = con.execute(f"SELECT * FROM lancamentos WHERE origem NOT IN ({q}) AND conta = ? AND ABS(valor - ?) < 0.005 "
                     f"AND ABS(julianday(data) - julianday(?)) <= 2 ORDER BY ABS(julianday(data) - julianday(?)) LIMIT 1",
                     (*ORIGENS_DE_ARQUIVO, dados["conta"], dados["valor"], dados["data"], dados["data"])).fetchone()
     if not x:
-        return False
+        return []
     x = dict(x)
     partes_x = [dict(p) for p in con.execute("SELECT valor, natureza, categoria, pessoa, meta, obs, motivo FROM partes "
                                              "WHERE lancamento_id = ? ORDER BY id", (x["id"],))]
@@ -358,7 +358,7 @@ def _casar_push(con, uid: str, dados: dict) -> bool:
         _registrar(con, "lancamentos", uid_x[0], f"apagado:{uid_x[0]}", agora, True, True)
     chave = _escrever(con, "lancamentos", None, junto)
     _registrar(con, "lancamentos", uid, chave, agora, False, True)
-    return True
+    return [x["id"], int(chave)]
 
 
 # ---------------------------------------------------------------------------
@@ -380,7 +380,7 @@ def mudancas(con, cursor: int | None = None) -> list[dict]:
     return out
 
 
-def _aplicar_um(con, m: dict, empate_entra: bool) -> bool:
+def _aplicar_um(con, m: dict, empate_entra: bool, tocados: list[int]) -> bool:
     tabela, alt = m["tabela"], m["alterado_em"]
     uid = _uid_local(con, tabela, m["uid"])
     if uid is None or (tabela == "parametros" and m["uid"] in PARAMETROS_LOCAIS):
@@ -391,30 +391,39 @@ def _aplicar_um(con, m: dict, empate_entra: bool) -> bool:
     if m["apagado"]:
         if reg and not reg["apagado"] and not _apagar_linha(con, tabela, reg["chave"]):
             return False        # ainda em uso aqui: fica, e a próxima mudança local leva de volta
+        if tabela == "lancamentos" and reg and not reg["apagado"]:
+            tocados.append(int(reg["chave"]))
         _registrar(con, tabela, uid, reg["chave"] if reg else f"apagado:{uid}", alt, True, False)
         return True
     vivo = reg is not None and not reg["apagado"]
-    if tabela == "lancamentos" and not vivo and (_casar_por_chave(con, uid, m["dados"], alt) or _casar_push(con, uid, m["dados"])):
-        return True
+    if tabela == "lancamentos" and not vivo:
+        casados = _casar_por_chave(con, uid, m["dados"], alt) or _casar_push(con, uid, m["dados"])
+        if casados:
+            tocados.extend(casados)
+            return True
     chave = _escrever(con, tabela, reg["chave"] if vivo else None, m["dados"])
     _registrar(con, tabela, uid, chave, alt, False, False)
+    if tabela == "lancamentos":
+        tocados.append(int(chave))
     return True
 
 
 def aplicar(con, recebidas: list[dict], empate_entra: bool) -> dict:
     """Aplica as mudanças do outro lado. `empate_entra`: o celular aceita o servidor no empate; o servidor não.
-    O que um casamento cria de novo fica marcado para voltar ao outro lado."""
+    O que um casamento cria de novo fica marcado para voltar ao outro lado. Devolve também os ids locais dos
+    lançamentos que mudaram aqui (`lancamentos`), para quem precisa avisar outro sistema deles."""
     ordem = list(TABELAS)
     vivas = sorted((m for m in recebidas if not m["apagado"] and m["tabela"] in TABELAS), key=lambda m: ordem.index(m["tabela"]))
     mortas = sorted((m for m in recebidas if m["apagado"] and m["tabela"] in TABELAS), key=lambda m: -ordem.index(m["tabela"]))
     aceitas = recusadas = 0
+    tocados: list[int] = []
     # DML antes do primeiro SAVEPOINT: a transação já está aberta, e soltar um savepoint não grava pela metade.
     con.execute("UPDATE sync_estado SET aplicando = 1")
     try:
         for m in vivas + mortas:
             con.execute("SAVEPOINT registro")
             try:
-                ok = _aplicar_um(con, m, empate_entra)
+                ok = _aplicar_um(con, m, empate_entra, tocados)
             except (LookupError, KeyError, TypeError, sqlite3.IntegrityError):
                 con.execute("ROLLBACK TO registro")
                 ok = False
@@ -422,7 +431,7 @@ def aplicar(con, recebidas: list[dict], empate_entra: bool) -> dict:
             aceitas, recusadas = aceitas + ok, recusadas + (not ok)
     finally:
         con.execute("UPDATE sync_estado SET aplicando = 0")
-    return {"aceitas": aceitas, "recusadas": recusadas}
+    return {"aceitas": aceitas, "recusadas": recusadas, "lancamentos": sorted(set(tocados))}
 
 
 def servir(con, cursor: int, recebidas: list[dict], titular: str = "") -> dict:
@@ -476,6 +485,7 @@ def sincronizar(conectar, base: str, chave_api: str, timeout: float = 30) -> dic
         raise ErroSync(f"O servidor respondeu {status}.")
     with conectar() as con:
         r = aplicar(con, resp.get("mudancas", []), empate_entra=True)
+        r.pop("lancamentos")
         for m in enviadas:
             uid = _uid_local(con, m["tabela"], m["uid"])
             con.execute("UPDATE sync_registro SET enviar = 0 WHERE tabela = ? AND uid = ? AND alterado_em = ?",
