@@ -2,8 +2,12 @@
 
 Site para controlar o dinheiro pessoal no lugar da planilha. Importa extrato e fatura do banco, recebe pelo
 celular o push que o banco manda a cada compra e divide cada lançamento em partes: gasto, renda,
-transferência entre contas suas, acerto com pessoas e poupança em metas. Roda num servidor seu, com Docker, e
-abre no PC ou no celular (dá para instalar como app pelo navegador).
+transferência entre contas suas, acerto com pessoas e poupança em metas. Roda num servidor seu (Docker no
+Linux, ou o instalador do Windows) e abre no PC ou no celular. No Android há também um app que funciona
+sozinho, sem servidor, e sincroniza quando o servidor está ao alcance.
+
+**Como usar, passo a passo e com exemplos: [docs/GUIA.md](docs/GUIA.md).** Na primeira entrada, um tour
+mostra cada tela e cada painel.
 
 ![Painel](docs/prints/painel.png)
 
@@ -48,7 +52,8 @@ pessoa) é **pendente** e o site pergunta.
 
 ## Entradas
 
-1. **Celular**: o MacroDroid manda o push do banco para `/api/v1/transaction/webhook` (ver
+1. **Celular**: o [app Android](#app-android) lê a notificação do banco e lança na hora no próprio celular,
+   e depois sincroniza com o servidor; ou o MacroDroid manda o push para `/api/v1/transaction/webhook` (ver
    [docs/MACRODROID.md](docs/MACRODROID.md)).
 2. **Arquivos**, na tela Importar (o tipo é reconhecido pelo conteúdo, não pelo nome):
    - Nubank: extrato e fatura em PDF ou CSV (`app/importadores.py`).
@@ -76,7 +81,37 @@ Pendente novo pode gerar um aviso (ver [Avisos](#avisos)).
 
 ## Instalação
 
-Com Docker:
+### No Windows, sem Docker
+
+Para usar no próprio PC (Windows 10 ou 11), sem instalar mais nada:
+
+1. Baixe o `financas-setup-<versão>.exe` (o workflow **Instalador Windows** do GitHub Actions gera o arquivo;
+   ele fica nos artefatos de cada execução) e abra.
+2. Se o Windows avisar que o programa é de um editor desconhecido, clique em **Mais informações** e
+   **Executar assim mesmo** (o instalador não é assinado).
+3. Marque o que quiser:
+   - **Iniciar o servidor quando o Windows ligar**: o Finanças fica de pé sozinho, sem janela.
+   - **Permitir que o celular acesse pela rede local**: necessário para o app do celular sincronizar. O
+     Windows pede permissão (a tela de administrador) uma vez, para liberar o firewall.
+4. Escolha a senha do site (duas vezes) e, se quiser, o seu nome como o banco escreve no Pix (ex.:
+   `FULANO DE TAL`), para o Pix vindo de você mesmo contar como transferência, não como renda.
+5. No fim, deixe marcado **Abrir o Finanças agora**. O site abre no navegador em `http://localhost:8095`;
+   entre com a senha. Depois, o atalho **Finanças** do Menu Iniciar ou da Área de Trabalho garante o servidor
+   de pé e abre o site.
+
+Não é preciso instalar Python, Docker, poppler nem tesseract: tudo vem no instalador, inclusive a leitura de
+PDF e o OCR da fatura do Bradesco. Os dados ficam em `%LOCALAPPDATA%\Financas` (o banco, os papéis de parede,
+o `.env` com a senha e as chaves, e o log do servidor em `logs\servidor.log`). O desinstalador (em
+Configurações > Aplicativos) para o servidor, tira o início automático e a regra do firewall e pergunta se
+apaga os dados. A planilha no modelo antigo (.ods) precisa do LibreOffice e não existe nesta versão: o botão
+fica desabilitado com o aviso; a .xlsx funciona. Os avisos de pendente (ver [Avisos](#avisos)) são só do
+Linux.
+
+Para gerar o instalador: o workflow `.github/workflows/windows.yml` roda num runner Windows (o PyInstaller
+não gera executável de Windows fora dele), junta o poppler e o tesseract com português, compila com o Inno
+Setup (`windows/financas.iss`) e testa a instalação silenciosa, o servidor, o OCR e a desinstalação.
+
+### No Linux, com Docker
 
 ```sh
 git clone https://github.com/bbarrosdavi/financas.git
@@ -106,6 +141,61 @@ Testes:
 pip install -r requirements.txt -r requirements-dev.txt
 python -m pytest -q
 ```
+
+## App Android
+
+Um APK (`financas-<versão>.apk`) que faz o papel do MacroDroid e do site no celular, sem depender do
+computador:
+
+- A tela é a mesma do site (tudo que tem no site tem no app, no claro e no escuro), mas o banco fica no
+  celular e o app abre, lista, lança e classifica sem servidor nenhum.
+- Lê as notificações dos apps de banco escolhidos (por padrão Nubank, PicPay, Mercado Pago e Bradesco) e lança
+  na hora, na ordem em que chegam, pelo mesmo leitor do servidor (`app/push_parser.py`, rodando no celular).
+- Quando alcança o servidor (na mesma rede ou pela VPN), sincroniza em segundo plano: a cada 15 minutos, ao
+  abrir e ao sair do app e depois de cada compra. Sem servidor, nada muda no uso; a próxima sincronização
+  leva tudo.
+
+Instalar:
+
+1. Copie o APK para o celular e abra. O Android pede para permitir a instalação de apps dessa origem (o
+   navegador ou o gerenciador de arquivos): permita só para essa instalação.
+2. Abra o **Finanças**. O tour mostra cada tela; no fim, vá em **Ajustes > Celular**.
+3. Toque em **Acesso a notificações** e ligue o Finanças. Sem isso, as compras não entram sozinhas.
+4. Para sincronizar com o Finanças do computador: em **Endereço do servidor**, o endereço que aparece em
+   Ajustes > Celular no computador (ex.: `http://192.168.0.10:8095`), e em **Chave**, a chave dali (abra o site
+   no navegador do celular e use o botão copiar). Toque em **Testar conexão** e em **Salvar**.
+5. Configurações do Android > Apps > Finanças > Bateria > **Sem restrições**, para o Android não segurar a
+   sincronização em segundo plano.
+
+Como os dois lados se acertam: cada registro (lançamento com as partes, categoria, pessoa, meta, orçamento,
+evento, parâmetro) tem a hora da última alteração; vence a alteração mais recente, registro por registro, e
+o empate fica com o servidor. Apagar também viaja. A mesma linha de extrato importada nos dois lados e a
+compra que o celular viu depois de o extrato já estar no servidor são casadas, não duplicadas
+(`app/sync.py`). Não use o app e o MacroDroid ao mesmo tempo no mesmo celular: a mesma compra entraria duas
+vezes. Contra um servidor antigo, sem sincronização, o app manda só as compras, pelo webhook do MacroDroid.
+
+No celular, PDF de extrato não é lido (não há poppler nem tesseract no Android): importe o CSV ou o Excel, ou
+importe o PDF no computador, que ele chega ao celular na sincronização. A .ods também não existe no app.
+
+Para gerar o APK (Linux, Android SDK e JDK 17+):
+
+```sh
+cd android
+./gradlew --no-daemon assembleRelease      # app/build/outputs/apk/release/app-release.apk
+```
+
+O APK leva o `app/` e o `web/` do repositório (o Python roda no celular pelo Chaquopy). A assinatura usa um
+keystore que nunca entra no git: o build lê `~/.local/share/financas-android/keystore.properties` (ou o
+arquivo em `FINANCAS_KEYSTORE`), com `storeFile`, `storePassword`, `keyAlias` e `keyPassword`. Sem ele, o
+APK sai assinado com a chave de depuração, que não atualiza um APK assinado com a chave de verdade.
+
+## Acesso de fora de casa (Tailscale)
+
+O servidor não deve ficar aberto na internet. Para o celular sincronizar fora de casa, o caminho simples é o
+Tailscale (uma VPN gratuita para uso pessoal): instale no PC e no celular, entre com a mesma conta e use, no
+app, o endereço do PC na VPN (ex.: `http://100.101.102.103:8095`, o IP que o Tailscale mostra para o PC).
+Só os seus aparelhos chegam ao servidor, e o túnel já cifra o tráfego. Algumas redes (de universidade, de
+empresa) bloqueiam a VPN; nelas o app continua funcionando sozinho e sincroniza quando voltar para casa.
 
 ## Avisos
 

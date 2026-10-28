@@ -164,3 +164,10 @@ def test_fatura_csv_com_ponto_decimal():
                                      "2026-10-07,Pagamento recebido,-1203.83\n", date(2026, 10, 26))
     assert [m.valor for m in lt.movimentos] == [-32.9, -23.1, 1203.83]
     assert importadores.numero("1.234") == 1234 and importadores.numero("R$ 1.250,90") == 1250.9
+
+
+def test_pdf_sem_poppler_explica_o_que_fazer(monkeypatch):
+    import pytest
+    monkeypatch.setenv("PATH", "/nao/existe")
+    with pytest.raises(ValueError, match="Importe o CSV ou o Excel"):
+        importadores.ler_arquivo("extrato.pdf", b"%PDF-1.4 qualquer coisa")

@@ -59,6 +59,7 @@ class MainActivity : ComponentActivity() {
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        if (BuildConfig.DEBUG) WebView.setWebContentsDebuggingEnabled(true)     // só no build de teste (chrome://inspect)
         enableEdgeToEdge()
         moldura = FrameLayout(this)
         web = WebView(this)

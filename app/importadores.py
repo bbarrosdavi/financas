@@ -54,7 +54,11 @@ class Leitura:
 
 
 def texto_pdf(conteudo: bytes) -> str:
-    r = subprocess.run(["pdftotext", "-layout", "-", "-"], input=conteudo, capture_output=True, check=True)
+    try:
+        r = subprocess.run(["pdftotext", "-layout", "-", "-"], input=conteudo, capture_output=True, check=True)
+    except FileNotFoundError:        # o app do celular não tem o poppler
+        raise ValueError("Ler PDF precisa do poppler (pdftotext), que não existe aqui. Importe o CSV ou o Excel, "
+                         "ou importe o PDF no computador.") from None
     return r.stdout.decode("utf-8", "replace")
 
 
