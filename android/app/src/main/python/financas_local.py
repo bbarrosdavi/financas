@@ -53,7 +53,7 @@ class Configuracao:
 
 def _titular() -> None:
     from app import db, sync
-    with db.conectar() as con:
+    with db.conectar_real() as con:
         settings.TITULAR = sync._cliente(con, "titular", "") or ""
 
 
@@ -83,6 +83,8 @@ def iniciar(pasta: str, fuso: str = "America/Sao_Paulo") -> None:
             pydantic.BaseModel.model_dump = lambda self, **kw: self.dict(**kw)
         from app import db, main
         db.iniciar()
+        if db.demo_ativa():
+            db.iniciar(db.caminho())
         main.app.dependency_overrides[main.sessao] = lambda: None
         _titular()
         _loop = asyncio.new_event_loop()
@@ -146,7 +148,7 @@ def _processar(inbox_id: int) -> dict | None:
         return push.processar(inbox_id)
     except Exception as e:      # como no worker do servidor: o erro fica na inbox e tenta de novo depois
         traceback.print_exc()
-        with db.conectar() as con:
+        with db.conectar_real() as con:
             con.execute("UPDATE inbox SET attempts=attempts+1, last_error=?, "
                         "state=CASE WHEN attempts+1>=? THEN 'dead' ELSE 'pending' END WHERE id=?",
                         (str(e)[:500], settings.MAX_ATTEMPTS, inbox_id))
@@ -168,7 +170,7 @@ def notificacao(pacote: str, titulo: str, texto: str, quando_ms: int = 0) -> str
 def reprocessar() -> int:
     """Push que ficou no meio (o app morreu enquanto aplicava): aplica agora, na ordem em que chegou."""
     from app import db
-    with db.conectar() as con:
+    with db.conectar_real() as con:
         ids = [r[0] for r in con.execute("SELECT id FROM inbox WHERE state='pending' ORDER BY id")]
     for i in ids:
         _processar(i)
@@ -186,7 +188,7 @@ def sincronizar(url: str, chave: str) -> str:
     from app import db, sync
     try:
         with _trava_sync:
-            r = sync.sincronizar(db.conectar, url, chave)
+            r = sync.sincronizar(db.conectar_real, url, chave)     # a demonstração nunca vai para o servidor
     except sync.ErroSync as e:
         return json.dumps({"ok": False, "erro": str(e)}, ensure_ascii=False)
     except Exception as e:

@@ -209,8 +209,27 @@ CREATE TABLE IF NOT EXISTS ignorados (
 """
 
 
-def caminho() -> Path:
+def caminho_real() -> Path:
     return Path(settings.DATABASE_PATH)
+
+
+def banco_demonstracao(real: Path | None = None) -> Path:
+    real = real or caminho_real()
+    return real.with_name(real.stem + "-demonstracao.db")
+
+
+def marcador_demonstracao(real: Path | None = None) -> Path:
+    real = real or caminho_real()
+    return real.with_name(real.name + ".demonstracao")
+
+
+def demo_ativa() -> bool:
+    return marcador_demonstracao().exists()
+
+
+def caminho() -> Path:
+    """O banco da tela: o de verdade, ou o de demonstração enquanto ela estiver ligada (ver app/demo.py)."""
+    return banco_demonstracao() if demo_ativa() else caminho_real()
 
 
 @contextmanager
@@ -228,8 +247,13 @@ def conectar(path: str | Path | None = None):
         con.close()
 
 
+def conectar_real():
+    """O banco de verdade, mesmo com a demonstração ligada: push, webhook e sincronização nunca vão para ela."""
+    return conectar(caminho_real())
+
+
 def iniciar(path: str | Path | None = None) -> None:
-    p = Path(path or caminho())
+    p = Path(path or caminho_real())
     p.parent.mkdir(parents=True, exist_ok=True)
     with conectar(p) as con:
         con.executescript(SCHEMA)

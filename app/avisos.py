@@ -22,7 +22,7 @@ def pendente(lanc: dict) -> bool:
     fila = Path(settings.AVISOS_FILA)
     if not fila.is_dir():
         return False
-    with db.conectar() as con:
+    with db.conectar_real() as con:
         ultimo = db.parametro(con, "aviso_ultimo")
         agora = datetime.now()
         if ultimo and agora - datetime.fromisoformat(ultimo) < INTERVALO:

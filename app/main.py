@@ -22,7 +22,7 @@ from fastapi.responses import FileResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
-from app import db, exportar, push, servicos, sync
+from app import db, demo, exportar, push, servicos, sync
 from app.config import settings
 
 WEB = Path(__file__).resolve().parent.parent / "web"
@@ -33,6 +33,8 @@ VALIDADE = 60 * 60 * 24 * 60   # 60 dias
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     db.iniciar()
+    if db.demo_ativa():
+        db.iniciar(db.caminho())
     tarefa = asyncio.create_task(push.worker())
     push.reenfileirar()
     try:
@@ -121,7 +123,7 @@ def sincronizar(body: Sincronia):
     """O app do celular manda o que mudou nele e recebe o que mudou aqui (ver app/sync.py)."""
     if body.protocolo != sync.PROTOCOLO:
         raise HTTPException(409, "Versão do app incompatível com a do servidor: atualize os dois.")
-    with db.conectar() as con:
+    with db.conectar_real() as con:
         r = sync.servir(con, body.cursor, body.mudancas, settings.TITULAR)
     r.pop("lancamentos")
     return r
@@ -131,6 +133,27 @@ def sincronizar(body: Sincronia):
 # Site
 # ---------------------------------------------------------------------------
 api = Depends(sessao)
+
+
+class Demo(BaseModel):
+    ativo: bool
+
+
+@app.get("/api/demo", dependencies=[api])
+def ver_demo():
+    """Dados de demonstração (app/demo.py): se estão ligados e se o banco de verdade ainda está vazio."""
+    with db.conectar_real() as con:
+        vazio = con.execute("SELECT 1 FROM lancamentos LIMIT 1").fetchone() is None
+    return {"ativo": db.demo_ativa(), "vazio": vazio}
+
+
+@app.put("/api/demo", dependencies=[api])
+def mudar_demo(body: Demo):
+    try:
+        demo.ligar(date.today()) if body.ativo else demo.desligar()
+    except ValueError as e:
+        raise HTTPException(409, str(e))
+    return ver_demo()
 
 
 @app.get("/api/painel", dependencies=[api])
