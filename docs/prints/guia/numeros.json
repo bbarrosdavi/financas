@@ -65,7 +65,7 @@
     "n": 1
    },
    "contas-casa": {
-    "nome": "Contas da casa (luz, gás, internet)",
+    "nome": "Contas da casa (luz, água, gás, internet)",
     "gasto": 91.7,
     "parcelas": 0.0,
     "teto": 150.0,
@@ -73,7 +73,7 @@
     "n": 1
    },
    "casa-moveis": {
-    "nome": "Casa e móveis",
+    "nome": "Casa e manutenção",
     "gasto": 0.0,
     "parcelas": 0.0,
     "teto": null,
@@ -81,36 +81,28 @@
     "n": 0
    },
    "mercado": {
-    "nome": "Mercado planejado",
+    "nome": "Mercado",
     "gasto": 361.13,
     "parcelas": 0.0,
     "teto": 600.0,
     "acima": 0.0,
     "n": 2
    },
-   "ru": {
-    "nome": "RU (dias de aula)",
-    "gasto": 0.0,
-    "parcelas": 0.0,
-    "teto": null,
-    "acima": 0.0,
-    "n": 0
-   },
-   "conveniencia": {
-    "nome": "Conveniência e lanches",
-    "gasto": 17.93,
-    "parcelas": 0.0,
-    "teto": 100.0,
-    "acima": 0.0,
-    "n": 1
-   },
    "delivery": {
-    "nome": "Delivery e restaurante",
+    "nome": "Restaurantes e delivery",
     "gasto": 105.3,
     "parcelas": 0.0,
     "teto": 250.0,
     "acima": 0.0,
     "n": 3
+   },
+   "conveniencia": {
+    "nome": "Lanches e café",
+    "gasto": 17.93,
+    "parcelas": 0.0,
+    "teto": 100.0,
+    "acima": 0.0,
+    "n": 1
    },
    "remedios": {
     "nome": "Remédios",
@@ -121,7 +113,7 @@
     "n": 1
    },
    "consultas": {
-    "nome": "Consultas e terapia",
+    "nome": "Consultas e exames",
     "gasto": 0.0,
     "parcelas": 0.0,
     "teto": null,
@@ -129,23 +121,15 @@
     "n": 0
    },
    "academia": {
-    "nome": "Academia",
+    "nome": "Academia e esportes",
     "gasto": 90.0,
     "parcelas": 0.0,
     "teto": 90.0,
     "acima": 0.0,
     "n": 1
    },
-   "saude-outros": {
-    "nome": "Saúde (outros)",
-    "gasto": 0.0,
-    "parcelas": 0.0,
-    "teto": null,
-    "acima": 0.0,
-    "n": 0
-   },
    "app-transporte": {
-    "nome": "App (Uber/99)",
+    "nome": "Transporte por app",
     "gasto": 66.22,
     "parcelas": 0.0,
     "teto": 150.0,
@@ -153,10 +137,18 @@
     "n": 3
    },
    "onibus": {
-    "nome": "Ônibus e combustível",
+    "nome": "Transporte público e combustível",
     "gasto": 0.0,
     "parcelas": 0.0,
     "teto": 80.0,
+    "acima": 0.0,
+    "n": 0
+   },
+   "educacao": {
+    "nome": "Cursos e material",
+    "gasto": 0.0,
+    "parcelas": 0.0,
+    "teto": null,
     "acima": 0.0,
     "n": 0
    },
@@ -168,11 +160,11 @@
     "acima": 0.0,
     "n": 2
    },
-   "ferramentas": {
-    "nome": "Ferramentas de trabalho",
+   "vestuario": {
+    "nome": "Roupas e calçados",
     "gasto": 0.0,
     "parcelas": 0.0,
-    "teto": null,
+    "teto": 150.0,
     "acima": 0.0,
     "n": 0
    },
@@ -184,16 +176,8 @@
     "acima": 0.0,
     "n": 1
    },
-   "vestuario": {
-    "nome": "Vestuário e imagem",
-    "gasto": 0.0,
-    "parcelas": 0.0,
-    "teto": 150.0,
-    "acima": 0.0,
-    "n": 0
-   },
    "lazer": {
-    "nome": "Lazer e rolê",
+    "nome": "Lazer e passeios",
     "gasto": 35.84,
     "parcelas": 0.0,
     "teto": 200.0,
@@ -201,15 +185,7 @@
     "n": 1
    },
    "viagem": {
-    "nome": "Viagem",
-    "gasto": 0.0,
-    "parcelas": 0.0,
-    "teto": null,
-    "acima": 0.0,
-    "n": 0
-   },
-   "hobbies": {
-    "nome": "Hobbies",
+    "nome": "Viagens",
     "gasto": 0.0,
     "parcelas": 0.0,
     "teto": null,
@@ -225,7 +201,7 @@
     "n": 0
    },
    "familia": {
-    "nome": "Família e presentes",
+    "nome": "Presentes e família",
     "gasto": 0.0,
     "parcelas": 0.0,
     "teto": null,
@@ -459,7 +435,7 @@
      "n": 1
     },
     "contas-casa": {
-     "nome": "Contas da casa (luz, gás, internet)",
+     "nome": "Contas da casa (luz, água, gás, internet)",
      "gasto": 91.7,
      "parcelas": 0.0,
      "teto": 150.0,
@@ -467,7 +443,7 @@
      "n": 1
     },
     "casa-moveis": {
-     "nome": "Casa e móveis",
+     "nome": "Casa e manutenção",
      "gasto": 0.0,
      "parcelas": 0.0,
      "teto": null,
@@ -475,36 +451,28 @@
      "n": 0
     },
     "mercado": {
-     "nome": "Mercado planejado",
+     "nome": "Mercado",
      "gasto": 361.13,
      "parcelas": 0.0,
      "teto": 600.0,
      "acima": 0.0,
      "n": 2
     },
-    "ru": {
-     "nome": "RU (dias de aula)",
-     "gasto": 0.0,
-     "parcelas": 0.0,
-     "teto": null,
-     "acima": 0.0,
-     "n": 0
-    },
-    "conveniencia": {
-     "nome": "Conveniência e lanches",
-     "gasto": 17.93,
-     "parcelas": 0.0,
-     "teto": 100.0,
-     "acima": 0.0,
-     "n": 1
-    },
     "delivery": {
-     "nome": "Delivery e restaurante",
+     "nome": "Restaurantes e delivery",
      "gasto": 105.3,
      "parcelas": 0.0,
      "teto": 250.0,
      "acima": 0.0,
      "n": 3
+    },
+    "conveniencia": {
+     "nome": "Lanches e café",
+     "gasto": 17.93,
+     "parcelas": 0.0,
+     "teto": 100.0,
+     "acima": 0.0,
+     "n": 1
     },
     "remedios": {
      "nome": "Remédios",
@@ -515,7 +483,7 @@
      "n": 1
     },
     "consultas": {
-     "nome": "Consultas e terapia",
+     "nome": "Consultas e exames",
      "gasto": 0.0,
      "parcelas": 0.0,
      "teto": null,
@@ -523,23 +491,15 @@
      "n": 0
     },
     "academia": {
-     "nome": "Academia",
+     "nome": "Academia e esportes",
      "gasto": 90.0,
      "parcelas": 0.0,
      "teto": 90.0,
      "acima": 0.0,
      "n": 1
     },
-    "saude-outros": {
-     "nome": "Saúde (outros)",
-     "gasto": 0.0,
-     "parcelas": 0.0,
-     "teto": null,
-     "acima": 0.0,
-     "n": 0
-    },
     "app-transporte": {
-     "nome": "App (Uber/99)",
+     "nome": "Transporte por app",
      "gasto": 66.22,
      "parcelas": 0.0,
      "teto": 150.0,
@@ -547,10 +507,18 @@
      "n": 3
     },
     "onibus": {
-     "nome": "Ônibus e combustível",
+     "nome": "Transporte público e combustível",
      "gasto": 0.0,
      "parcelas": 0.0,
      "teto": 80.0,
+     "acima": 0.0,
+     "n": 0
+    },
+    "educacao": {
+     "nome": "Cursos e material",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
      "acima": 0.0,
      "n": 0
     },
@@ -562,11 +530,11 @@
      "acima": 0.0,
      "n": 2
     },
-    "ferramentas": {
-     "nome": "Ferramentas de trabalho",
+    "vestuario": {
+     "nome": "Roupas e calçados",
      "gasto": 0.0,
      "parcelas": 0.0,
-     "teto": null,
+     "teto": 150.0,
      "acima": 0.0,
      "n": 0
     },
@@ -578,16 +546,8 @@
      "acima": 0.0,
      "n": 1
     },
-    "vestuario": {
-     "nome": "Vestuário e imagem",
-     "gasto": 0.0,
-     "parcelas": 0.0,
-     "teto": 150.0,
-     "acima": 0.0,
-     "n": 0
-    },
     "lazer": {
-     "nome": "Lazer e rolê",
+     "nome": "Lazer e passeios",
      "gasto": 35.84,
      "parcelas": 0.0,
      "teto": 200.0,
@@ -595,15 +555,7 @@
      "n": 1
     },
     "viagem": {
-     "nome": "Viagem",
-     "gasto": 0.0,
-     "parcelas": 0.0,
-     "teto": null,
-     "acima": 0.0,
-     "n": 0
-    },
-    "hobbies": {
-     "nome": "Hobbies",
+     "nome": "Viagens",
      "gasto": 0.0,
      "parcelas": 0.0,
      "teto": null,
@@ -619,7 +571,7 @@
      "n": 0
     },
     "familia": {
-     "nome": "Família e presentes",
+     "nome": "Presentes e família",
      "gasto": 0.0,
      "parcelas": 0.0,
      "teto": null,
@@ -852,7 +804,7 @@
      "n": 1
     },
     "contas-casa": {
-     "nome": "Contas da casa (luz, gás, internet)",
+     "nome": "Contas da casa (luz, água, gás, internet)",
      "gasto": 91.7,
      "parcelas": 0.0,
      "teto": 150.0,
@@ -860,7 +812,7 @@
      "n": 1
     },
     "casa-moveis": {
-     "nome": "Casa e móveis",
+     "nome": "Casa e manutenção",
      "gasto": 0.0,
      "parcelas": 0.0,
      "teto": null,
@@ -868,36 +820,28 @@
      "n": 0
     },
     "mercado": {
-     "nome": "Mercado planejado",
+     "nome": "Mercado",
      "gasto": 406.13,
      "parcelas": 0.0,
      "teto": 600.0,
      "acima": 0.0,
      "n": 3
     },
-    "ru": {
-     "nome": "RU (dias de aula)",
-     "gasto": 0.0,
-     "parcelas": 0.0,
-     "teto": null,
-     "acima": 0.0,
-     "n": 0
-    },
-    "conveniencia": {
-     "nome": "Conveniência e lanches",
-     "gasto": 17.93,
-     "parcelas": 0.0,
-     "teto": 100.0,
-     "acima": 0.0,
-     "n": 1
-    },
     "delivery": {
-     "nome": "Delivery e restaurante",
+     "nome": "Restaurantes e delivery",
      "gasto": 105.3,
      "parcelas": 0.0,
      "teto": 250.0,
      "acima": 0.0,
      "n": 3
+    },
+    "conveniencia": {
+     "nome": "Lanches e café",
+     "gasto": 17.93,
+     "parcelas": 0.0,
+     "teto": 100.0,
+     "acima": 0.0,
+     "n": 1
     },
     "remedios": {
      "nome": "Remédios",
@@ -908,7 +852,7 @@
      "n": 1
     },
     "consultas": {
-     "nome": "Consultas e terapia",
+     "nome": "Consultas e exames",
      "gasto": 0.0,
      "parcelas": 0.0,
      "teto": null,
@@ -916,23 +860,15 @@
      "n": 0
     },
     "academia": {
-     "nome": "Academia",
+     "nome": "Academia e esportes",
      "gasto": 90.0,
      "parcelas": 0.0,
      "teto": 90.0,
      "acima": 0.0,
      "n": 1
     },
-    "saude-outros": {
-     "nome": "Saúde (outros)",
-     "gasto": 0.0,
-     "parcelas": 0.0,
-     "teto": null,
-     "acima": 0.0,
-     "n": 0
-    },
     "app-transporte": {
-     "nome": "App (Uber/99)",
+     "nome": "Transporte por app",
      "gasto": 66.22,
      "parcelas": 0.0,
      "teto": 150.0,
@@ -940,10 +876,18 @@
      "n": 3
     },
     "onibus": {
-     "nome": "Ônibus e combustível",
+     "nome": "Transporte público e combustível",
      "gasto": 0.0,
      "parcelas": 0.0,
      "teto": 80.0,
+     "acima": 0.0,
+     "n": 0
+    },
+    "educacao": {
+     "nome": "Cursos e material",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
      "acima": 0.0,
      "n": 0
     },
@@ -955,11 +899,11 @@
      "acima": 0.0,
      "n": 2
     },
-    "ferramentas": {
-     "nome": "Ferramentas de trabalho",
+    "vestuario": {
+     "nome": "Roupas e calçados",
      "gasto": 0.0,
      "parcelas": 0.0,
-     "teto": null,
+     "teto": 150.0,
      "acima": 0.0,
      "n": 0
     },
@@ -971,16 +915,8 @@
      "acima": 0.0,
      "n": 1
     },
-    "vestuario": {
-     "nome": "Vestuário e imagem",
-     "gasto": 0.0,
-     "parcelas": 0.0,
-     "teto": 150.0,
-     "acima": 0.0,
-     "n": 0
-    },
     "lazer": {
-     "nome": "Lazer e rolê",
+     "nome": "Lazer e passeios",
      "gasto": 35.84,
      "parcelas": 0.0,
      "teto": 200.0,
@@ -988,15 +924,7 @@
      "n": 1
     },
     "viagem": {
-     "nome": "Viagem",
-     "gasto": 0.0,
-     "parcelas": 0.0,
-     "teto": null,
-     "acima": 0.0,
-     "n": 0
-    },
-    "hobbies": {
-     "nome": "Hobbies",
+     "nome": "Viagens",
      "gasto": 0.0,
      "parcelas": 0.0,
      "teto": null,
@@ -1012,7 +940,7 @@
      "n": 0
     },
     "familia": {
-     "nome": "Família e presentes",
+     "nome": "Presentes e família",
      "gasto": 0.0,
      "parcelas": 0.0,
      "teto": null,
@@ -1250,7 +1178,7 @@
      "n": 1
     },
     "contas-casa": {
-     "nome": "Contas da casa (luz, gás, internet)",
+     "nome": "Contas da casa (luz, água, gás, internet)",
      "gasto": 91.7,
      "parcelas": 0.0,
      "teto": 150.0,
@@ -1258,7 +1186,7 @@
      "n": 1
     },
     "casa-moveis": {
-     "nome": "Casa e móveis",
+     "nome": "Casa e manutenção",
      "gasto": 0.0,
      "parcelas": 0.0,
      "teto": null,
@@ -1266,36 +1194,28 @@
      "n": 0
     },
     "mercado": {
-     "nome": "Mercado planejado",
+     "nome": "Mercado",
      "gasto": 406.13,
      "parcelas": 0.0,
      "teto": 600.0,
      "acima": 0.0,
      "n": 3
     },
-    "ru": {
-     "nome": "RU (dias de aula)",
-     "gasto": 0.0,
-     "parcelas": 0.0,
-     "teto": null,
-     "acima": 0.0,
-     "n": 0
-    },
-    "conveniencia": {
-     "nome": "Conveniência e lanches",
-     "gasto": 17.93,
-     "parcelas": 0.0,
-     "teto": 100.0,
-     "acima": 0.0,
-     "n": 1
-    },
     "delivery": {
-     "nome": "Delivery e restaurante",
+     "nome": "Restaurantes e delivery",
      "gasto": 105.3,
      "parcelas": 0.0,
      "teto": 250.0,
      "acima": 0.0,
      "n": 3
+    },
+    "conveniencia": {
+     "nome": "Lanches e café",
+     "gasto": 17.93,
+     "parcelas": 0.0,
+     "teto": 100.0,
+     "acima": 0.0,
+     "n": 1
     },
     "remedios": {
      "nome": "Remédios",
@@ -1306,7 +1226,7 @@
      "n": 1
     },
     "consultas": {
-     "nome": "Consultas e terapia",
+     "nome": "Consultas e exames",
      "gasto": 0.0,
      "parcelas": 0.0,
      "teto": null,
@@ -1314,23 +1234,15 @@
      "n": 0
     },
     "academia": {
-     "nome": "Academia",
+     "nome": "Academia e esportes",
      "gasto": 90.0,
      "parcelas": 0.0,
      "teto": 90.0,
      "acima": 0.0,
      "n": 1
     },
-    "saude-outros": {
-     "nome": "Saúde (outros)",
-     "gasto": 0.0,
-     "parcelas": 0.0,
-     "teto": null,
-     "acima": 0.0,
-     "n": 0
-    },
     "app-transporte": {
-     "nome": "App (Uber/99)",
+     "nome": "Transporte por app",
      "gasto": 66.22,
      "parcelas": 0.0,
      "teto": 150.0,
@@ -1338,10 +1250,18 @@
      "n": 3
     },
     "onibus": {
-     "nome": "Ônibus e combustível",
+     "nome": "Transporte público e combustível",
      "gasto": 0.0,
      "parcelas": 0.0,
      "teto": 80.0,
+     "acima": 0.0,
+     "n": 0
+    },
+    "educacao": {
+     "nome": "Cursos e material",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
      "acima": 0.0,
      "n": 0
     },
@@ -1353,11 +1273,11 @@
      "acima": 0.0,
      "n": 2
     },
-    "ferramentas": {
-     "nome": "Ferramentas de trabalho",
+    "vestuario": {
+     "nome": "Roupas e calçados",
      "gasto": 0.0,
      "parcelas": 0.0,
-     "teto": null,
+     "teto": 150.0,
      "acima": 0.0,
      "n": 0
     },
@@ -1369,16 +1289,8 @@
      "acima": 0.0,
      "n": 1
     },
-    "vestuario": {
-     "nome": "Vestuário e imagem",
-     "gasto": 0.0,
-     "parcelas": 0.0,
-     "teto": 150.0,
-     "acima": 0.0,
-     "n": 0
-    },
     "lazer": {
-     "nome": "Lazer e rolê",
+     "nome": "Lazer e passeios",
      "gasto": 35.84,
      "parcelas": 0.0,
      "teto": 200.0,
@@ -1386,15 +1298,7 @@
      "n": 1
     },
     "viagem": {
-     "nome": "Viagem",
-     "gasto": 0.0,
-     "parcelas": 0.0,
-     "teto": null,
-     "acima": 0.0,
-     "n": 0
-    },
-    "hobbies": {
-     "nome": "Hobbies",
+     "nome": "Viagens",
      "gasto": 0.0,
      "parcelas": 0.0,
      "teto": null,
@@ -1410,7 +1314,7 @@
      "n": 0
     },
     "familia": {
-     "nome": "Família e presentes",
+     "nome": "Presentes e família",
      "gasto": 0.0,
      "parcelas": 0.0,
      "teto": null,
@@ -1643,7 +1547,7 @@
      "n": 1
     },
     "contas-casa": {
-     "nome": "Contas da casa (luz, gás, internet)",
+     "nome": "Contas da casa (luz, água, gás, internet)",
      "gasto": 91.7,
      "parcelas": 0.0,
      "teto": 150.0,
@@ -1651,7 +1555,7 @@
      "n": 1
     },
     "casa-moveis": {
-     "nome": "Casa e móveis",
+     "nome": "Casa e manutenção",
      "gasto": 0.0,
      "parcelas": 0.0,
      "teto": null,
@@ -1659,36 +1563,28 @@
      "n": 0
     },
     "mercado": {
-     "nome": "Mercado planejado",
+     "nome": "Mercado",
      "gasto": 406.13,
      "parcelas": 0.0,
      "teto": 600.0,
      "acima": 0.0,
      "n": 3
     },
-    "ru": {
-     "nome": "RU (dias de aula)",
-     "gasto": 0.0,
-     "parcelas": 0.0,
-     "teto": null,
-     "acima": 0.0,
-     "n": 0
-    },
-    "conveniencia": {
-     "nome": "Conveniência e lanches",
-     "gasto": 17.93,
-     "parcelas": 0.0,
-     "teto": 100.0,
-     "acima": 0.0,
-     "n": 1
-    },
     "delivery": {
-     "nome": "Delivery e restaurante",
+     "nome": "Restaurantes e delivery",
      "gasto": 105.3,
      "parcelas": 0.0,
      "teto": 250.0,
      "acima": 0.0,
      "n": 3
+    },
+    "conveniencia": {
+     "nome": "Lanches e café",
+     "gasto": 17.93,
+     "parcelas": 0.0,
+     "teto": 100.0,
+     "acima": 0.0,
+     "n": 1
     },
     "remedios": {
      "nome": "Remédios",
@@ -1699,7 +1595,7 @@
      "n": 1
     },
     "consultas": {
-     "nome": "Consultas e terapia",
+     "nome": "Consultas e exames",
      "gasto": 0.0,
      "parcelas": 0.0,
      "teto": null,
@@ -1707,23 +1603,15 @@
      "n": 0
     },
     "academia": {
-     "nome": "Academia",
+     "nome": "Academia e esportes",
      "gasto": 90.0,
      "parcelas": 0.0,
      "teto": 90.0,
      "acima": 0.0,
      "n": 1
     },
-    "saude-outros": {
-     "nome": "Saúde (outros)",
-     "gasto": 0.0,
-     "parcelas": 0.0,
-     "teto": null,
-     "acima": 0.0,
-     "n": 0
-    },
     "app-transporte": {
-     "nome": "App (Uber/99)",
+     "nome": "Transporte por app",
      "gasto": 66.22,
      "parcelas": 0.0,
      "teto": 150.0,
@@ -1731,10 +1619,18 @@
      "n": 3
     },
     "onibus": {
-     "nome": "Ônibus e combustível",
+     "nome": "Transporte público e combustível",
      "gasto": 0.0,
      "parcelas": 0.0,
      "teto": 80.0,
+     "acima": 0.0,
+     "n": 0
+    },
+    "educacao": {
+     "nome": "Cursos e material",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
      "acima": 0.0,
      "n": 0
     },
@@ -1746,13 +1642,13 @@
      "acima": 0.0,
      "n": 2
     },
-    "ferramentas": {
-     "nome": "Ferramentas de trabalho",
-     "gasto": 0.0,
+    "vestuario": {
+     "nome": "Roupas e calçados",
+     "gasto": 89.9,
      "parcelas": 0.0,
-     "teto": null,
+     "teto": 150.0,
      "acima": 0.0,
-     "n": 0
+     "n": 1
     },
     "eletronicos": {
      "nome": "Eletrônicos",
@@ -1762,16 +1658,8 @@
      "acima": 0.0,
      "n": 1
     },
-    "vestuario": {
-     "nome": "Vestuário e imagem",
-     "gasto": 89.9,
-     "parcelas": 0.0,
-     "teto": 150.0,
-     "acima": 0.0,
-     "n": 1
-    },
     "lazer": {
-     "nome": "Lazer e rolê",
+     "nome": "Lazer e passeios",
      "gasto": 35.84,
      "parcelas": 0.0,
      "teto": 200.0,
@@ -1779,15 +1667,7 @@
      "n": 1
     },
     "viagem": {
-     "nome": "Viagem",
-     "gasto": 0.0,
-     "parcelas": 0.0,
-     "teto": null,
-     "acima": 0.0,
-     "n": 0
-    },
-    "hobbies": {
-     "nome": "Hobbies",
+     "nome": "Viagens",
      "gasto": 0.0,
      "parcelas": 0.0,
      "teto": null,
@@ -1803,7 +1683,7 @@
      "n": 0
     },
     "familia": {
-     "nome": "Família e presentes",
+     "nome": "Presentes e família",
      "gasto": 0.0,
      "parcelas": 0.0,
      "teto": null,
@@ -2042,7 +1922,7 @@
      "n": 1
     },
     "contas-casa": {
-     "nome": "Contas da casa (luz, gás, internet)",
+     "nome": "Contas da casa (luz, água, gás, internet)",
      "gasto": 91.7,
      "parcelas": 0.0,
      "teto": 150.0,
@@ -2050,7 +1930,7 @@
      "n": 1
     },
     "casa-moveis": {
-     "nome": "Casa e móveis",
+     "nome": "Casa e manutenção",
      "gasto": 0.0,
      "parcelas": 0.0,
      "teto": null,
@@ -2058,36 +1938,28 @@
      "n": 0
     },
     "mercado": {
-     "nome": "Mercado planejado",
+     "nome": "Mercado",
      "gasto": 406.13,
      "parcelas": 0.0,
      "teto": 600.0,
      "acima": 0.0,
      "n": 3
     },
-    "ru": {
-     "nome": "RU (dias de aula)",
-     "gasto": 0.0,
-     "parcelas": 0.0,
-     "teto": null,
-     "acima": 0.0,
-     "n": 0
-    },
-    "conveniencia": {
-     "nome": "Conveniência e lanches",
-     "gasto": 17.93,
-     "parcelas": 0.0,
-     "teto": 100.0,
-     "acima": 0.0,
-     "n": 1
-    },
     "delivery": {
-     "nome": "Delivery e restaurante",
+     "nome": "Restaurantes e delivery",
      "gasto": 105.3,
      "parcelas": 0.0,
      "teto": 250.0,
      "acima": 0.0,
      "n": 3
+    },
+    "conveniencia": {
+     "nome": "Lanches e café",
+     "gasto": 17.93,
+     "parcelas": 0.0,
+     "teto": 100.0,
+     "acima": 0.0,
+     "n": 1
     },
     "remedios": {
      "nome": "Remédios",
@@ -2098,7 +1970,7 @@
      "n": 1
     },
     "consultas": {
-     "nome": "Consultas e terapia",
+     "nome": "Consultas e exames",
      "gasto": 0.0,
      "parcelas": 0.0,
      "teto": null,
@@ -2106,23 +1978,15 @@
      "n": 0
     },
     "academia": {
-     "nome": "Academia",
+     "nome": "Academia e esportes",
      "gasto": 90.0,
      "parcelas": 0.0,
      "teto": 90.0,
      "acima": 0.0,
      "n": 1
     },
-    "saude-outros": {
-     "nome": "Saúde (outros)",
-     "gasto": 0.0,
-     "parcelas": 0.0,
-     "teto": null,
-     "acima": 0.0,
-     "n": 0
-    },
     "app-transporte": {
-     "nome": "App (Uber/99)",
+     "nome": "Transporte por app",
      "gasto": 66.22,
      "parcelas": 0.0,
      "teto": 150.0,
@@ -2130,10 +1994,18 @@
      "n": 3
     },
     "onibus": {
-     "nome": "Ônibus e combustível",
+     "nome": "Transporte público e combustível",
      "gasto": 0.0,
      "parcelas": 0.0,
      "teto": 80.0,
+     "acima": 0.0,
+     "n": 0
+    },
+    "educacao": {
+     "nome": "Cursos e material",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
      "acima": 0.0,
      "n": 0
     },
@@ -2145,13 +2017,13 @@
      "acima": 0.0,
      "n": 2
     },
-    "ferramentas": {
-     "nome": "Ferramentas de trabalho",
-     "gasto": 0.0,
+    "vestuario": {
+     "nome": "Roupas e calçados",
+     "gasto": 89.9,
      "parcelas": 0.0,
-     "teto": null,
+     "teto": 150.0,
      "acima": 0.0,
-     "n": 0
+     "n": 1
     },
     "eletronicos": {
      "nome": "Eletrônicos",
@@ -2161,16 +2033,8 @@
      "acima": 0.0,
      "n": 1
     },
-    "vestuario": {
-     "nome": "Vestuário e imagem",
-     "gasto": 89.9,
-     "parcelas": 0.0,
-     "teto": 150.0,
-     "acima": 0.0,
-     "n": 1
-    },
     "lazer": {
-     "nome": "Lazer e rolê",
+     "nome": "Lazer e passeios",
      "gasto": 35.84,
      "parcelas": 0.0,
      "teto": 200.0,
@@ -2178,15 +2042,7 @@
      "n": 1
     },
     "viagem": {
-     "nome": "Viagem",
-     "gasto": 0.0,
-     "parcelas": 0.0,
-     "teto": null,
-     "acima": 0.0,
-     "n": 0
-    },
-    "hobbies": {
-     "nome": "Hobbies",
+     "nome": "Viagens",
      "gasto": 0.0,
      "parcelas": 0.0,
      "teto": null,
@@ -2202,7 +2058,7 @@
      "n": 0
     },
     "familia": {
-     "nome": "Família e presentes",
+     "nome": "Presentes e família",
      "gasto": 0.0,
      "parcelas": 0.0,
      "teto": null,
@@ -2435,7 +2291,7 @@
      "n": 1
     },
     "contas-casa": {
-     "nome": "Contas da casa (luz, gás, internet)",
+     "nome": "Contas da casa (luz, água, gás, internet)",
      "gasto": 91.7,
      "parcelas": 0.0,
      "teto": 150.0,
@@ -2443,7 +2299,7 @@
      "n": 1
     },
     "casa-moveis": {
-     "nome": "Casa e móveis",
+     "nome": "Casa e manutenção",
      "gasto": 0.0,
      "parcelas": 0.0,
      "teto": null,
@@ -2451,36 +2307,28 @@
      "n": 0
     },
     "mercado": {
-     "nome": "Mercado planejado",
+     "nome": "Mercado",
      "gasto": 468.43,
      "parcelas": 0.0,
      "teto": 600.0,
      "acima": 0.0,
      "n": 4
     },
-    "ru": {
-     "nome": "RU (dias de aula)",
-     "gasto": 0.0,
-     "parcelas": 0.0,
-     "teto": null,
-     "acima": 0.0,
-     "n": 0
-    },
-    "conveniencia": {
-     "nome": "Conveniência e lanches",
-     "gasto": 17.93,
-     "parcelas": 0.0,
-     "teto": 100.0,
-     "acima": 0.0,
-     "n": 1
-    },
     "delivery": {
-     "nome": "Delivery e restaurante",
+     "nome": "Restaurantes e delivery",
      "gasto": 105.3,
      "parcelas": 0.0,
      "teto": 250.0,
      "acima": 0.0,
      "n": 3
+    },
+    "conveniencia": {
+     "nome": "Lanches e café",
+     "gasto": 17.93,
+     "parcelas": 0.0,
+     "teto": 100.0,
+     "acima": 0.0,
+     "n": 1
     },
     "remedios": {
      "nome": "Remédios",
@@ -2491,7 +2339,7 @@
      "n": 1
     },
     "consultas": {
-     "nome": "Consultas e terapia",
+     "nome": "Consultas e exames",
      "gasto": 0.0,
      "parcelas": 0.0,
      "teto": null,
@@ -2499,23 +2347,15 @@
      "n": 0
     },
     "academia": {
-     "nome": "Academia",
+     "nome": "Academia e esportes",
      "gasto": 90.0,
      "parcelas": 0.0,
      "teto": 90.0,
      "acima": 0.0,
      "n": 1
     },
-    "saude-outros": {
-     "nome": "Saúde (outros)",
-     "gasto": 0.0,
-     "parcelas": 0.0,
-     "teto": null,
-     "acima": 0.0,
-     "n": 0
-    },
     "app-transporte": {
-     "nome": "App (Uber/99)",
+     "nome": "Transporte por app",
      "gasto": 66.22,
      "parcelas": 0.0,
      "teto": 150.0,
@@ -2523,10 +2363,18 @@
      "n": 3
     },
     "onibus": {
-     "nome": "Ônibus e combustível",
+     "nome": "Transporte público e combustível",
      "gasto": 0.0,
      "parcelas": 0.0,
      "teto": 80.0,
+     "acima": 0.0,
+     "n": 0
+    },
+    "educacao": {
+     "nome": "Cursos e material",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
      "acima": 0.0,
      "n": 0
     },
@@ -2538,13 +2386,13 @@
      "acima": 0.0,
      "n": 2
     },
-    "ferramentas": {
-     "nome": "Ferramentas de trabalho",
-     "gasto": 0.0,
+    "vestuario": {
+     "nome": "Roupas e calçados",
+     "gasto": 89.9,
      "parcelas": 0.0,
-     "teto": null,
+     "teto": 150.0,
      "acima": 0.0,
-     "n": 0
+     "n": 1
     },
     "eletronicos": {
      "nome": "Eletrônicos",
@@ -2554,16 +2402,8 @@
      "acima": 0.0,
      "n": 1
     },
-    "vestuario": {
-     "nome": "Vestuário e imagem",
-     "gasto": 89.9,
-     "parcelas": 0.0,
-     "teto": 150.0,
-     "acima": 0.0,
-     "n": 1
-    },
     "lazer": {
-     "nome": "Lazer e rolê",
+     "nome": "Lazer e passeios",
      "gasto": 35.84,
      "parcelas": 0.0,
      "teto": 200.0,
@@ -2571,15 +2411,7 @@
      "n": 1
     },
     "viagem": {
-     "nome": "Viagem",
-     "gasto": 0.0,
-     "parcelas": 0.0,
-     "teto": null,
-     "acima": 0.0,
-     "n": 0
-    },
-    "hobbies": {
-     "nome": "Hobbies",
+     "nome": "Viagens",
      "gasto": 0.0,
      "parcelas": 0.0,
      "teto": null,
@@ -2595,7 +2427,7 @@
      "n": 0
     },
     "familia": {
-     "nome": "Família e presentes",
+     "nome": "Presentes e família",
      "gasto": 0.0,
      "parcelas": 0.0,
      "teto": null,
@@ -2852,7 +2684,7 @@
      "n": 1
     },
     "contas-casa": {
-     "nome": "Contas da casa (luz, gás, internet)",
+     "nome": "Contas da casa (luz, água, gás, internet)",
      "gasto": 91.7,
      "parcelas": 0.0,
      "teto": 150.0,
@@ -2860,7 +2692,7 @@
      "n": 1
     },
     "casa-moveis": {
-     "nome": "Casa e móveis",
+     "nome": "Casa e manutenção",
      "gasto": 0.0,
      "parcelas": 0.0,
      "teto": null,
@@ -2868,36 +2700,28 @@
      "n": 0
     },
     "mercado": {
-     "nome": "Mercado planejado",
+     "nome": "Mercado",
      "gasto": 468.43,
      "parcelas": 0.0,
      "teto": 600.0,
      "acima": 0.0,
      "n": 4
     },
-    "ru": {
-     "nome": "RU (dias de aula)",
-     "gasto": 0.0,
-     "parcelas": 0.0,
-     "teto": null,
-     "acima": 0.0,
-     "n": 0
-    },
-    "conveniencia": {
-     "nome": "Conveniência e lanches",
-     "gasto": 17.93,
-     "parcelas": 0.0,
-     "teto": 100.0,
-     "acima": 0.0,
-     "n": 1
-    },
     "delivery": {
-     "nome": "Delivery e restaurante",
+     "nome": "Restaurantes e delivery",
      "gasto": 105.3,
      "parcelas": 0.0,
      "teto": 250.0,
      "acima": 0.0,
      "n": 3
+    },
+    "conveniencia": {
+     "nome": "Lanches e café",
+     "gasto": 17.93,
+     "parcelas": 0.0,
+     "teto": 100.0,
+     "acima": 0.0,
+     "n": 1
     },
     "remedios": {
      "nome": "Remédios",
@@ -2908,7 +2732,7 @@
      "n": 1
     },
     "consultas": {
-     "nome": "Consultas e terapia",
+     "nome": "Consultas e exames",
      "gasto": 0.0,
      "parcelas": 0.0,
      "teto": null,
@@ -2916,23 +2740,15 @@
      "n": 0
     },
     "academia": {
-     "nome": "Academia",
+     "nome": "Academia e esportes",
      "gasto": 90.0,
      "parcelas": 0.0,
      "teto": 90.0,
      "acima": 0.0,
      "n": 1
     },
-    "saude-outros": {
-     "nome": "Saúde (outros)",
-     "gasto": 0.0,
-     "parcelas": 0.0,
-     "teto": null,
-     "acima": 0.0,
-     "n": 0
-    },
     "app-transporte": {
-     "nome": "App (Uber/99)",
+     "nome": "Transporte por app",
      "gasto": 66.22,
      "parcelas": 0.0,
      "teto": 150.0,
@@ -2940,10 +2756,18 @@
      "n": 3
     },
     "onibus": {
-     "nome": "Ônibus e combustível",
+     "nome": "Transporte público e combustível",
      "gasto": 0.0,
      "parcelas": 0.0,
      "teto": 80.0,
+     "acima": 0.0,
+     "n": 0
+    },
+    "educacao": {
+     "nome": "Cursos e material",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
      "acima": 0.0,
      "n": 0
     },
@@ -2955,13 +2779,13 @@
      "acima": 0.0,
      "n": 2
     },
-    "ferramentas": {
-     "nome": "Ferramentas de trabalho",
-     "gasto": 0.0,
+    "vestuario": {
+     "nome": "Roupas e calçados",
+     "gasto": 89.9,
      "parcelas": 0.0,
-     "teto": null,
+     "teto": 150.0,
      "acima": 0.0,
-     "n": 0
+     "n": 1
     },
     "eletronicos": {
      "nome": "Eletrônicos",
@@ -2971,16 +2795,8 @@
      "acima": 0.0,
      "n": 1
     },
-    "vestuario": {
-     "nome": "Vestuário e imagem",
-     "gasto": 89.9,
-     "parcelas": 0.0,
-     "teto": 150.0,
-     "acima": 0.0,
-     "n": 1
-    },
     "lazer": {
-     "nome": "Lazer e rolê",
+     "nome": "Lazer e passeios",
      "gasto": 35.84,
      "parcelas": 0.0,
      "teto": 200.0,
@@ -2988,15 +2804,7 @@
      "n": 1
     },
     "viagem": {
-     "nome": "Viagem",
-     "gasto": 0.0,
-     "parcelas": 0.0,
-     "teto": null,
-     "acima": 0.0,
-     "n": 0
-    },
-    "hobbies": {
-     "nome": "Hobbies",
+     "nome": "Viagens",
      "gasto": 0.0,
      "parcelas": 0.0,
      "teto": null,
@@ -3012,7 +2820,7 @@
      "n": 0
     },
     "familia": {
-     "nome": "Família e presentes",
+     "nome": "Presentes e família",
      "gasto": 0.0,
      "parcelas": 0.0,
      "teto": null,
@@ -3245,7 +3053,7 @@
      "n": 1
     },
     "contas-casa": {
-     "nome": "Contas da casa (luz, gás, internet)",
+     "nome": "Contas da casa (luz, água, gás, internet)",
      "gasto": 91.7,
      "parcelas": 0.0,
      "teto": 150.0,
@@ -3253,7 +3061,7 @@
      "n": 1
     },
     "casa-moveis": {
-     "nome": "Casa e móveis",
+     "nome": "Casa e manutenção",
      "gasto": 0.0,
      "parcelas": 0.0,
      "teto": null,
@@ -3261,36 +3069,28 @@
      "n": 0
     },
     "mercado": {
-     "nome": "Mercado planejado",
+     "nome": "Mercado",
      "gasto": 468.43,
      "parcelas": 0.0,
      "teto": 600.0,
      "acima": 0.0,
      "n": 4
     },
-    "ru": {
-     "nome": "RU (dias de aula)",
-     "gasto": 0.0,
-     "parcelas": 0.0,
-     "teto": null,
-     "acima": 0.0,
-     "n": 0
-    },
-    "conveniencia": {
-     "nome": "Conveniência e lanches",
-     "gasto": 17.93,
-     "parcelas": 0.0,
-     "teto": 100.0,
-     "acima": 0.0,
-     "n": 1
-    },
     "delivery": {
-     "nome": "Delivery e restaurante",
+     "nome": "Restaurantes e delivery",
      "gasto": 105.3,
      "parcelas": 0.0,
      "teto": 250.0,
      "acima": 0.0,
      "n": 3
+    },
+    "conveniencia": {
+     "nome": "Lanches e café",
+     "gasto": 17.93,
+     "parcelas": 0.0,
+     "teto": 100.0,
+     "acima": 0.0,
+     "n": 1
     },
     "remedios": {
      "nome": "Remédios",
@@ -3301,7 +3101,7 @@
      "n": 1
     },
     "consultas": {
-     "nome": "Consultas e terapia",
+     "nome": "Consultas e exames",
      "gasto": 0.0,
      "parcelas": 0.0,
      "teto": null,
@@ -3309,23 +3109,15 @@
      "n": 0
     },
     "academia": {
-     "nome": "Academia",
+     "nome": "Academia e esportes",
      "gasto": 90.0,
      "parcelas": 0.0,
      "teto": 90.0,
      "acima": 0.0,
      "n": 1
     },
-    "saude-outros": {
-     "nome": "Saúde (outros)",
-     "gasto": 0.0,
-     "parcelas": 0.0,
-     "teto": null,
-     "acima": 0.0,
-     "n": 0
-    },
     "app-transporte": {
-     "nome": "App (Uber/99)",
+     "nome": "Transporte por app",
      "gasto": 66.22,
      "parcelas": 0.0,
      "teto": 150.0,
@@ -3333,10 +3125,18 @@
      "n": 3
     },
     "onibus": {
-     "nome": "Ônibus e combustível",
+     "nome": "Transporte público e combustível",
      "gasto": 0.0,
      "parcelas": 0.0,
      "teto": 80.0,
+     "acima": 0.0,
+     "n": 0
+    },
+    "educacao": {
+     "nome": "Cursos e material",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
      "acima": 0.0,
      "n": 0
     },
@@ -3348,13 +3148,13 @@
      "acima": 0.0,
      "n": 2
     },
-    "ferramentas": {
-     "nome": "Ferramentas de trabalho",
-     "gasto": 0.0,
+    "vestuario": {
+     "nome": "Roupas e calçados",
+     "gasto": 89.9,
      "parcelas": 0.0,
-     "teto": null,
+     "teto": 150.0,
      "acima": 0.0,
-     "n": 0
+     "n": 1
     },
     "eletronicos": {
      "nome": "Eletrônicos",
@@ -3364,16 +3164,8 @@
      "acima": 0.0,
      "n": 1
     },
-    "vestuario": {
-     "nome": "Vestuário e imagem",
-     "gasto": 89.9,
-     "parcelas": 0.0,
-     "teto": 150.0,
-     "acima": 0.0,
-     "n": 1
-    },
     "lazer": {
-     "nome": "Lazer e rolê",
+     "nome": "Lazer e passeios",
      "gasto": 35.84,
      "parcelas": 0.0,
      "teto": 200.0,
@@ -3381,15 +3173,7 @@
      "n": 1
     },
     "viagem": {
-     "nome": "Viagem",
-     "gasto": 0.0,
-     "parcelas": 0.0,
-     "teto": null,
-     "acima": 0.0,
-     "n": 0
-    },
-    "hobbies": {
-     "nome": "Hobbies",
+     "nome": "Viagens",
      "gasto": 0.0,
      "parcelas": 0.0,
      "teto": null,
@@ -3405,7 +3189,7 @@
      "n": 0
     },
     "familia": {
-     "nome": "Família e presentes",
+     "nome": "Presentes e família",
      "gasto": 0.0,
      "parcelas": 0.0,
      "teto": null,
@@ -3644,7 +3428,7 @@
      "n": 1
     },
     "contas-casa": {
-     "nome": "Contas da casa (luz, gás, internet)",
+     "nome": "Contas da casa (luz, água, gás, internet)",
      "gasto": 91.7,
      "parcelas": 0.0,
      "teto": 150.0,
@@ -3652,7 +3436,7 @@
      "n": 1
     },
     "casa-moveis": {
-     "nome": "Casa e móveis",
+     "nome": "Casa e manutenção",
      "gasto": 0.0,
      "parcelas": 0.0,
      "teto": null,
@@ -3660,36 +3444,28 @@
      "n": 0
     },
     "mercado": {
-     "nome": "Mercado planejado",
+     "nome": "Mercado",
      "gasto": 468.43,
      "parcelas": 0.0,
      "teto": 600.0,
      "acima": 0.0,
      "n": 4
     },
-    "ru": {
-     "nome": "RU (dias de aula)",
-     "gasto": 0.0,
-     "parcelas": 0.0,
-     "teto": null,
-     "acima": 0.0,
-     "n": 0
-    },
-    "conveniencia": {
-     "nome": "Conveniência e lanches",
-     "gasto": 17.93,
-     "parcelas": 0.0,
-     "teto": 100.0,
-     "acima": 0.0,
-     "n": 1
-    },
     "delivery": {
-     "nome": "Delivery e restaurante",
+     "nome": "Restaurantes e delivery",
      "gasto": 105.3,
      "parcelas": 0.0,
      "teto": 250.0,
      "acima": 0.0,
      "n": 3
+    },
+    "conveniencia": {
+     "nome": "Lanches e café",
+     "gasto": 17.93,
+     "parcelas": 0.0,
+     "teto": 100.0,
+     "acima": 0.0,
+     "n": 1
     },
     "remedios": {
      "nome": "Remédios",
@@ -3700,7 +3476,7 @@
      "n": 1
     },
     "consultas": {
-     "nome": "Consultas e terapia",
+     "nome": "Consultas e exames",
      "gasto": 0.0,
      "parcelas": 0.0,
      "teto": null,
@@ -3708,23 +3484,15 @@
      "n": 0
     },
     "academia": {
-     "nome": "Academia",
+     "nome": "Academia e esportes",
      "gasto": 90.0,
      "parcelas": 0.0,
      "teto": 90.0,
      "acima": 0.0,
      "n": 1
     },
-    "saude-outros": {
-     "nome": "Saúde (outros)",
-     "gasto": 0.0,
-     "parcelas": 0.0,
-     "teto": null,
-     "acima": 0.0,
-     "n": 0
-    },
     "app-transporte": {
-     "nome": "App (Uber/99)",
+     "nome": "Transporte por app",
      "gasto": 66.22,
      "parcelas": 0.0,
      "teto": 150.0,
@@ -3732,10 +3500,18 @@
      "n": 3
     },
     "onibus": {
-     "nome": "Ônibus e combustível",
+     "nome": "Transporte público e combustível",
      "gasto": 0.0,
      "parcelas": 0.0,
      "teto": 80.0,
+     "acima": 0.0,
+     "n": 0
+    },
+    "educacao": {
+     "nome": "Cursos e material",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
      "acima": 0.0,
      "n": 0
     },
@@ -3747,13 +3523,13 @@
      "acima": 0.0,
      "n": 2
     },
-    "ferramentas": {
-     "nome": "Ferramentas de trabalho",
-     "gasto": 0.0,
+    "vestuario": {
+     "nome": "Roupas e calçados",
+     "gasto": 89.9,
      "parcelas": 0.0,
-     "teto": null,
+     "teto": 150.0,
      "acima": 0.0,
-     "n": 0
+     "n": 1
     },
     "eletronicos": {
      "nome": "Eletrônicos",
@@ -3763,16 +3539,8 @@
      "acima": 0.0,
      "n": 1
     },
-    "vestuario": {
-     "nome": "Vestuário e imagem",
-     "gasto": 89.9,
-     "parcelas": 0.0,
-     "teto": 150.0,
-     "acima": 0.0,
-     "n": 1
-    },
     "lazer": {
-     "nome": "Lazer e rolê",
+     "nome": "Lazer e passeios",
      "gasto": 35.84,
      "parcelas": 0.0,
      "teto": 200.0,
@@ -3780,15 +3548,7 @@
      "n": 1
     },
     "viagem": {
-     "nome": "Viagem",
-     "gasto": 0.0,
-     "parcelas": 0.0,
-     "teto": null,
-     "acima": 0.0,
-     "n": 0
-    },
-    "hobbies": {
-     "nome": "Hobbies",
+     "nome": "Viagens",
      "gasto": 0.0,
      "parcelas": 0.0,
      "teto": null,
@@ -3804,7 +3564,7 @@
      "n": 0
     },
     "familia": {
-     "nome": "Família e presentes",
+     "nome": "Presentes e família",
      "gasto": 0.0,
      "parcelas": 0.0,
      "teto": null,
@@ -4037,7 +3797,7 @@
      "n": 1
     },
     "contas-casa": {
-     "nome": "Contas da casa (luz, gás, internet)",
+     "nome": "Contas da casa (luz, água, gás, internet)",
      "gasto": 91.7,
      "parcelas": 0.0,
      "teto": 150.0,
@@ -4045,7 +3805,7 @@
      "n": 1
     },
     "casa-moveis": {
-     "nome": "Casa e móveis",
+     "nome": "Casa e manutenção",
      "gasto": 0.0,
      "parcelas": 0.0,
      "teto": null,
@@ -4053,36 +3813,28 @@
      "n": 0
     },
     "mercado": {
-     "nome": "Mercado planejado",
+     "nome": "Mercado",
      "gasto": 468.43,
      "parcelas": 0.0,
      "teto": 600.0,
      "acima": 0.0,
      "n": 4
     },
-    "ru": {
-     "nome": "RU (dias de aula)",
-     "gasto": 0.0,
-     "parcelas": 0.0,
-     "teto": null,
-     "acima": 0.0,
-     "n": 0
-    },
-    "conveniencia": {
-     "nome": "Conveniência e lanches",
-     "gasto": 17.93,
-     "parcelas": 0.0,
-     "teto": 100.0,
-     "acima": 0.0,
-     "n": 1
-    },
     "delivery": {
-     "nome": "Delivery e restaurante",
+     "nome": "Restaurantes e delivery",
      "gasto": 105.3,
      "parcelas": 0.0,
      "teto": 250.0,
      "acima": 0.0,
      "n": 3
+    },
+    "conveniencia": {
+     "nome": "Lanches e café",
+     "gasto": 17.93,
+     "parcelas": 0.0,
+     "teto": 100.0,
+     "acima": 0.0,
+     "n": 1
     },
     "remedios": {
      "nome": "Remédios",
@@ -4093,7 +3845,7 @@
      "n": 1
     },
     "consultas": {
-     "nome": "Consultas e terapia",
+     "nome": "Consultas e exames",
      "gasto": 0.0,
      "parcelas": 0.0,
      "teto": null,
@@ -4101,23 +3853,15 @@
      "n": 0
     },
     "academia": {
-     "nome": "Academia",
+     "nome": "Academia e esportes",
      "gasto": 90.0,
      "parcelas": 0.0,
      "teto": 90.0,
      "acima": 0.0,
      "n": 1
     },
-    "saude-outros": {
-     "nome": "Saúde (outros)",
-     "gasto": 0.0,
-     "parcelas": 0.0,
-     "teto": null,
-     "acima": 0.0,
-     "n": 0
-    },
     "app-transporte": {
-     "nome": "App (Uber/99)",
+     "nome": "Transporte por app",
      "gasto": 89.32,
      "parcelas": 0.0,
      "teto": 150.0,
@@ -4125,10 +3869,18 @@
      "n": 4
     },
     "onibus": {
-     "nome": "Ônibus e combustível",
+     "nome": "Transporte público e combustível",
      "gasto": 0.0,
      "parcelas": 0.0,
      "teto": 80.0,
+     "acima": 0.0,
+     "n": 0
+    },
+    "educacao": {
+     "nome": "Cursos e material",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
      "acima": 0.0,
      "n": 0
     },
@@ -4140,13 +3892,13 @@
      "acima": 0.0,
      "n": 2
     },
-    "ferramentas": {
-     "nome": "Ferramentas de trabalho",
-     "gasto": 0.0,
+    "vestuario": {
+     "nome": "Roupas e calçados",
+     "gasto": 89.9,
      "parcelas": 0.0,
-     "teto": null,
+     "teto": 150.0,
      "acima": 0.0,
-     "n": 0
+     "n": 1
     },
     "eletronicos": {
      "nome": "Eletrônicos",
@@ -4156,16 +3908,8 @@
      "acima": 0.0,
      "n": 1
     },
-    "vestuario": {
-     "nome": "Vestuário e imagem",
-     "gasto": 89.9,
-     "parcelas": 0.0,
-     "teto": 150.0,
-     "acima": 0.0,
-     "n": 1
-    },
     "lazer": {
-     "nome": "Lazer e rolê",
+     "nome": "Lazer e passeios",
      "gasto": 35.84,
      "parcelas": 0.0,
      "teto": 200.0,
@@ -4173,15 +3917,7 @@
      "n": 1
     },
     "viagem": {
-     "nome": "Viagem",
-     "gasto": 0.0,
-     "parcelas": 0.0,
-     "teto": null,
-     "acima": 0.0,
-     "n": 0
-    },
-    "hobbies": {
-     "nome": "Hobbies",
+     "nome": "Viagens",
      "gasto": 0.0,
      "parcelas": 0.0,
      "teto": null,
@@ -4197,7 +3933,7 @@
      "n": 0
     },
     "familia": {
-     "nome": "Família e presentes",
+     "nome": "Presentes e família",
      "gasto": 0.0,
      "parcelas": 0.0,
      "teto": null,
@@ -4457,7 +4193,7 @@
      "n": 1
     },
     "contas-casa": {
-     "nome": "Contas da casa (luz, gás, internet)",
+     "nome": "Contas da casa (luz, água, gás, internet)",
      "gasto": 91.7,
      "parcelas": 0.0,
      "teto": 150.0,
@@ -4465,7 +4201,7 @@
      "n": 1
     },
     "casa-moveis": {
-     "nome": "Casa e móveis",
+     "nome": "Casa e manutenção",
      "gasto": 0.0,
      "parcelas": 0.0,
      "teto": null,
@@ -4473,36 +4209,28 @@
      "n": 0
     },
     "mercado": {
-     "nome": "Mercado planejado",
+     "nome": "Mercado",
      "gasto": 468.43,
      "parcelas": 0.0,
      "teto": 600.0,
      "acima": 0.0,
      "n": 4
     },
-    "ru": {
-     "nome": "RU (dias de aula)",
-     "gasto": 0.0,
-     "parcelas": 0.0,
-     "teto": null,
-     "acima": 0.0,
-     "n": 0
-    },
-    "conveniencia": {
-     "nome": "Conveniência e lanches",
-     "gasto": 17.93,
-     "parcelas": 0.0,
-     "teto": 100.0,
-     "acima": 0.0,
-     "n": 1
-    },
     "delivery": {
-     "nome": "Delivery e restaurante",
+     "nome": "Restaurantes e delivery",
      "gasto": 105.3,
      "parcelas": 0.0,
      "teto": 250.0,
      "acima": 0.0,
      "n": 3
+    },
+    "conveniencia": {
+     "nome": "Lanches e café",
+     "gasto": 17.93,
+     "parcelas": 0.0,
+     "teto": 100.0,
+     "acima": 0.0,
+     "n": 1
     },
     "remedios": {
      "nome": "Remédios",
@@ -4513,7 +4241,7 @@
      "n": 1
     },
     "consultas": {
-     "nome": "Consultas e terapia",
+     "nome": "Consultas e exames",
      "gasto": 0.0,
      "parcelas": 0.0,
      "teto": null,
@@ -4521,23 +4249,15 @@
      "n": 0
     },
     "academia": {
-     "nome": "Academia",
+     "nome": "Academia e esportes",
      "gasto": 90.0,
      "parcelas": 0.0,
      "teto": 90.0,
      "acima": 0.0,
      "n": 1
     },
-    "saude-outros": {
-     "nome": "Saúde (outros)",
-     "gasto": 0.0,
-     "parcelas": 0.0,
-     "teto": null,
-     "acima": 0.0,
-     "n": 0
-    },
     "app-transporte": {
-     "nome": "App (Uber/99)",
+     "nome": "Transporte por app",
      "gasto": 89.32,
      "parcelas": 0.0,
      "teto": 150.0,
@@ -4545,10 +4265,18 @@
      "n": 4
     },
     "onibus": {
-     "nome": "Ônibus e combustível",
+     "nome": "Transporte público e combustível",
      "gasto": 0.0,
      "parcelas": 0.0,
      "teto": 80.0,
+     "acima": 0.0,
+     "n": 0
+    },
+    "educacao": {
+     "nome": "Cursos e material",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
      "acima": 0.0,
      "n": 0
     },
@@ -4560,13 +4288,13 @@
      "acima": 0.0,
      "n": 2
     },
-    "ferramentas": {
-     "nome": "Ferramentas de trabalho",
-     "gasto": 0.0,
+    "vestuario": {
+     "nome": "Roupas e calçados",
+     "gasto": 89.9,
      "parcelas": 0.0,
-     "teto": null,
+     "teto": 150.0,
      "acima": 0.0,
-     "n": 0
+     "n": 1
     },
     "eletronicos": {
      "nome": "Eletrônicos",
@@ -4576,16 +4304,8 @@
      "acima": 0.0,
      "n": 1
     },
-    "vestuario": {
-     "nome": "Vestuário e imagem",
-     "gasto": 89.9,
-     "parcelas": 0.0,
-     "teto": 150.0,
-     "acima": 0.0,
-     "n": 1
-    },
     "lazer": {
-     "nome": "Lazer e rolê",
+     "nome": "Lazer e passeios",
      "gasto": 35.84,
      "parcelas": 0.0,
      "teto": 200.0,
@@ -4593,15 +4313,7 @@
      "n": 1
     },
     "viagem": {
-     "nome": "Viagem",
-     "gasto": 0.0,
-     "parcelas": 0.0,
-     "teto": null,
-     "acima": 0.0,
-     "n": 0
-    },
-    "hobbies": {
-     "nome": "Hobbies",
+     "nome": "Viagens",
      "gasto": 0.0,
      "parcelas": 0.0,
      "teto": null,
@@ -4617,7 +4329,7 @@
      "n": 0
     },
     "familia": {
-     "nome": "Família e presentes",
+     "nome": "Presentes e família",
      "gasto": 0.0,
      "parcelas": 0.0,
      "teto": null,
@@ -4864,7 +4576,7 @@
      "n": 1
     },
     "contas-casa": {
-     "nome": "Contas da casa (luz, gás, internet)",
+     "nome": "Contas da casa (luz, água, gás, internet)",
      "gasto": 91.7,
      "parcelas": 0.0,
      "teto": 150.0,
@@ -4872,7 +4584,7 @@
      "n": 1
     },
     "casa-moveis": {
-     "nome": "Casa e móveis",
+     "nome": "Casa e manutenção",
      "gasto": 0.0,
      "parcelas": 0.0,
      "teto": null,
@@ -4880,36 +4592,28 @@
      "n": 0
     },
     "mercado": {
-     "nome": "Mercado planejado",
+     "nome": "Mercado",
      "gasto": 468.43,
      "parcelas": 0.0,
      "teto": 600.0,
      "acima": 0.0,
      "n": 4
     },
-    "ru": {
-     "nome": "RU (dias de aula)",
-     "gasto": 0.0,
-     "parcelas": 0.0,
-     "teto": null,
-     "acima": 0.0,
-     "n": 0
-    },
-    "conveniencia": {
-     "nome": "Conveniência e lanches",
-     "gasto": 17.93,
-     "parcelas": 0.0,
-     "teto": 100.0,
-     "acima": 0.0,
-     "n": 1
-    },
     "delivery": {
-     "nome": "Delivery e restaurante",
+     "nome": "Restaurantes e delivery",
      "gasto": 105.3,
      "parcelas": 0.0,
      "teto": 250.0,
      "acima": 0.0,
      "n": 3
+    },
+    "conveniencia": {
+     "nome": "Lanches e café",
+     "gasto": 17.93,
+     "parcelas": 0.0,
+     "teto": 100.0,
+     "acima": 0.0,
+     "n": 1
     },
     "remedios": {
      "nome": "Remédios",
@@ -4920,7 +4624,7 @@
      "n": 2
     },
     "consultas": {
-     "nome": "Consultas e terapia",
+     "nome": "Consultas e exames",
      "gasto": 0.0,
      "parcelas": 0.0,
      "teto": null,
@@ -4928,23 +4632,15 @@
      "n": 0
     },
     "academia": {
-     "nome": "Academia",
+     "nome": "Academia e esportes",
      "gasto": 90.0,
      "parcelas": 0.0,
      "teto": 90.0,
      "acima": 0.0,
      "n": 1
     },
-    "saude-outros": {
-     "nome": "Saúde (outros)",
-     "gasto": 0.0,
-     "parcelas": 0.0,
-     "teto": null,
-     "acima": 0.0,
-     "n": 0
-    },
     "app-transporte": {
-     "nome": "App (Uber/99)",
+     "nome": "Transporte por app",
      "gasto": 89.32,
      "parcelas": 0.0,
      "teto": 150.0,
@@ -4952,10 +4648,18 @@
      "n": 4
     },
     "onibus": {
-     "nome": "Ônibus e combustível",
+     "nome": "Transporte público e combustível",
      "gasto": 0.0,
      "parcelas": 0.0,
      "teto": 80.0,
+     "acima": 0.0,
+     "n": 0
+    },
+    "educacao": {
+     "nome": "Cursos e material",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
      "acima": 0.0,
      "n": 0
     },
@@ -4967,13 +4671,13 @@
      "acima": 0.0,
      "n": 2
     },
-    "ferramentas": {
-     "nome": "Ferramentas de trabalho",
-     "gasto": 0.0,
+    "vestuario": {
+     "nome": "Roupas e calçados",
+     "gasto": 89.9,
      "parcelas": 0.0,
-     "teto": null,
+     "teto": 150.0,
      "acima": 0.0,
-     "n": 0
+     "n": 1
     },
     "eletronicos": {
      "nome": "Eletrônicos",
@@ -4983,16 +4687,8 @@
      "acima": 0.0,
      "n": 1
     },
-    "vestuario": {
-     "nome": "Vestuário e imagem",
-     "gasto": 89.9,
-     "parcelas": 0.0,
-     "teto": 150.0,
-     "acima": 0.0,
-     "n": 1
-    },
     "lazer": {
-     "nome": "Lazer e rolê",
+     "nome": "Lazer e passeios",
      "gasto": 35.84,
      "parcelas": 0.0,
      "teto": 200.0,
@@ -5000,15 +4696,7 @@
      "n": 1
     },
     "viagem": {
-     "nome": "Viagem",
-     "gasto": 0.0,
-     "parcelas": 0.0,
-     "teto": null,
-     "acima": 0.0,
-     "n": 0
-    },
-    "hobbies": {
-     "nome": "Hobbies",
+     "nome": "Viagens",
      "gasto": 0.0,
      "parcelas": 0.0,
      "teto": null,
@@ -5024,7 +4712,7 @@
      "n": 0
     },
     "familia": {
-     "nome": "Família e presentes",
+     "nome": "Presentes e família",
      "gasto": 0.0,
      "parcelas": 0.0,
      "teto": null,
@@ -5277,7 +4965,7 @@
      "n": 1
     },
     "contas-casa": {
-     "nome": "Contas da casa (luz, gás, internet)",
+     "nome": "Contas da casa (luz, água, gás, internet)",
      "gasto": 91.7,
      "parcelas": 0.0,
      "teto": 150.0,
@@ -5285,7 +4973,7 @@
      "n": 1
     },
     "casa-moveis": {
-     "nome": "Casa e móveis",
+     "nome": "Casa e manutenção",
      "gasto": 0.0,
      "parcelas": 0.0,
      "teto": null,
@@ -5293,36 +4981,28 @@
      "n": 0
     },
     "mercado": {
-     "nome": "Mercado planejado",
+     "nome": "Mercado",
      "gasto": 468.43,
      "parcelas": 0.0,
      "teto": 600.0,
      "acima": 0.0,
      "n": 4
     },
-    "ru": {
-     "nome": "RU (dias de aula)",
-     "gasto": 0.0,
-     "parcelas": 0.0,
-     "teto": null,
-     "acima": 0.0,
-     "n": 0
-    },
-    "conveniencia": {
-     "nome": "Conveniência e lanches",
-     "gasto": 17.93,
-     "parcelas": 0.0,
-     "teto": 100.0,
-     "acima": 0.0,
-     "n": 1
-    },
     "delivery": {
-     "nome": "Delivery e restaurante",
+     "nome": "Restaurantes e delivery",
      "gasto": 105.3,
      "parcelas": 0.0,
      "teto": 250.0,
      "acima": 0.0,
      "n": 3
+    },
+    "conveniencia": {
+     "nome": "Lanches e café",
+     "gasto": 17.93,
+     "parcelas": 0.0,
+     "teto": 100.0,
+     "acima": 0.0,
+     "n": 1
     },
     "remedios": {
      "nome": "Remédios",
@@ -5333,7 +5013,7 @@
      "n": 2
     },
     "consultas": {
-     "nome": "Consultas e terapia",
+     "nome": "Consultas e exames",
      "gasto": 0.0,
      "parcelas": 0.0,
      "teto": null,
@@ -5341,23 +5021,15 @@
      "n": 0
     },
     "academia": {
-     "nome": "Academia",
+     "nome": "Academia e esportes",
      "gasto": 90.0,
      "parcelas": 0.0,
      "teto": 90.0,
      "acima": 0.0,
      "n": 1
     },
-    "saude-outros": {
-     "nome": "Saúde (outros)",
-     "gasto": 0.0,
-     "parcelas": 0.0,
-     "teto": null,
-     "acima": 0.0,
-     "n": 0
-    },
     "app-transporte": {
-     "nome": "App (Uber/99)",
+     "nome": "Transporte por app",
      "gasto": 89.32,
      "parcelas": 0.0,
      "teto": 150.0,
@@ -5365,10 +5037,18 @@
      "n": 4
     },
     "onibus": {
-     "nome": "Ônibus e combustível",
+     "nome": "Transporte público e combustível",
      "gasto": 0.0,
      "parcelas": 0.0,
      "teto": 80.0,
+     "acima": 0.0,
+     "n": 0
+    },
+    "educacao": {
+     "nome": "Cursos e material",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
      "acima": 0.0,
      "n": 0
     },
@@ -5380,13 +5060,13 @@
      "acima": 0.0,
      "n": 2
     },
-    "ferramentas": {
-     "nome": "Ferramentas de trabalho",
-     "gasto": 0.0,
+    "vestuario": {
+     "nome": "Roupas e calçados",
+     "gasto": 89.9,
      "parcelas": 0.0,
-     "teto": null,
+     "teto": 150.0,
      "acima": 0.0,
-     "n": 0
+     "n": 1
     },
     "eletronicos": {
      "nome": "Eletrônicos",
@@ -5396,16 +5076,8 @@
      "acima": 0.0,
      "n": 1
     },
-    "vestuario": {
-     "nome": "Vestuário e imagem",
-     "gasto": 89.9,
-     "parcelas": 0.0,
-     "teto": 150.0,
-     "acima": 0.0,
-     "n": 1
-    },
     "lazer": {
-     "nome": "Lazer e rolê",
+     "nome": "Lazer e passeios",
      "gasto": 35.84,
      "parcelas": 0.0,
      "teto": 200.0,
@@ -5413,15 +5085,7 @@
      "n": 1
     },
     "viagem": {
-     "nome": "Viagem",
-     "gasto": 0.0,
-     "parcelas": 0.0,
-     "teto": null,
-     "acima": 0.0,
-     "n": 0
-    },
-    "hobbies": {
-     "nome": "Hobbies",
+     "nome": "Viagens",
      "gasto": 0.0,
      "parcelas": 0.0,
      "teto": null,
@@ -5437,7 +5101,7 @@
      "n": 0
     },
     "familia": {
-     "nome": "Família e presentes",
+     "nome": "Presentes e família",
      "gasto": 0.0,
      "parcelas": 0.0,
      "teto": null,
@@ -5684,7 +5348,7 @@
      "n": 1
     },
     "contas-casa": {
-     "nome": "Contas da casa (luz, gás, internet)",
+     "nome": "Contas da casa (luz, água, gás, internet)",
      "gasto": 91.7,
      "parcelas": 0.0,
      "teto": 150.0,
@@ -5692,7 +5356,7 @@
      "n": 1
     },
     "casa-moveis": {
-     "nome": "Casa e móveis",
+     "nome": "Casa e manutenção",
      "gasto": 0.0,
      "parcelas": 0.0,
      "teto": null,
@@ -5700,36 +5364,28 @@
      "n": 0
     },
     "mercado": {
-     "nome": "Mercado planejado",
+     "nome": "Mercado",
      "gasto": 468.43,
      "parcelas": 0.0,
      "teto": 700.0,
      "acima": 0.0,
      "n": 4
     },
-    "ru": {
-     "nome": "RU (dias de aula)",
-     "gasto": 0.0,
-     "parcelas": 0.0,
-     "teto": null,
-     "acima": 0.0,
-     "n": 0
-    },
-    "conveniencia": {
-     "nome": "Conveniência e lanches",
-     "gasto": 17.93,
-     "parcelas": 0.0,
-     "teto": 100.0,
-     "acima": 0.0,
-     "n": 1
-    },
     "delivery": {
-     "nome": "Delivery e restaurante",
+     "nome": "Restaurantes e delivery",
      "gasto": 105.3,
      "parcelas": 0.0,
      "teto": 250.0,
      "acima": 0.0,
      "n": 3
+    },
+    "conveniencia": {
+     "nome": "Lanches e café",
+     "gasto": 17.93,
+     "parcelas": 0.0,
+     "teto": 100.0,
+     "acima": 0.0,
+     "n": 1
     },
     "remedios": {
      "nome": "Remédios",
@@ -5740,7 +5396,7 @@
      "n": 2
     },
     "consultas": {
-     "nome": "Consultas e terapia",
+     "nome": "Consultas e exames",
      "gasto": 0.0,
      "parcelas": 0.0,
      "teto": null,
@@ -5748,23 +5404,15 @@
      "n": 0
     },
     "academia": {
-     "nome": "Academia",
+     "nome": "Academia e esportes",
      "gasto": 90.0,
      "parcelas": 0.0,
      "teto": 90.0,
      "acima": 0.0,
      "n": 1
     },
-    "saude-outros": {
-     "nome": "Saúde (outros)",
-     "gasto": 0.0,
-     "parcelas": 0.0,
-     "teto": null,
-     "acima": 0.0,
-     "n": 0
-    },
     "app-transporte": {
-     "nome": "App (Uber/99)",
+     "nome": "Transporte por app",
      "gasto": 89.32,
      "parcelas": 0.0,
      "teto": 150.0,
@@ -5772,10 +5420,18 @@
      "n": 4
     },
     "onibus": {
-     "nome": "Ônibus e combustível",
+     "nome": "Transporte público e combustível",
      "gasto": 0.0,
      "parcelas": 0.0,
      "teto": 80.0,
+     "acima": 0.0,
+     "n": 0
+    },
+    "educacao": {
+     "nome": "Cursos e material",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
      "acima": 0.0,
      "n": 0
     },
@@ -5787,13 +5443,13 @@
      "acima": 0.0,
      "n": 2
     },
-    "ferramentas": {
-     "nome": "Ferramentas de trabalho",
-     "gasto": 0.0,
+    "vestuario": {
+     "nome": "Roupas e calçados",
+     "gasto": 89.9,
      "parcelas": 0.0,
-     "teto": null,
+     "teto": 150.0,
      "acima": 0.0,
-     "n": 0
+     "n": 1
     },
     "eletronicos": {
      "nome": "Eletrônicos",
@@ -5803,16 +5459,8 @@
      "acima": 0.0,
      "n": 1
     },
-    "vestuario": {
-     "nome": "Vestuário e imagem",
-     "gasto": 89.9,
-     "parcelas": 0.0,
-     "teto": 150.0,
-     "acima": 0.0,
-     "n": 1
-    },
     "lazer": {
-     "nome": "Lazer e rolê",
+     "nome": "Lazer e passeios",
      "gasto": 35.84,
      "parcelas": 0.0,
      "teto": 200.0,
@@ -5820,15 +5468,7 @@
      "n": 1
     },
     "viagem": {
-     "nome": "Viagem",
-     "gasto": 0.0,
-     "parcelas": 0.0,
-     "teto": null,
-     "acima": 0.0,
-     "n": 0
-    },
-    "hobbies": {
-     "nome": "Hobbies",
+     "nome": "Viagens",
      "gasto": 0.0,
      "parcelas": 0.0,
      "teto": null,
@@ -5844,7 +5484,7 @@
      "n": 0
     },
     "familia": {
-     "nome": "Família e presentes",
+     "nome": "Presentes e família",
      "gasto": 0.0,
      "parcelas": 0.0,
      "teto": null,
@@ -6096,7 +5736,7 @@
      "n": 1
     },
     "contas-casa": {
-     "nome": "Contas da casa (luz, gás, internet)",
+     "nome": "Contas da casa (luz, água, gás, internet)",
      "gasto": 91.7,
      "parcelas": 0.0,
      "teto": 150.0,
@@ -6104,7 +5744,7 @@
      "n": 1
     },
     "casa-moveis": {
-     "nome": "Casa e móveis",
+     "nome": "Casa e manutenção",
      "gasto": 0.0,
      "parcelas": 0.0,
      "teto": null,
@@ -6112,36 +5752,28 @@
      "n": 0
     },
     "mercado": {
-     "nome": "Mercado planejado",
+     "nome": "Mercado",
      "gasto": 468.43,
      "parcelas": 0.0,
      "teto": 700.0,
      "acima": 0.0,
      "n": 4
     },
-    "ru": {
-     "nome": "RU (dias de aula)",
-     "gasto": 0.0,
-     "parcelas": 0.0,
-     "teto": null,
-     "acima": 0.0,
-     "n": 0
-    },
-    "conveniencia": {
-     "nome": "Conveniência e lanches",
-     "gasto": 17.93,
-     "parcelas": 0.0,
-     "teto": 100.0,
-     "acima": 0.0,
-     "n": 1
-    },
     "delivery": {
-     "nome": "Delivery e restaurante",
+     "nome": "Restaurantes e delivery",
      "gasto": 105.3,
      "parcelas": 0.0,
      "teto": 250.0,
      "acima": 0.0,
      "n": 3
+    },
+    "conveniencia": {
+     "nome": "Lanches e café",
+     "gasto": 17.93,
+     "parcelas": 0.0,
+     "teto": 100.0,
+     "acima": 0.0,
+     "n": 1
     },
     "remedios": {
      "nome": "Remédios",
@@ -6152,7 +5784,7 @@
      "n": 2
     },
     "consultas": {
-     "nome": "Consultas e terapia",
+     "nome": "Consultas e exames",
      "gasto": 0.0,
      "parcelas": 0.0,
      "teto": null,
@@ -6160,23 +5792,15 @@
      "n": 0
     },
     "academia": {
-     "nome": "Academia",
+     "nome": "Academia e esportes",
      "gasto": 90.0,
      "parcelas": 0.0,
      "teto": 90.0,
      "acima": 0.0,
      "n": 1
     },
-    "saude-outros": {
-     "nome": "Saúde (outros)",
-     "gasto": 0.0,
-     "parcelas": 0.0,
-     "teto": null,
-     "acima": 0.0,
-     "n": 0
-    },
     "app-transporte": {
-     "nome": "App (Uber/99)",
+     "nome": "Transporte por app",
      "gasto": 89.32,
      "parcelas": 0.0,
      "teto": 150.0,
@@ -6184,10 +5808,18 @@
      "n": 4
     },
     "onibus": {
-     "nome": "Ônibus e combustível",
+     "nome": "Transporte público e combustível",
      "gasto": 0.0,
      "parcelas": 0.0,
      "teto": 80.0,
+     "acima": 0.0,
+     "n": 0
+    },
+    "educacao": {
+     "nome": "Cursos e material",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
      "acima": 0.0,
      "n": 0
     },
@@ -6199,13 +5831,13 @@
      "acima": 0.0,
      "n": 2
     },
-    "ferramentas": {
-     "nome": "Ferramentas de trabalho",
-     "gasto": 0.0,
+    "vestuario": {
+     "nome": "Roupas e calçados",
+     "gasto": 89.9,
      "parcelas": 0.0,
-     "teto": null,
+     "teto": 150.0,
      "acima": 0.0,
-     "n": 0
+     "n": 1
     },
     "eletronicos": {
      "nome": "Eletrônicos",
@@ -6215,16 +5847,8 @@
      "acima": 0.0,
      "n": 1
     },
-    "vestuario": {
-     "nome": "Vestuário e imagem",
-     "gasto": 89.9,
-     "parcelas": 0.0,
-     "teto": 150.0,
-     "acima": 0.0,
-     "n": 1
-    },
     "lazer": {
-     "nome": "Lazer e rolê",
+     "nome": "Lazer e passeios",
      "gasto": 35.84,
      "parcelas": 0.0,
      "teto": 200.0,
@@ -6232,15 +5856,7 @@
      "n": 1
     },
     "viagem": {
-     "nome": "Viagem",
-     "gasto": 0.0,
-     "parcelas": 0.0,
-     "teto": null,
-     "acima": 0.0,
-     "n": 0
-    },
-    "hobbies": {
-     "nome": "Hobbies",
+     "nome": "Viagens",
      "gasto": 0.0,
      "parcelas": 0.0,
      "teto": null,
@@ -6256,7 +5872,7 @@
      "n": 0
     },
     "familia": {
-     "nome": "Família e presentes",
+     "nome": "Presentes e família",
      "gasto": 0.0,
      "parcelas": 0.0,
      "teto": null,
@@ -6503,7 +6119,7 @@
      "n": 1
     },
     "contas-casa": {
-     "nome": "Contas da casa (luz, gás, internet)",
+     "nome": "Contas da casa (luz, água, gás, internet)",
      "gasto": 91.7,
      "parcelas": 0.0,
      "teto": 150.0,
@@ -6511,7 +6127,7 @@
      "n": 1
     },
     "casa-moveis": {
-     "nome": "Casa e móveis",
+     "nome": "Casa e manutenção",
      "gasto": 0.0,
      "parcelas": 0.0,
      "teto": null,
@@ -6519,36 +6135,28 @@
      "n": 0
     },
     "mercado": {
-     "nome": "Mercado planejado",
+     "nome": "Mercado",
      "gasto": 468.43,
      "parcelas": 0.0,
      "teto": 700.0,
      "acima": 0.0,
      "n": 4
     },
-    "ru": {
-     "nome": "RU (dias de aula)",
-     "gasto": 0.0,
-     "parcelas": 0.0,
-     "teto": null,
-     "acima": 0.0,
-     "n": 0
-    },
-    "conveniencia": {
-     "nome": "Conveniência e lanches",
-     "gasto": 17.93,
-     "parcelas": 0.0,
-     "teto": 100.0,
-     "acima": 0.0,
-     "n": 1
-    },
     "delivery": {
-     "nome": "Delivery e restaurante",
+     "nome": "Restaurantes e delivery",
      "gasto": 105.3,
      "parcelas": 0.0,
      "teto": 250.0,
      "acima": 0.0,
      "n": 3
+    },
+    "conveniencia": {
+     "nome": "Lanches e café",
+     "gasto": 17.93,
+     "parcelas": 0.0,
+     "teto": 100.0,
+     "acima": 0.0,
+     "n": 1
     },
     "remedios": {
      "nome": "Remédios",
@@ -6559,7 +6167,7 @@
      "n": 2
     },
     "consultas": {
-     "nome": "Consultas e terapia",
+     "nome": "Consultas e exames",
      "gasto": 0.0,
      "parcelas": 0.0,
      "teto": null,
@@ -6567,23 +6175,15 @@
      "n": 0
     },
     "academia": {
-     "nome": "Academia",
+     "nome": "Academia e esportes",
      "gasto": 90.0,
      "parcelas": 0.0,
      "teto": 90.0,
      "acima": 0.0,
      "n": 1
     },
-    "saude-outros": {
-     "nome": "Saúde (outros)",
-     "gasto": 0.0,
-     "parcelas": 0.0,
-     "teto": null,
-     "acima": 0.0,
-     "n": 0
-    },
     "app-transporte": {
-     "nome": "App (Uber/99)",
+     "nome": "Transporte por app",
      "gasto": 89.32,
      "parcelas": 0.0,
      "teto": 150.0,
@@ -6591,10 +6191,18 @@
      "n": 4
     },
     "onibus": {
-     "nome": "Ônibus e combustível",
+     "nome": "Transporte público e combustível",
      "gasto": 0.0,
      "parcelas": 0.0,
      "teto": 80.0,
+     "acima": 0.0,
+     "n": 0
+    },
+    "educacao": {
+     "nome": "Cursos e material",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
      "acima": 0.0,
      "n": 0
     },
@@ -6606,13 +6214,13 @@
      "acima": 0.0,
      "n": 2
     },
-    "ferramentas": {
-     "nome": "Ferramentas de trabalho",
-     "gasto": 0.0,
+    "vestuario": {
+     "nome": "Roupas e calçados",
+     "gasto": 89.9,
      "parcelas": 0.0,
-     "teto": null,
+     "teto": 150.0,
      "acima": 0.0,
-     "n": 0
+     "n": 1
     },
     "eletronicos": {
      "nome": "Eletrônicos",
@@ -6622,16 +6230,8 @@
      "acima": 0.0,
      "n": 1
     },
-    "vestuario": {
-     "nome": "Vestuário e imagem",
-     "gasto": 89.9,
-     "parcelas": 0.0,
-     "teto": 150.0,
-     "acima": 0.0,
-     "n": 1
-    },
     "lazer": {
-     "nome": "Lazer e rolê",
+     "nome": "Lazer e passeios",
      "gasto": 35.84,
      "parcelas": 0.0,
      "teto": 200.0,
@@ -6639,15 +6239,7 @@
      "n": 1
     },
     "viagem": {
-     "nome": "Viagem",
-     "gasto": 0.0,
-     "parcelas": 0.0,
-     "teto": null,
-     "acima": 0.0,
-     "n": 0
-    },
-    "hobbies": {
-     "nome": "Hobbies",
+     "nome": "Viagens",
      "gasto": 0.0,
      "parcelas": 0.0,
      "teto": null,
@@ -6663,7 +6255,7 @@
      "n": 0
     },
     "familia": {
-     "nome": "Família e presentes",
+     "nome": "Presentes e família",
      "gasto": 0.0,
      "parcelas": 0.0,
      "teto": null,
@@ -6916,7 +6508,7 @@
      "n": 1
     },
     "contas-casa": {
-     "nome": "Contas da casa (luz, gás, internet)",
+     "nome": "Contas da casa (luz, água, gás, internet)",
      "gasto": 91.7,
      "parcelas": 0.0,
      "teto": 150.0,
@@ -6924,7 +6516,7 @@
      "n": 1
     },
     "casa-moveis": {
-     "nome": "Casa e móveis",
+     "nome": "Casa e manutenção",
      "gasto": 0.0,
      "parcelas": 0.0,
      "teto": null,
@@ -6932,36 +6524,28 @@
      "n": 0
     },
     "mercado": {
-     "nome": "Mercado planejado",
+     "nome": "Mercado",
      "gasto": 468.43,
      "parcelas": 0.0,
      "teto": 700.0,
      "acima": 0.0,
      "n": 4
     },
-    "ru": {
-     "nome": "RU (dias de aula)",
-     "gasto": 0.0,
-     "parcelas": 0.0,
-     "teto": null,
-     "acima": 0.0,
-     "n": 0
-    },
-    "conveniencia": {
-     "nome": "Conveniência e lanches",
-     "gasto": 17.93,
-     "parcelas": 0.0,
-     "teto": 100.0,
-     "acima": 0.0,
-     "n": 1
-    },
     "delivery": {
-     "nome": "Delivery e restaurante",
+     "nome": "Restaurantes e delivery",
      "gasto": 105.3,
      "parcelas": 0.0,
      "teto": 250.0,
      "acima": 0.0,
      "n": 3
+    },
+    "conveniencia": {
+     "nome": "Lanches e café",
+     "gasto": 17.93,
+     "parcelas": 0.0,
+     "teto": 100.0,
+     "acima": 0.0,
+     "n": 1
     },
     "remedios": {
      "nome": "Remédios",
@@ -6972,7 +6556,7 @@
      "n": 2
     },
     "consultas": {
-     "nome": "Consultas e terapia",
+     "nome": "Consultas e exames",
      "gasto": 0.0,
      "parcelas": 0.0,
      "teto": null,
@@ -6980,23 +6564,15 @@
      "n": 0
     },
     "academia": {
-     "nome": "Academia",
+     "nome": "Academia e esportes",
      "gasto": 90.0,
      "parcelas": 0.0,
      "teto": 90.0,
      "acima": 0.0,
      "n": 1
     },
-    "saude-outros": {
-     "nome": "Saúde (outros)",
-     "gasto": 0.0,
-     "parcelas": 0.0,
-     "teto": null,
-     "acima": 0.0,
-     "n": 0
-    },
     "app-transporte": {
-     "nome": "App (Uber/99)",
+     "nome": "Transporte por app",
      "gasto": 89.32,
      "parcelas": 0.0,
      "teto": 150.0,
@@ -7004,10 +6580,18 @@
      "n": 4
     },
     "onibus": {
-     "nome": "Ônibus e combustível",
+     "nome": "Transporte público e combustível",
      "gasto": 0.0,
      "parcelas": 0.0,
      "teto": 80.0,
+     "acima": 0.0,
+     "n": 0
+    },
+    "educacao": {
+     "nome": "Cursos e material",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
      "acima": 0.0,
      "n": 0
     },
@@ -7019,13 +6603,13 @@
      "acima": 0.0,
      "n": 2
     },
-    "ferramentas": {
-     "nome": "Ferramentas de trabalho",
-     "gasto": 0.0,
+    "vestuario": {
+     "nome": "Roupas e calçados",
+     "gasto": 89.9,
      "parcelas": 0.0,
-     "teto": null,
+     "teto": 150.0,
      "acima": 0.0,
-     "n": 0
+     "n": 1
     },
     "eletronicos": {
      "nome": "Eletrônicos",
@@ -7035,16 +6619,8 @@
      "acima": 0.0,
      "n": 1
     },
-    "vestuario": {
-     "nome": "Vestuário e imagem",
-     "gasto": 89.9,
-     "parcelas": 0.0,
-     "teto": 150.0,
-     "acima": 0.0,
-     "n": 1
-    },
     "lazer": {
-     "nome": "Lazer e rolê",
+     "nome": "Lazer e passeios",
      "gasto": 35.84,
      "parcelas": 0.0,
      "teto": 200.0,
@@ -7052,15 +6628,7 @@
      "n": 1
     },
     "viagem": {
-     "nome": "Viagem",
-     "gasto": 0.0,
-     "parcelas": 0.0,
-     "teto": null,
-     "acima": 0.0,
-     "n": 0
-    },
-    "hobbies": {
-     "nome": "Hobbies",
+     "nome": "Viagens",
      "gasto": 0.0,
      "parcelas": 0.0,
      "teto": null,
@@ -7076,7 +6644,7 @@
      "n": 0
     },
     "familia": {
-     "nome": "Família e presentes",
+     "nome": "Presentes e família",
      "gasto": 0.0,
      "parcelas": 0.0,
      "teto": null,
@@ -7323,7 +6891,7 @@
      "n": 1
     },
     "contas-casa": {
-     "nome": "Contas da casa (luz, gás, internet)",
+     "nome": "Contas da casa (luz, água, gás, internet)",
      "gasto": 91.7,
      "parcelas": 0.0,
      "teto": 150.0,
@@ -7331,7 +6899,7 @@
      "n": 1
     },
     "casa-moveis": {
-     "nome": "Casa e móveis",
+     "nome": "Casa e manutenção",
      "gasto": 0.0,
      "parcelas": 0.0,
      "teto": null,
@@ -7339,36 +6907,28 @@
      "n": 0
     },
     "mercado": {
-     "nome": "Mercado planejado",
+     "nome": "Mercado",
      "gasto": 468.43,
      "parcelas": 0.0,
      "teto": 700.0,
      "acima": 0.0,
      "n": 4
     },
-    "ru": {
-     "nome": "RU (dias de aula)",
-     "gasto": 0.0,
-     "parcelas": 0.0,
-     "teto": null,
-     "acima": 0.0,
-     "n": 0
-    },
-    "conveniencia": {
-     "nome": "Conveniência e lanches",
-     "gasto": 17.93,
-     "parcelas": 0.0,
-     "teto": 100.0,
-     "acima": 0.0,
-     "n": 1
-    },
     "delivery": {
-     "nome": "Delivery e restaurante",
+     "nome": "Restaurantes e delivery",
      "gasto": 105.3,
      "parcelas": 0.0,
      "teto": 250.0,
      "acima": 0.0,
      "n": 3
+    },
+    "conveniencia": {
+     "nome": "Lanches e café",
+     "gasto": 17.93,
+     "parcelas": 0.0,
+     "teto": 100.0,
+     "acima": 0.0,
+     "n": 1
     },
     "remedios": {
      "nome": "Remédios",
@@ -7379,7 +6939,7 @@
      "n": 2
     },
     "consultas": {
-     "nome": "Consultas e terapia",
+     "nome": "Consultas e exames",
      "gasto": 0.0,
      "parcelas": 0.0,
      "teto": null,
@@ -7387,23 +6947,15 @@
      "n": 0
     },
     "academia": {
-     "nome": "Academia",
+     "nome": "Academia e esportes",
      "gasto": 90.0,
      "parcelas": 0.0,
      "teto": 90.0,
      "acima": 0.0,
      "n": 1
     },
-    "saude-outros": {
-     "nome": "Saúde (outros)",
-     "gasto": 0.0,
-     "parcelas": 0.0,
-     "teto": null,
-     "acima": 0.0,
-     "n": 0
-    },
     "app-transporte": {
-     "nome": "App (Uber/99)",
+     "nome": "Transporte por app",
      "gasto": 89.32,
      "parcelas": 0.0,
      "teto": 150.0,
@@ -7411,10 +6963,18 @@
      "n": 4
     },
     "onibus": {
-     "nome": "Ônibus e combustível",
+     "nome": "Transporte público e combustível",
      "gasto": 0.0,
      "parcelas": 0.0,
      "teto": 80.0,
+     "acima": 0.0,
+     "n": 0
+    },
+    "educacao": {
+     "nome": "Cursos e material",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
      "acima": 0.0,
      "n": 0
     },
@@ -7426,13 +6986,13 @@
      "acima": 0.0,
      "n": 2
     },
-    "ferramentas": {
-     "nome": "Ferramentas de trabalho",
-     "gasto": 0.0,
+    "vestuario": {
+     "nome": "Roupas e calçados",
+     "gasto": 89.9,
      "parcelas": 0.0,
-     "teto": null,
+     "teto": 150.0,
      "acima": 0.0,
-     "n": 0
+     "n": 1
     },
     "eletronicos": {
      "nome": "Eletrônicos",
@@ -7442,16 +7002,8 @@
      "acima": 0.0,
      "n": 1
     },
-    "vestuario": {
-     "nome": "Vestuário e imagem",
-     "gasto": 89.9,
-     "parcelas": 0.0,
-     "teto": 150.0,
-     "acima": 0.0,
-     "n": 1
-    },
     "lazer": {
-     "nome": "Lazer e rolê",
+     "nome": "Lazer e passeios",
      "gasto": 35.84,
      "parcelas": 0.0,
      "teto": 200.0,
@@ -7459,15 +7011,7 @@
      "n": 1
     },
     "viagem": {
-     "nome": "Viagem",
-     "gasto": 0.0,
-     "parcelas": 0.0,
-     "teto": null,
-     "acima": 0.0,
-     "n": 0
-    },
-    "hobbies": {
-     "nome": "Hobbies",
+     "nome": "Viagens",
      "gasto": 0.0,
      "parcelas": 0.0,
      "teto": null,
@@ -7483,7 +7027,7 @@
      "n": 0
     },
     "familia": {
-     "nome": "Família e presentes",
+     "nome": "Presentes e família",
      "gasto": 0.0,
      "parcelas": 0.0,
      "teto": null,
@@ -7735,7 +7279,7 @@
      "n": 1
     },
     "contas-casa": {
-     "nome": "Contas da casa (luz, gás, internet)",
+     "nome": "Contas da casa (luz, água, gás, internet)",
      "gasto": 91.7,
      "parcelas": 0.0,
      "teto": 150.0,
@@ -7743,7 +7287,7 @@
      "n": 1
     },
     "casa-moveis": {
-     "nome": "Casa e móveis",
+     "nome": "Casa e manutenção",
      "gasto": 0.0,
      "parcelas": 0.0,
      "teto": null,
@@ -7751,36 +7295,28 @@
      "n": 0
     },
     "mercado": {
-     "nome": "Mercado planejado",
+     "nome": "Mercado",
      "gasto": 468.43,
      "parcelas": 0.0,
      "teto": 700.0,
      "acima": 0.0,
      "n": 4
     },
-    "ru": {
-     "nome": "RU (dias de aula)",
-     "gasto": 0.0,
-     "parcelas": 0.0,
-     "teto": null,
-     "acima": 0.0,
-     "n": 0
-    },
-    "conveniencia": {
-     "nome": "Conveniência e lanches",
-     "gasto": 17.93,
-     "parcelas": 0.0,
-     "teto": 100.0,
-     "acima": 0.0,
-     "n": 1
-    },
     "delivery": {
-     "nome": "Delivery e restaurante",
+     "nome": "Restaurantes e delivery",
      "gasto": 105.3,
      "parcelas": 0.0,
      "teto": 250.0,
      "acima": 0.0,
      "n": 3
+    },
+    "conveniencia": {
+     "nome": "Lanches e café",
+     "gasto": 17.93,
+     "parcelas": 0.0,
+     "teto": 100.0,
+     "acima": 0.0,
+     "n": 1
     },
     "remedios": {
      "nome": "Remédios",
@@ -7791,7 +7327,7 @@
      "n": 2
     },
     "consultas": {
-     "nome": "Consultas e terapia",
+     "nome": "Consultas e exames",
      "gasto": 0.0,
      "parcelas": 0.0,
      "teto": null,
@@ -7799,23 +7335,15 @@
      "n": 0
     },
     "academia": {
-     "nome": "Academia",
+     "nome": "Academia e esportes",
      "gasto": 90.0,
      "parcelas": 0.0,
      "teto": 90.0,
      "acima": 0.0,
      "n": 1
     },
-    "saude-outros": {
-     "nome": "Saúde (outros)",
-     "gasto": 0.0,
-     "parcelas": 0.0,
-     "teto": null,
-     "acima": 0.0,
-     "n": 0
-    },
     "app-transporte": {
-     "nome": "App (Uber/99)",
+     "nome": "Transporte por app",
      "gasto": 89.32,
      "parcelas": 0.0,
      "teto": 150.0,
@@ -7823,10 +7351,18 @@
      "n": 4
     },
     "onibus": {
-     "nome": "Ônibus e combustível",
+     "nome": "Transporte público e combustível",
      "gasto": 0.0,
      "parcelas": 0.0,
      "teto": 80.0,
+     "acima": 0.0,
+     "n": 0
+    },
+    "educacao": {
+     "nome": "Cursos e material",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
      "acima": 0.0,
      "n": 0
     },
@@ -7838,13 +7374,13 @@
      "acima": 0.0,
      "n": 2
     },
-    "ferramentas": {
-     "nome": "Ferramentas de trabalho",
-     "gasto": 0.0,
+    "vestuario": {
+     "nome": "Roupas e calçados",
+     "gasto": 89.9,
      "parcelas": 0.0,
-     "teto": null,
+     "teto": 150.0,
      "acima": 0.0,
-     "n": 0
+     "n": 1
     },
     "eletronicos": {
      "nome": "Eletrônicos",
@@ -7854,16 +7390,8 @@
      "acima": 0.0,
      "n": 1
     },
-    "vestuario": {
-     "nome": "Vestuário e imagem",
-     "gasto": 89.9,
-     "parcelas": 0.0,
-     "teto": 150.0,
-     "acima": 0.0,
-     "n": 1
-    },
     "lazer": {
-     "nome": "Lazer e rolê",
+     "nome": "Lazer e passeios",
      "gasto": 35.84,
      "parcelas": 0.0,
      "teto": 200.0,
@@ -7871,15 +7399,7 @@
      "n": 1
     },
     "viagem": {
-     "nome": "Viagem",
-     "gasto": 0.0,
-     "parcelas": 0.0,
-     "teto": null,
-     "acima": 0.0,
-     "n": 0
-    },
-    "hobbies": {
-     "nome": "Hobbies",
+     "nome": "Viagens",
      "gasto": 0.0,
      "parcelas": 0.0,
      "teto": null,
@@ -7895,7 +7415,7 @@
      "n": 0
     },
     "familia": {
-     "nome": "Família e presentes",
+     "nome": "Presentes e família",
      "gasto": 0.0,
      "parcelas": 0.0,
      "teto": null,
@@ -8142,7 +7662,7 @@
      "n": 1
     },
     "contas-casa": {
-     "nome": "Contas da casa (luz, gás, internet)",
+     "nome": "Contas da casa (luz, água, gás, internet)",
      "gasto": 91.7,
      "parcelas": 0.0,
      "teto": 150.0,
@@ -8150,7 +7670,7 @@
      "n": 1
     },
     "casa-moveis": {
-     "nome": "Casa e móveis",
+     "nome": "Casa e manutenção",
      "gasto": 0.0,
      "parcelas": 0.0,
      "teto": null,
@@ -8158,36 +7678,28 @@
      "n": 0
     },
     "mercado": {
-     "nome": "Mercado planejado",
+     "nome": "Mercado",
      "gasto": 468.43,
      "parcelas": 0.0,
      "teto": 700.0,
      "acima": 0.0,
      "n": 4
     },
-    "ru": {
-     "nome": "RU (dias de aula)",
-     "gasto": 0.0,
-     "parcelas": 0.0,
-     "teto": null,
-     "acima": 0.0,
-     "n": 0
-    },
-    "conveniencia": {
-     "nome": "Conveniência e lanches",
-     "gasto": 17.93,
-     "parcelas": 0.0,
-     "teto": 100.0,
-     "acima": 0.0,
-     "n": 1
-    },
     "delivery": {
-     "nome": "Delivery e restaurante",
+     "nome": "Restaurantes e delivery",
      "gasto": 105.3,
      "parcelas": 0.0,
      "teto": 250.0,
      "acima": 0.0,
      "n": 3
+    },
+    "conveniencia": {
+     "nome": "Lanches e café",
+     "gasto": 17.93,
+     "parcelas": 0.0,
+     "teto": 100.0,
+     "acima": 0.0,
+     "n": 1
     },
     "remedios": {
      "nome": "Remédios",
@@ -8198,7 +7710,7 @@
      "n": 2
     },
     "consultas": {
-     "nome": "Consultas e terapia",
+     "nome": "Consultas e exames",
      "gasto": 0.0,
      "parcelas": 0.0,
      "teto": null,
@@ -8206,23 +7718,15 @@
      "n": 0
     },
     "academia": {
-     "nome": "Academia",
+     "nome": "Academia e esportes",
      "gasto": 90.0,
      "parcelas": 0.0,
      "teto": 90.0,
      "acima": 0.0,
      "n": 1
     },
-    "saude-outros": {
-     "nome": "Saúde (outros)",
-     "gasto": 0.0,
-     "parcelas": 0.0,
-     "teto": null,
-     "acima": 0.0,
-     "n": 0
-    },
     "app-transporte": {
-     "nome": "App (Uber/99)",
+     "nome": "Transporte por app",
      "gasto": 89.32,
      "parcelas": 0.0,
      "teto": 150.0,
@@ -8230,10 +7734,18 @@
      "n": 4
     },
     "onibus": {
-     "nome": "Ônibus e combustível",
+     "nome": "Transporte público e combustível",
      "gasto": 0.0,
      "parcelas": 0.0,
      "teto": 80.0,
+     "acima": 0.0,
+     "n": 0
+    },
+    "educacao": {
+     "nome": "Cursos e material",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
      "acima": 0.0,
      "n": 0
     },
@@ -8245,13 +7757,13 @@
      "acima": 0.0,
      "n": 2
     },
-    "ferramentas": {
-     "nome": "Ferramentas de trabalho",
-     "gasto": 0.0,
+    "vestuario": {
+     "nome": "Roupas e calçados",
+     "gasto": 89.9,
      "parcelas": 0.0,
-     "teto": null,
+     "teto": 150.0,
      "acima": 0.0,
-     "n": 0
+     "n": 1
     },
     "eletronicos": {
      "nome": "Eletrônicos",
@@ -8261,16 +7773,8 @@
      "acima": 0.0,
      "n": 1
     },
-    "vestuario": {
-     "nome": "Vestuário e imagem",
-     "gasto": 89.9,
-     "parcelas": 0.0,
-     "teto": 150.0,
-     "acima": 0.0,
-     "n": 1
-    },
     "lazer": {
-     "nome": "Lazer e rolê",
+     "nome": "Lazer e passeios",
      "gasto": 35.84,
      "parcelas": 0.0,
      "teto": 200.0,
@@ -8278,15 +7782,7 @@
      "n": 1
     },
     "viagem": {
-     "nome": "Viagem",
-     "gasto": 0.0,
-     "parcelas": 0.0,
-     "teto": null,
-     "acima": 0.0,
-     "n": 0
-    },
-    "hobbies": {
-     "nome": "Hobbies",
+     "nome": "Viagens",
      "gasto": 0.0,
      "parcelas": 0.0,
      "teto": null,
@@ -8302,7 +7798,7 @@
      "n": 0
     },
     "familia": {
-     "nome": "Família e presentes",
+     "nome": "Presentes e família",
      "gasto": 0.0,
      "parcelas": 0.0,
      "teto": null,
@@ -8553,7 +8049,7 @@
     "n": 1
    },
    "contas-casa": {
-    "nome": "Contas da casa (luz, gás, internet)",
+    "nome": "Contas da casa (luz, água, gás, internet)",
     "gasto": 91.7,
     "parcelas": 0.0,
     "teto": 150.0,
@@ -8561,7 +8057,7 @@
     "n": 1
    },
    "casa-moveis": {
-    "nome": "Casa e móveis",
+    "nome": "Casa e manutenção",
     "gasto": 0.0,
     "parcelas": 0.0,
     "teto": null,
@@ -8569,36 +8065,28 @@
     "n": 0
    },
    "mercado": {
-    "nome": "Mercado planejado",
+    "nome": "Mercado",
     "gasto": 468.43,
     "parcelas": 0.0,
     "teto": 700.0,
     "acima": 0.0,
     "n": 4
    },
-   "ru": {
-    "nome": "RU (dias de aula)",
-    "gasto": 0.0,
-    "parcelas": 0.0,
-    "teto": null,
-    "acima": 0.0,
-    "n": 0
-   },
-   "conveniencia": {
-    "nome": "Conveniência e lanches",
-    "gasto": 17.93,
-    "parcelas": 0.0,
-    "teto": 100.0,
-    "acima": 0.0,
-    "n": 1
-   },
    "delivery": {
-    "nome": "Delivery e restaurante",
+    "nome": "Restaurantes e delivery",
     "gasto": 105.3,
     "parcelas": 0.0,
     "teto": 250.0,
     "acima": 0.0,
     "n": 3
+   },
+   "conveniencia": {
+    "nome": "Lanches e café",
+    "gasto": 17.93,
+    "parcelas": 0.0,
+    "teto": 100.0,
+    "acima": 0.0,
+    "n": 1
    },
    "remedios": {
     "nome": "Remédios",
@@ -8609,7 +8097,7 @@
     "n": 2
    },
    "consultas": {
-    "nome": "Consultas e terapia",
+    "nome": "Consultas e exames",
     "gasto": 0.0,
     "parcelas": 0.0,
     "teto": null,
@@ -8617,23 +8105,15 @@
     "n": 0
    },
    "academia": {
-    "nome": "Academia",
+    "nome": "Academia e esportes",
     "gasto": 90.0,
     "parcelas": 0.0,
     "teto": 90.0,
     "acima": 0.0,
     "n": 1
    },
-   "saude-outros": {
-    "nome": "Saúde (outros)",
-    "gasto": 0.0,
-    "parcelas": 0.0,
-    "teto": null,
-    "acima": 0.0,
-    "n": 0
-   },
    "app-transporte": {
-    "nome": "App (Uber/99)",
+    "nome": "Transporte por app",
     "gasto": 89.32,
     "parcelas": 0.0,
     "teto": 150.0,
@@ -8641,10 +8121,18 @@
     "n": 4
    },
    "onibus": {
-    "nome": "Ônibus e combustível",
+    "nome": "Transporte público e combustível",
     "gasto": 0.0,
     "parcelas": 0.0,
     "teto": 80.0,
+    "acima": 0.0,
+    "n": 0
+   },
+   "educacao": {
+    "nome": "Cursos e material",
+    "gasto": 0.0,
+    "parcelas": 0.0,
+    "teto": null,
     "acima": 0.0,
     "n": 0
    },
@@ -8656,13 +8144,13 @@
     "acima": 0.0,
     "n": 2
    },
-   "ferramentas": {
-    "nome": "Ferramentas de trabalho",
-    "gasto": 0.0,
+   "vestuario": {
+    "nome": "Roupas e calçados",
+    "gasto": 89.9,
     "parcelas": 0.0,
-    "teto": null,
+    "teto": 150.0,
     "acima": 0.0,
-    "n": 0
+    "n": 1
    },
    "eletronicos": {
     "nome": "Eletrônicos",
@@ -8672,16 +8160,8 @@
     "acima": 0.0,
     "n": 1
    },
-   "vestuario": {
-    "nome": "Vestuário e imagem",
-    "gasto": 89.9,
-    "parcelas": 0.0,
-    "teto": 150.0,
-    "acima": 0.0,
-    "n": 1
-   },
    "lazer": {
-    "nome": "Lazer e rolê",
+    "nome": "Lazer e passeios",
     "gasto": 35.84,
     "parcelas": 0.0,
     "teto": 200.0,
@@ -8689,15 +8169,7 @@
     "n": 1
    },
    "viagem": {
-    "nome": "Viagem",
-    "gasto": 0.0,
-    "parcelas": 0.0,
-    "teto": null,
-    "acima": 0.0,
-    "n": 0
-   },
-   "hobbies": {
-    "nome": "Hobbies",
+    "nome": "Viagens",
     "gasto": 0.0,
     "parcelas": 0.0,
     "teto": null,
@@ -8713,7 +8185,7 @@
     "n": 0
    },
    "familia": {
-    "nome": "Família e presentes",
+    "nome": "Presentes e família",
     "gasto": 0.0,
     "parcelas": 0.0,
     "teto": null,

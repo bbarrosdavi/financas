@@ -43,7 +43,7 @@ tour**.
    | natureza | o que é | entra no resultado? |
    |---|---|---|
    | gasto | consumo seu, com categoria (mercado, Uber) | sim, como gasto |
-   | renda | dinheiro que é seu (salário, ajuda dos pais) | sim, como entrada |
+   | renda | dinheiro que é seu (salário, ajuda da família) | sim, como entrada |
    | transferência | entre contas suas (pagar a fatura com a conta) | não |
    | acerto | alguém te deve ou você deve a alguém | não, vai para Pessoas |
    | poupança | dinheiro seu indo para uma meta | não, vai para Metas |
@@ -60,8 +60,8 @@ Para os números fazerem sentido: a pessoa da demonstração recebe R$ 2.600,00 
 R$ 200,00 de ajuda da mãe todo dia 14. Divide o apartamento com a Marina: o boleto do aluguel (R$ 1.300,00)
 sai da conta dela no dia 6, metade é gasto dela e metade a Marina devolve por Pix. Usa a conta e o cartão do
 Nubank (limite de R$ 3.000,00) e guarda R$ 300,00 por mês numa reserva de emergência. Os tetos das categorias
-variáveis somam R$ 1.680,00 (mercado R$ 600, delivery R$ 250, lazer R$ 200, app de transporte R$ 150,
-eletrônicos R$ 150, vestuário R$ 150, conveniência R$ 100, ônibus R$ 80).
+variáveis somam R$ 1.680,00 (mercado R$ 600, restaurantes e delivery R$ 250, lazer R$ 200, transporte por app
+R$ 150, eletrônicos R$ 150, roupas e calçados R$ 150, lanches e café R$ 100, transporte público R$ 80).
 
 ## 2. O Painel, painel por painel
 
@@ -99,7 +99,7 @@ O painel mais importante. Na demonstração, em outubro até o dia 20:
   - O aluguel conta só R$ 650 (a metade da pessoa); os R$ 650 da Marina são acerto, não gasto.
 - **Ainda pode gastar (categorias variáveis): R$ 1.094**. É a soma dos tetos das categorias variáveis menos o
   que já foi gasto nelas: R$ 1.680,00 − R$ 586,42 = R$ 1.093,58. Os R$ 586,42 são mercado R$ 361,13 +
-  delivery R$ 105,30 + app de transporte R$ 66,22 + lazer R$ 35,84 + conveniência R$ 17,93. Categoria fixa
+  restaurantes e delivery R$ 105,30 + transporte por app R$ 66,22 + lazer R$ 35,84 + lanches e café R$ 17,93. Categoria fixa
   (aluguel, academia, remédios, assinaturas, contas da casa) não entra aqui.
   - A **barra** está em 35% (R$ 586 de R$ 1.680) e o **traço vertical** em 65%: dia 20 de um mês de 31 dias.
     **No ritmo certo, até hoje: R$ 1.084** é 65% de R$ 1.680: quanto daria para ter gasto até hoje mantendo o
@@ -124,7 +124,7 @@ O painel mais importante. Na demonstração, em outubro até o dia 20:
 - **Como ler** cada linha: **Gasto**, **Teto**, **%** do teto e **Resta** (verde) ou **Excede** (vermelho,
   com o sinal +). A barra enche até o teto; vermelha quando passa.
   - **Alimentação: R$ 484 de R$ 950 (51%), resta R$ 466**. Abrindo o grupo (toque na linha): mercado R$ 361,13
-    de R$ 600, delivery R$ 105,30 de R$ 250, conveniência R$ 17,93 de R$ 100.
+    de R$ 600, restaurantes e delivery R$ 105,30 de R$ 250, lanches e café R$ 17,93 de R$ 100.
   - **Moradia: R$ 742 de R$ 800 (93%)**: aluguel R$ 650 de R$ 650 + luz R$ 91,70 de R$ 150.
   - **Assinaturas: R$ 60 de R$ 60 (100%), resta R$ 0,20**: duas assinaturas de R$ 39,90 e R$ 19,90.
   - **Compras: R$ 0 de R$ 150, + R$ 250 de parcelas antigas**: a 3ª parcela de uma compra de eletrônicos.
@@ -164,7 +164,7 @@ O painel mais importante. Na demonstração, em outubro até o dia 20:
 ![Entradas do período](prints/guia/cartao-entradas.png)
 
 - **O que é**: o que entrou, por categoria de renda, com quantos lançamentos.
-- **Na demonstração**: Salário R$ 2.600,00 e Ajuda dos pais R$ 200,00; total R$ 2.800,00, o mesmo de
+- **Na demonstração**: Salário R$ 2.600,00 e Ajuda da família R$ 200,00; total R$ 2.800,00, o mesmo de
   Entradas no Resumo.
 - **De onde vem**: das partes classificadas como renda. Pix que você recebe de volta de um colega não é renda:
   é acerto, e vai para Pessoas.
@@ -351,20 +351,20 @@ E o lançamento na tabela, com o saldo da conta logo depois dele:
 ### Passo 2. Classificar um pendente
 
 **Ação**: em **Pendentes**, na compra **Loja Nova Exemplo** (R$ 89,90, no cartão), tocar em **outras...** e
-escolher **Vestuário e imagem**, com "sugerir a mesma classificação da próxima vez" marcado.
+escolher **Roupas e calçados**, com "sugerir a mesma classificação da próxima vez" marcado.
 
 | número | antes | depois | por quê |
 |---|---|---|---|
 | Pendentes | 3 | 2 | a compra saiu da lista |
-| Vestuário (Categorias) | R$ 0,00 | R$ 89,90 | a compra agora tem categoria |
-| Ainda pode gastar | R$ 1.048,58 | R$ 958,68 | vestuário é variável: −R$ 89,90 |
+| Roupas e calçados (Categorias) | R$ 0,00 | R$ 89,90 | a compra agora tem categoria |
+| Ainda pode gastar | R$ 1.048,58 | R$ 958,68 | roupas e calçados é variável: −R$ 89,90 |
 | Gastos (Resumo) | R$ 1.921,55 | R$ 2.011,45 | +R$ 89,90 |
 | Resultado do mês | +R$ 878,45 | +R$ 788,55 | −R$ 89,90 |
 | Conta | R$ 3.753,24 | R$ 3.753,24 | não muda: a compra foi no cartão |
 
 Antes de classificar, a compra já existia e já estava na dívida do cartão, mas não contava em gasto nenhum,
 porque não tinha categoria. Classificar é o que a leva para os números do mês. Com "sugerir da próxima vez",
-a próxima compra na Loja Nova Exemplo chega com a sugestão Vestuário.
+a próxima compra na Loja Nova Exemplo chega com a sugestão Roupas e calçados.
 
 ![Pendentes antes](prints/guia/passo-pendente-antes.png)
 ![Pendentes depois](prints/guia/passo-pendente-depois.png)
@@ -385,7 +385,7 @@ Data,Valor,Identificador,Descrição
 
 - A padaria de R$ 18,50 já tinha chegado pelo celular no dia 17: o arquivo só **casou** com ela (confirmou e
   detalhou) e não duplicou.
-- O supermercado (R$ 62,30) é novo e caiu sozinho em **Mercado planejado**, porque "SUPERMERCADO" é um lugar
+- O supermercado (R$ 62,30) é novo e caiu sozinho em **Mercado**, porque "SUPERMERCADO" é um lugar
   conhecido.
 - O Pix da Marina (R$ 650,00) é novo e vai para **Pendentes**, com a sugestão "acerto com Marina (confira)",
   porque o nome bate com o cadastro dela em Ajustes.
@@ -436,7 +436,7 @@ date,title,amount
 
 | número | antes | depois | por quê |
 |---|---|---|---|
-| App (Uber/99) | R$ 66,22 | R$ 89,32 | o Uber caiu sozinho na categoria |
+| Transporte por app | R$ 66,22 | R$ 89,32 | o Uber caiu sozinho na categoria |
 | Ainda pode gastar | R$ 896,38 | R$ 873,28 | −R$ 23,10 |
 | Resultado do mês | +R$ 726,25 | +R$ 703,15 | −R$ 23,10 (a parcela ainda é pendente) |
 | Dívida do cartão | R$ 1.206,25 | R$ 1.349,35 | +R$ 23,10 + R$ 120,00 |
@@ -470,7 +470,7 @@ Quando o extrato ou a fatura chegarem, essa compra casa com a linha do arquivo, 
 
 ### Passo 7. Mudar o orçamento de um mês
 
-**Ação**: em **Orçamento**, na linha **Mercado planejado**, coluna de outubro, digitar **700** (o padrão era o
+**Ação**: em **Orçamento**, na linha **Mercado**, coluna de outubro, digitar **700** (o padrão era o
 teto de R$ 600) e Enter, sem "repetir até dezembro".
 
 | número | antes | depois | por quê |

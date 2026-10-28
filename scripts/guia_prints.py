@@ -12,7 +12,6 @@ passo da fatura do Bradesco, do tesseract com português e do pdftoppm.
 import datetime as _dt
 import json
 import os
-import random
 import sys
 import tempfile
 import threading
@@ -36,7 +35,7 @@ os.environ.update({
 })
 sys.path.insert(0, str(RAIZ))
 
-from app import bradesco, db, exportar, importadores, main, servicos  # noqa: E402
+from app import bradesco, db, demo, exportar, importadores, main, servicos  # noqa: E402
 
 
 class _Hoje(_dt.date):
@@ -45,97 +44,18 @@ class _Hoje(_dt.date):
         return HOJE
 
 
-for _m in (servicos, main, exportar, importadores, bradesco):
+for _m in (servicos, main, exportar, importadores, bradesco, demo):
     _m.date = _Hoje
 
 
 # ---------------------------------------------------------------------------
 # Banco de demonstração: seis meses (maio a 20 de outubro de 2026) de alguém inventado
 # ---------------------------------------------------------------------------
-def gasto(v, cat):
-    return [{"valor": v, "natureza": "gasto", "categoria": cat}]
-
-
 def semear() -> None:
+    """O mesmo conjunto inventado da demonstração do app (app/demo.py), com hoje fixo."""
     db.iniciar()
-    sorte = random.Random(2026)
     with db.conectar() as c:
-        c.executemany("INSERT INTO pessoas (id, nome, tipo, apelido_extrato, sugere_entrada, sugere_saida) VALUES (?,?,?,?,?,?)",
-                      [("marina", "Marina", "colega", "MARINA EXEMPLO", "acerto", "acerto"),
-                       ("teo", "Téo", "colega", "TEO FICTICIO", "acerto", "acerto"),
-                       ("mae", "Mãe", "familia", "ROSA EXEMPLO", "renda:pais", "acerto")])
-        for cid, teto in {"mercado": 600, "delivery": 250, "app-transporte": 150, "lazer": 200, "conveniencia": 100,
-                          "vestuario": 150, "eletronicos": 150, "remedios": 80, "academia": 90, "assinaturas": 60,
-                          "contas-casa": 150, "onibus": 80}.items():
-            c.execute("UPDATE categorias SET teto = ? WHERE id = ?", (teto, cid))
-        c.execute("UPDATE categorias SET orcar_por_itens = 1 WHERE id = 'aluguel-condominio'")
-        c.executemany("INSERT INTO itens_fixos (categoria, nome, valor, ordem) VALUES (?,?,?,?)",
-                      [("aluguel-condominio", "Aluguel (minha metade)", 600, 1), ("aluguel-condominio", "Condomínio (minha metade)", 50, 2)])
-        c.execute("UPDATE contas SET saldo_inicial = 300, data_saldo_inicial = '2026-05-01' WHERE id = 'nubank_conta'")
-        c.execute("UPDATE contas SET saldo_inicial = 0, data_saldo_inicial = '2026-05-01', limite = 3000 WHERE id = 'nubank_cartao'")
-        c.execute("UPDATE contas SET data_saldo_inicial = '2026-05-01' WHERE id = 'picpay'")
-        for k, v in {"salario_mensal": "2600", "horizonte": "2027-03", "aluguel_rateio": '{"eu": 0.5, "marina": 0.5}'}.items():
-            db.definir_parametro(c, k, v)
-        c.execute("INSERT INTO metas (nome, descricao, alvo, aporte_mensal, onde, ordem) VALUES "
-                  "('Reserva de emergência', 'Seis meses de custo fixo', 6000, 300, 'Caixinha do Nubank', 1)")
-        c.execute("INSERT INTO metas (nome, alvo, data_alvo, aporte_mensal, onde, ordem) VALUES "
-                  "('Notebook novo', 4500, '2027-06', 250, 'Caixinha do Nubank', 2)")
-        c.executemany("INSERT INTO eventos (nome, tipo, inicio, fim, valor) VALUES (?,?,?,?,?)",
-                      [("13º salário", "entrada_unica", "2026-12", None, 2600), ("Viagem de janeiro", "saida_unica", "2027-01", None, 1800)])
-
-        def lanc(conta, d, valor, desc, contra="", origem=None, partes=None, parcela=None):
-            if d > HOJE:
-                return
-            origem = origem or ("fatura_csv" if conta == "nubank_cartao" else "extrato_csv")
-            servicos.inserir(c, conta, d.isoformat(), round(valor, 2), desc, contra, origem, partes=partes, parcela=parcela)
-
-        fatura_anterior = 0.0
-        for mes in range(5, 11):
-            d = lambda dia: _dt.date(2026, mes, dia)
-            sigla = ["MAI", "JUN", "JUL", "AGO", "SET", "OUT"][mes - 5]
-            lanc("nubank_conta", d(5), 2600, "Transferência recebida pelo Pix", "EMPRESA EXEMPLO LTDA", partes=[
-                {"valor": 2600, "natureza": "renda", "categoria": "salario"}])
-            lanc("nubank_conta", d(6), -1300, "Pagamento de boleto efetuado", "IMOBILIARIA EXEMPLO LTDA", partes=[
-                {"valor": -650, "natureza": "gasto", "categoria": "aluguel-condominio"},
-                {"valor": -650, "natureza": "acerto", "pessoa": "marina"}])
-            lanc("nubank_conta", d(6), -300, "Aplicação RDB", partes=[{"valor": -300, "natureza": "poupanca", "meta": 1}])
-            if fatura_anterior:
-                lanc("nubank_conta", d(7), -fatura_anterior, "Pagamento de fatura")
-                lanc("nubank_cartao", d(7), fatura_anterior, f"Pagamento em 07 {sigla}")
-            if mes < 10:
-                lanc("nubank_conta", d(10), 650, "Transferência recebida pelo Pix", "MARINA EXEMPLO", partes=[
-                    {"valor": 650, "natureza": "acerto", "pessoa": "marina"}])
-            luz = -sorte.choice([78.4, 85.1, 91.7])
-            lanc("nubank_conta", d(12), luz, "Pagamento de boleto efetuado", "LUZ DISTRIBUIDORA EXEMPLO", partes=gasto(luz, "contas-casa"))
-            lanc("nubank_conta", d(14), 200, "Transferência recebida pelo Pix", "ROSA EXEMPLO", partes=[
-                {"valor": 200, "natureza": "renda", "categoria": "pais"}])
-            # Cartão
-            cartao = [(3, -90, "Academia Movimento Exemplo", "academia"), (9, -39.9, "Streaming Exemplo", "assinaturas"), (15, -19.9, "Música Exemplo", "assinaturas")]
-            cartao += [(dia, -round(sorte.uniform(110, 190), 2), "Supermercado Exemplo", "mercado") for dia in (4, 13, 24)]
-            cartao += [(dia, -round(sorte.uniform(35, 65), 2), "Delivery Cozinha Exemplo", "delivery") for dia in (8, 17, 27)]
-            cartao += [(dia, -round(sorte.uniform(14, 28), 2), "Uber *Trip", "app-transporte") for dia in (2, 9, 16, 22, 29)]
-            cartao += [(11, -round(sorte.uniform(35, 60), 2), "Cinema Exemplo", "lazer"), (25, -round(sorte.uniform(60, 95), 2), "Bar do Exemplo", "lazer")]
-            cartao += [(19, -round(sorte.uniform(30, 60), 2), "Drogaria Exemplo", "remedios")]
-            cartao += [(dia, -round(sorte.uniform(9, 20), 2), "Conveniencia Posto Exemplo", "conveniencia") for dia in (6, 21)]
-            if mes in (6, 8):
-                cartao.append((18, -round(sorte.uniform(80, 140), 2), "Loja Roupa Exemplo", "vestuario"))
-            for dia, v, desc, cat in cartao:
-                lanc("nubank_cartao", d(dia), v, desc, partes=gasto(v, cat))
-            if mes >= 8:
-                n = mes - 7
-                lanc("nubank_cartao", d(11), -250, f"Loja Eletro Exemplo - Parcela {n}/6", partes=gasto(-250, "eletronicos"), parcela=f"{n}/6")
-            if mes == 9:
-                lanc("nubank_cartao", d(19), -120, "Restaurante Exemplo", partes=[
-                    {"valor": -60, "natureza": "gasto", "categoria": "delivery"}, {"valor": -60, "natureza": "acerto", "pessoa": "teo"}])
-            fatura_anterior = -round(sum(r[0] for r in c.execute(
-                "SELECT valor FROM lancamentos WHERE conta = 'nubank_cartao' AND valor < 0 AND substr(data, 1, 7) = ?",
-                (f"2026-{mes:02d}",))), 2)
-        # Outubro: o que ainda espera você
-        servicos.inserir(c, "nubank_conta", "2026-10-17", -18.5, "Padaria Pão Quente", origem="push", ref="inbox:1")
-        servicos.inserir(c, "nubank_cartao", "2026-10-15", -104.9, "Picpay*Recarga Exemplo", origem="fatura_csv")
-        servicos.inserir(c, "nubank_conta", "2026-10-16", -30.0, "Transferência enviada pelo Pix", "TEO FICTICIO", "extrato_csv")
-        servicos.inserir(c, "nubank_cartao", "2026-10-18", -89.9, "Loja Nova Exemplo", origem="push", ref="inbox:2")
-        db.definir_parametro(c, "pessoas_ajuste", json.dumps({"data": "2026-04-30", "saldos": {}}))
+        demo.semear(c, HOJE)
 
 
 # ---------------------------------------------------------------------------

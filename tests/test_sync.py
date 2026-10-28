@@ -121,13 +121,13 @@ def test_push_que_chega_depois_do_extrato_casa_com_ele(par):
                          ref="extrato.pdf")
     with par.cel() as c:          # e o celular viu a compra pelo push, e classificou
         lid = servicos.inserir(c, "nubank_conta", "2026-10-09", -27.0, "Loja Sem Regra Exemplo", origem="push", ref="inbox:3")
-        servicos.definir_partes(c, lid, [{"valor": -27.0, "natureza": "gasto", "categoria": "hobbies"}], False)
+        servicos.definir_partes(c, lid, [{"valor": -27.0, "natureza": "gasto", "categoria": "viagem"}], False)
     par.trocar()
     par.trocar()
     for conectar in (par.srv, par.cel):
         rows = _um(conectar, "SELECT COUNT(*), MAX(origem), MAX(confirmado_por), MAX(data) FROM lancamentos WHERE ABS(valor + 27) < 0.005")
         assert tuple(rows) == (1, "push", "extrato_pdf:extrato.pdf", "2026-10-10")
-    assert _partes(par.srv, "Loja Sem Regra Exemplo")[0]["categoria"] == "hobbies"
+    assert _partes(par.srv, "Loja Sem Regra Exemplo")[0]["categoria"] == "viagem"
 
 
 def test_meta_e_orcamento_viajam_pelo_uid(par):
