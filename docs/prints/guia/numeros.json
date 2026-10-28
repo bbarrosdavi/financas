@@ -1,0 +1,8897 @@
+{
+ "inicio": {
+  "periodo": "2026-10",
+  "totais": {
+   "renda": 2800.0,
+   "gasto": 1876.55,
+   "juros": 4.9,
+   "resultado": 923.45
+  },
+  "pode_gastar": 1093.58,
+  "teto_variavel": 1680.0,
+  "gasto_variavel": 586.42,
+  "ritmo": 0.6452,
+  "pendentes": 3,
+  "conta": {
+   "saldo": 3798.24,
+   "saldo_real": null,
+   "diferenca": null,
+   "cobertura": "2026-10-16"
+  },
+  "cartao": {
+   "divida": 1206.25,
+   "futuras": 750.0,
+   "limite": 3000.0,
+   "limite_livre": 1043.75
+  },
+  "pessoas": {
+   "marina": {
+    "saldo": 650.0,
+    "a_vencer": 0
+   },
+   "teo": {
+    "saldo": 60.0,
+    "a_vencer": 0
+   },
+   "mae": {
+    "saldo": 0.0,
+    "a_vencer": 0
+   }
+  },
+  "metas": {
+   "Reserva de emergência": {
+    "planejado_periodo": 300.0,
+    "guardado_periodo": 300.0,
+    "guardado_total": 1800.0,
+    "falta_periodo": 0.0,
+    "completude_alvo": 0.3
+   },
+   "Notebook novo": {
+    "planejado_periodo": 250.0,
+    "guardado_periodo": 0,
+    "guardado_total": 0,
+    "falta_periodo": 250.0,
+    "completude_alvo": 0.0,
+    "por_mes_ate_prazo": 562.5
+   }
+  },
+  "categorias": {
+   "aluguel-condominio": {
+    "nome": "Aluguel e condomínio",
+    "gasto": 650.0,
+    "parcelas": 0.0,
+    "teto": 650.0,
+    "acima": 0.0,
+    "n": 1
+   },
+   "contas-casa": {
+    "nome": "Contas da casa (luz, gás, internet)",
+    "gasto": 91.7,
+    "parcelas": 0.0,
+    "teto": 150.0,
+    "acima": 0.0,
+    "n": 1
+   },
+   "casa-moveis": {
+    "nome": "Casa e móveis",
+    "gasto": 0.0,
+    "parcelas": 0.0,
+    "teto": null,
+    "acima": 0.0,
+    "n": 0
+   },
+   "mercado": {
+    "nome": "Mercado planejado",
+    "gasto": 361.13,
+    "parcelas": 0.0,
+    "teto": 600.0,
+    "acima": 0.0,
+    "n": 2
+   },
+   "ru": {
+    "nome": "RU (dias de aula)",
+    "gasto": 0.0,
+    "parcelas": 0.0,
+    "teto": null,
+    "acima": 0.0,
+    "n": 0
+   },
+   "conveniencia": {
+    "nome": "Conveniência e lanches",
+    "gasto": 17.93,
+    "parcelas": 0.0,
+    "teto": 100.0,
+    "acima": 0.0,
+    "n": 1
+   },
+   "delivery": {
+    "nome": "Delivery e restaurante",
+    "gasto": 105.3,
+    "parcelas": 0.0,
+    "teto": 250.0,
+    "acima": 0.0,
+    "n": 3
+   },
+   "remedios": {
+    "nome": "Remédios",
+    "gasto": 43.73,
+    "parcelas": 0.0,
+    "teto": 80.0,
+    "acima": 0.0,
+    "n": 1
+   },
+   "consultas": {
+    "nome": "Consultas e terapia",
+    "gasto": 0.0,
+    "parcelas": 0.0,
+    "teto": null,
+    "acima": 0.0,
+    "n": 0
+   },
+   "academia": {
+    "nome": "Academia",
+    "gasto": 90.0,
+    "parcelas": 0.0,
+    "teto": 90.0,
+    "acima": 0.0,
+    "n": 1
+   },
+   "saude-outros": {
+    "nome": "Saúde (outros)",
+    "gasto": 0.0,
+    "parcelas": 0.0,
+    "teto": null,
+    "acima": 0.0,
+    "n": 0
+   },
+   "app-transporte": {
+    "nome": "App (Uber/99)",
+    "gasto": 66.22,
+    "parcelas": 0.0,
+    "teto": 150.0,
+    "acima": 0.0,
+    "n": 3
+   },
+   "onibus": {
+    "nome": "Ônibus e combustível",
+    "gasto": 0.0,
+    "parcelas": 0.0,
+    "teto": 80.0,
+    "acima": 0.0,
+    "n": 0
+   },
+   "assinaturas": {
+    "nome": "Assinaturas e celular",
+    "gasto": 59.8,
+    "parcelas": 0.0,
+    "teto": 60.0,
+    "acima": 0.0,
+    "n": 2
+   },
+   "ferramentas": {
+    "nome": "Ferramentas de trabalho",
+    "gasto": 0.0,
+    "parcelas": 0.0,
+    "teto": null,
+    "acima": 0.0,
+    "n": 0
+   },
+   "eletronicos": {
+    "nome": "Eletrônicos",
+    "gasto": 0.0,
+    "parcelas": 250.0,
+    "teto": 150.0,
+    "acima": 0.0,
+    "n": 1
+   },
+   "vestuario": {
+    "nome": "Vestuário e imagem",
+    "gasto": 0.0,
+    "parcelas": 0.0,
+    "teto": 150.0,
+    "acima": 0.0,
+    "n": 0
+   },
+   "lazer": {
+    "nome": "Lazer e rolê",
+    "gasto": 35.84,
+    "parcelas": 0.0,
+    "teto": 200.0,
+    "acima": 0.0,
+    "n": 1
+   },
+   "viagem": {
+    "nome": "Viagem",
+    "gasto": 0.0,
+    "parcelas": 0.0,
+    "teto": null,
+    "acima": 0.0,
+    "n": 0
+   },
+   "hobbies": {
+    "nome": "Hobbies",
+    "gasto": 0.0,
+    "parcelas": 0.0,
+    "teto": null,
+    "acima": 0.0,
+    "n": 0
+   },
+   "pets": {
+    "nome": "Pets",
+    "gasto": 0.0,
+    "parcelas": 0.0,
+    "teto": null,
+    "acima": 0.0,
+    "n": 0
+   },
+   "familia": {
+    "nome": "Família e presentes",
+    "gasto": 0.0,
+    "parcelas": 0.0,
+    "teto": null,
+    "acima": 0.0,
+    "n": 0
+   },
+   "juros": {
+    "nome": "Juros e taxas",
+    "gasto": 4.9,
+    "parcelas": 0.0,
+    "teto": null,
+    "acima": 0.0,
+    "n": 1
+   },
+   "outros": {
+    "nome": "Outros",
+    "gasto": 0.0,
+    "parcelas": 0.0,
+    "teto": null,
+    "acima": 0.0,
+    "n": 0
+   }
+  },
+  "grupos": {
+   "Moradia": 741.7,
+   "Alimentação": 484.36,
+   "Saúde": 133.73,
+   "Transporte": 66.22,
+   "Assinaturas": 59.8,
+   "Compras": 250.0,
+   "Lazer": 35.84,
+   "Financeiro": 4.9
+  },
+  "top": [
+   {
+    "nome": "IMOBILIARIA EXEMPLO LTDA",
+    "n": 1,
+    "total": 650.0
+   },
+   {
+    "nome": "Supermercado Exemplo",
+    "n": 2,
+    "total": 361.13
+   },
+   {
+    "nome": "Loja Eletro Exemplo - Parcela 3/6",
+    "n": 1,
+    "total": 250.0
+   },
+   {
+    "nome": "Picpay*Recarga Exemplo",
+    "n": 2,
+    "total": 104.9
+   },
+   {
+    "nome": "LUZ DISTRIBUIDORA EXEMPLO",
+    "n": 1,
+    "total": 91.7
+   }
+  ],
+  "compromissos": [
+   {
+    "mes": "2026-11",
+    "descricao": "Loja Eletro Exemplo - Parcela 4/6",
+    "valor": 250.0,
+    "parcela": "4/6",
+    "pessoa": null
+   },
+   {
+    "mes": "2026-12",
+    "descricao": "Loja Eletro Exemplo - Parcela 5/6",
+    "valor": 250.0,
+    "parcela": "5/6",
+    "pessoa": null
+   },
+   {
+    "mes": "2027-01",
+    "descricao": "Loja Eletro Exemplo - Parcela 6/6",
+    "valor": 250.0,
+    "parcela": "6/6",
+    "pessoa": null
+   }
+  ],
+  "plano": [
+   {
+    "mes": "2026-11",
+    "renda": 2600.0,
+    "custo": 2710.0,
+    "cartao": 1206.25,
+    "reembolsos": 0.0,
+    "unicos": 0,
+    "aportes": 550.0,
+    "resultado": -1866.25,
+    "falta": 1866.25,
+    "pago_pessoas": 0.0,
+    "deve_pessoas": 0.0,
+    "livre": 0.0,
+    "metas": 550.0
+   },
+   {
+    "mes": "2026-12",
+    "renda": 2600.0,
+    "custo": 2710.0,
+    "cartao": 250.0,
+    "reembolsos": 0.0,
+    "unicos": 2600.0,
+    "aportes": 550.0,
+    "resultado": 1690.0,
+    "falta": 0.0,
+    "pago_pessoas": 0.0,
+    "deve_pessoas": 0.0,
+    "livre": 1690.0,
+    "metas": 1100.0
+   },
+   {
+    "mes": "2027-01",
+    "renda": 2600.0,
+    "custo": 2710.0,
+    "cartao": 250.0,
+    "reembolsos": 0.0,
+    "unicos": -1800.0,
+    "aportes": 550.0,
+    "resultado": -2710.0,
+    "falta": 2710.0,
+    "pago_pessoas": 0.0,
+    "deve_pessoas": 0.0,
+    "livre": 1690.0,
+    "metas": 1650.0
+   },
+   {
+    "mes": "2027-02",
+    "renda": 2600.0,
+    "custo": 2710.0,
+    "cartao": 250.0,
+    "reembolsos": 0.0,
+    "unicos": 0,
+    "aportes": 550.0,
+    "resultado": -910.0,
+    "falta": 910.0,
+    "pago_pessoas": 0.0,
+    "deve_pessoas": 0.0,
+    "livre": 1690.0,
+    "metas": 2200.0
+   },
+   {
+    "mes": "2027-03",
+    "renda": 2600.0,
+    "custo": 2710.0,
+    "cartao": 0.0,
+    "reembolsos": 0.0,
+    "unicos": 0,
+    "aportes": 550.0,
+    "resultado": -660.0,
+    "falta": 660.0,
+    "pago_pessoas": 0.0,
+    "deve_pessoas": 0.0,
+    "livre": 1690.0,
+    "metas": 2750.0
+   }
+  ],
+  "plano_falta": 6146.25,
+  "entradas": {
+   "salario": 2600.0,
+   "pais": 200.0
+  }
+ },
+ "manual": {
+  "antes": {
+   "periodo": "2026-10",
+   "totais": {
+    "renda": 2800.0,
+    "gasto": 1876.55,
+    "juros": 4.9,
+    "resultado": 923.45
+   },
+   "pode_gastar": 1093.58,
+   "teto_variavel": 1680.0,
+   "gasto_variavel": 586.42,
+   "ritmo": 0.6452,
+   "pendentes": 3,
+   "conta": {
+    "saldo": 3798.24,
+    "saldo_real": null,
+    "diferenca": null,
+    "cobertura": "2026-10-16"
+   },
+   "cartao": {
+    "divida": 1206.25,
+    "futuras": 750.0,
+    "limite": 3000.0,
+    "limite_livre": 1043.75
+   },
+   "pessoas": {
+    "marina": {
+     "saldo": 650.0,
+     "a_vencer": 0
+    },
+    "teo": {
+     "saldo": 60.0,
+     "a_vencer": 0
+    },
+    "mae": {
+     "saldo": 0.0,
+     "a_vencer": 0
+    }
+   },
+   "metas": {
+    "Reserva de emergência": {
+     "planejado_periodo": 300.0,
+     "guardado_periodo": 300.0,
+     "guardado_total": 1800.0,
+     "falta_periodo": 0.0,
+     "completude_alvo": 0.3
+    },
+    "Notebook novo": {
+     "planejado_periodo": 250.0,
+     "guardado_periodo": 0,
+     "guardado_total": 0,
+     "falta_periodo": 250.0,
+     "completude_alvo": 0.0,
+     "por_mes_ate_prazo": 562.5
+    }
+   },
+   "categorias": {
+    "aluguel-condominio": {
+     "nome": "Aluguel e condomínio",
+     "gasto": 650.0,
+     "parcelas": 0.0,
+     "teto": 650.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "contas-casa": {
+     "nome": "Contas da casa (luz, gás, internet)",
+     "gasto": 91.7,
+     "parcelas": 0.0,
+     "teto": 150.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "casa-moveis": {
+     "nome": "Casa e móveis",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "mercado": {
+     "nome": "Mercado planejado",
+     "gasto": 361.13,
+     "parcelas": 0.0,
+     "teto": 600.0,
+     "acima": 0.0,
+     "n": 2
+    },
+    "ru": {
+     "nome": "RU (dias de aula)",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "conveniencia": {
+     "nome": "Conveniência e lanches",
+     "gasto": 17.93,
+     "parcelas": 0.0,
+     "teto": 100.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "delivery": {
+     "nome": "Delivery e restaurante",
+     "gasto": 105.3,
+     "parcelas": 0.0,
+     "teto": 250.0,
+     "acima": 0.0,
+     "n": 3
+    },
+    "remedios": {
+     "nome": "Remédios",
+     "gasto": 43.73,
+     "parcelas": 0.0,
+     "teto": 80.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "consultas": {
+     "nome": "Consultas e terapia",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "academia": {
+     "nome": "Academia",
+     "gasto": 90.0,
+     "parcelas": 0.0,
+     "teto": 90.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "saude-outros": {
+     "nome": "Saúde (outros)",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "app-transporte": {
+     "nome": "App (Uber/99)",
+     "gasto": 66.22,
+     "parcelas": 0.0,
+     "teto": 150.0,
+     "acima": 0.0,
+     "n": 3
+    },
+    "onibus": {
+     "nome": "Ônibus e combustível",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": 80.0,
+     "acima": 0.0,
+     "n": 0
+    },
+    "assinaturas": {
+     "nome": "Assinaturas e celular",
+     "gasto": 59.8,
+     "parcelas": 0.0,
+     "teto": 60.0,
+     "acima": 0.0,
+     "n": 2
+    },
+    "ferramentas": {
+     "nome": "Ferramentas de trabalho",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "eletronicos": {
+     "nome": "Eletrônicos",
+     "gasto": 0.0,
+     "parcelas": 250.0,
+     "teto": 150.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "vestuario": {
+     "nome": "Vestuário e imagem",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": 150.0,
+     "acima": 0.0,
+     "n": 0
+    },
+    "lazer": {
+     "nome": "Lazer e rolê",
+     "gasto": 35.84,
+     "parcelas": 0.0,
+     "teto": 200.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "viagem": {
+     "nome": "Viagem",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "hobbies": {
+     "nome": "Hobbies",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "pets": {
+     "nome": "Pets",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "familia": {
+     "nome": "Família e presentes",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "juros": {
+     "nome": "Juros e taxas",
+     "gasto": 4.9,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 1
+    },
+    "outros": {
+     "nome": "Outros",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    }
+   },
+   "grupos": {
+    "Moradia": 741.7,
+    "Alimentação": 484.36,
+    "Saúde": 133.73,
+    "Transporte": 66.22,
+    "Assinaturas": 59.8,
+    "Compras": 250.0,
+    "Lazer": 35.84,
+    "Financeiro": 4.9
+   },
+   "top": [
+    {
+     "nome": "IMOBILIARIA EXEMPLO LTDA",
+     "n": 1,
+     "total": 650.0
+    },
+    {
+     "nome": "Supermercado Exemplo",
+     "n": 2,
+     "total": 361.13
+    },
+    {
+     "nome": "Loja Eletro Exemplo - Parcela 3/6",
+     "n": 1,
+     "total": 250.0
+    },
+    {
+     "nome": "Picpay*Recarga Exemplo",
+     "n": 2,
+     "total": 104.9
+    },
+    {
+     "nome": "LUZ DISTRIBUIDORA EXEMPLO",
+     "n": 1,
+     "total": 91.7
+    }
+   ],
+   "compromissos": [
+    {
+     "mes": "2026-11",
+     "descricao": "Loja Eletro Exemplo - Parcela 4/6",
+     "valor": 250.0,
+     "parcela": "4/6",
+     "pessoa": null
+    },
+    {
+     "mes": "2026-12",
+     "descricao": "Loja Eletro Exemplo - Parcela 5/6",
+     "valor": 250.0,
+     "parcela": "5/6",
+     "pessoa": null
+    },
+    {
+     "mes": "2027-01",
+     "descricao": "Loja Eletro Exemplo - Parcela 6/6",
+     "valor": 250.0,
+     "parcela": "6/6",
+     "pessoa": null
+    }
+   ],
+   "plano": [
+    {
+     "mes": "2026-11",
+     "renda": 2600.0,
+     "custo": 2710.0,
+     "cartao": 1206.25,
+     "reembolsos": 0.0,
+     "unicos": 0,
+     "aportes": 550.0,
+     "resultado": -1866.25,
+     "falta": 1866.25,
+     "pago_pessoas": 0.0,
+     "deve_pessoas": 0.0,
+     "livre": 0.0,
+     "metas": 550.0
+    },
+    {
+     "mes": "2026-12",
+     "renda": 2600.0,
+     "custo": 2710.0,
+     "cartao": 250.0,
+     "reembolsos": 0.0,
+     "unicos": 2600.0,
+     "aportes": 550.0,
+     "resultado": 1690.0,
+     "falta": 0.0,
+     "pago_pessoas": 0.0,
+     "deve_pessoas": 0.0,
+     "livre": 1690.0,
+     "metas": 1100.0
+    },
+    {
+     "mes": "2027-01",
+     "renda": 2600.0,
+     "custo": 2710.0,
+     "cartao": 250.0,
+     "reembolsos": 0.0,
+     "unicos": -1800.0,
+     "aportes": 550.0,
+     "resultado": -2710.0,
+     "falta": 2710.0,
+     "pago_pessoas": 0.0,
+     "deve_pessoas": 0.0,
+     "livre": 1690.0,
+     "metas": 1650.0
+    },
+    {
+     "mes": "2027-02",
+     "renda": 2600.0,
+     "custo": 2710.0,
+     "cartao": 250.0,
+     "reembolsos": 0.0,
+     "unicos": 0,
+     "aportes": 550.0,
+     "resultado": -910.0,
+     "falta": 910.0,
+     "pago_pessoas": 0.0,
+     "deve_pessoas": 0.0,
+     "livre": 1690.0,
+     "metas": 2200.0
+    },
+    {
+     "mes": "2027-03",
+     "renda": 2600.0,
+     "custo": 2710.0,
+     "cartao": 0.0,
+     "reembolsos": 0.0,
+     "unicos": 0,
+     "aportes": 550.0,
+     "resultado": -660.0,
+     "falta": 660.0,
+     "pago_pessoas": 0.0,
+     "deve_pessoas": 0.0,
+     "livre": 1690.0,
+     "metas": 2750.0
+    }
+   ],
+   "plano_falta": 6146.25,
+   "entradas": {
+    "salario": 2600.0,
+    "pais": 200.0
+   }
+  },
+  "depois": {
+   "periodo": "2026-10",
+   "totais": {
+    "renda": 2800.0,
+    "gasto": 1921.55,
+    "juros": 4.9,
+    "resultado": 878.45
+   },
+   "pode_gastar": 1048.58,
+   "teto_variavel": 1680.0,
+   "gasto_variavel": 631.42,
+   "ritmo": 0.6452,
+   "pendentes": 3,
+   "conta": {
+    "saldo": 3753.24,
+    "saldo_real": null,
+    "diferenca": null,
+    "cobertura": "2026-10-16"
+   },
+   "cartao": {
+    "divida": 1206.25,
+    "futuras": 750.0,
+    "limite": 3000.0,
+    "limite_livre": 1043.75
+   },
+   "pessoas": {
+    "marina": {
+     "saldo": 650.0,
+     "a_vencer": 0
+    },
+    "teo": {
+     "saldo": 60.0,
+     "a_vencer": 0
+    },
+    "mae": {
+     "saldo": 0.0,
+     "a_vencer": 0
+    }
+   },
+   "metas": {
+    "Reserva de emergência": {
+     "planejado_periodo": 300.0,
+     "guardado_periodo": 300.0,
+     "guardado_total": 1800.0,
+     "falta_periodo": 0.0,
+     "completude_alvo": 0.3
+    },
+    "Notebook novo": {
+     "planejado_periodo": 250.0,
+     "guardado_periodo": 0,
+     "guardado_total": 0,
+     "falta_periodo": 250.0,
+     "completude_alvo": 0.0,
+     "por_mes_ate_prazo": 562.5
+    }
+   },
+   "categorias": {
+    "aluguel-condominio": {
+     "nome": "Aluguel e condomínio",
+     "gasto": 650.0,
+     "parcelas": 0.0,
+     "teto": 650.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "contas-casa": {
+     "nome": "Contas da casa (luz, gás, internet)",
+     "gasto": 91.7,
+     "parcelas": 0.0,
+     "teto": 150.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "casa-moveis": {
+     "nome": "Casa e móveis",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "mercado": {
+     "nome": "Mercado planejado",
+     "gasto": 406.13,
+     "parcelas": 0.0,
+     "teto": 600.0,
+     "acima": 0.0,
+     "n": 3
+    },
+    "ru": {
+     "nome": "RU (dias de aula)",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "conveniencia": {
+     "nome": "Conveniência e lanches",
+     "gasto": 17.93,
+     "parcelas": 0.0,
+     "teto": 100.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "delivery": {
+     "nome": "Delivery e restaurante",
+     "gasto": 105.3,
+     "parcelas": 0.0,
+     "teto": 250.0,
+     "acima": 0.0,
+     "n": 3
+    },
+    "remedios": {
+     "nome": "Remédios",
+     "gasto": 43.73,
+     "parcelas": 0.0,
+     "teto": 80.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "consultas": {
+     "nome": "Consultas e terapia",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "academia": {
+     "nome": "Academia",
+     "gasto": 90.0,
+     "parcelas": 0.0,
+     "teto": 90.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "saude-outros": {
+     "nome": "Saúde (outros)",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "app-transporte": {
+     "nome": "App (Uber/99)",
+     "gasto": 66.22,
+     "parcelas": 0.0,
+     "teto": 150.0,
+     "acima": 0.0,
+     "n": 3
+    },
+    "onibus": {
+     "nome": "Ônibus e combustível",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": 80.0,
+     "acima": 0.0,
+     "n": 0
+    },
+    "assinaturas": {
+     "nome": "Assinaturas e celular",
+     "gasto": 59.8,
+     "parcelas": 0.0,
+     "teto": 60.0,
+     "acima": 0.0,
+     "n": 2
+    },
+    "ferramentas": {
+     "nome": "Ferramentas de trabalho",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "eletronicos": {
+     "nome": "Eletrônicos",
+     "gasto": 0.0,
+     "parcelas": 250.0,
+     "teto": 150.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "vestuario": {
+     "nome": "Vestuário e imagem",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": 150.0,
+     "acima": 0.0,
+     "n": 0
+    },
+    "lazer": {
+     "nome": "Lazer e rolê",
+     "gasto": 35.84,
+     "parcelas": 0.0,
+     "teto": 200.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "viagem": {
+     "nome": "Viagem",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "hobbies": {
+     "nome": "Hobbies",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "pets": {
+     "nome": "Pets",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "familia": {
+     "nome": "Família e presentes",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "juros": {
+     "nome": "Juros e taxas",
+     "gasto": 4.9,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 1
+    },
+    "outros": {
+     "nome": "Outros",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    }
+   },
+   "grupos": {
+    "Moradia": 741.7,
+    "Alimentação": 529.36,
+    "Saúde": 133.73,
+    "Transporte": 66.22,
+    "Assinaturas": 59.8,
+    "Compras": 250.0,
+    "Lazer": 35.84,
+    "Financeiro": 4.9
+   },
+   "top": [
+    {
+     "nome": "IMOBILIARIA EXEMPLO LTDA",
+     "n": 1,
+     "total": 650.0
+    },
+    {
+     "nome": "Supermercado Exemplo",
+     "n": 2,
+     "total": 361.13
+    },
+    {
+     "nome": "Loja Eletro Exemplo - Parcela 3/6",
+     "n": 1,
+     "total": 250.0
+    },
+    {
+     "nome": "Picpay*Recarga Exemplo",
+     "n": 2,
+     "total": 104.9
+    },
+    {
+     "nome": "LUZ DISTRIBUIDORA EXEMPLO",
+     "n": 1,
+     "total": 91.7
+    }
+   ],
+   "compromissos": [
+    {
+     "mes": "2026-11",
+     "descricao": "Loja Eletro Exemplo - Parcela 4/6",
+     "valor": 250.0,
+     "parcela": "4/6",
+     "pessoa": null
+    },
+    {
+     "mes": "2026-12",
+     "descricao": "Loja Eletro Exemplo - Parcela 5/6",
+     "valor": 250.0,
+     "parcela": "5/6",
+     "pessoa": null
+    },
+    {
+     "mes": "2027-01",
+     "descricao": "Loja Eletro Exemplo - Parcela 6/6",
+     "valor": 250.0,
+     "parcela": "6/6",
+     "pessoa": null
+    }
+   ],
+   "plano": [
+    {
+     "mes": "2026-11",
+     "renda": 2600.0,
+     "custo": 2710.0,
+     "cartao": 1206.25,
+     "reembolsos": 0.0,
+     "unicos": 0,
+     "aportes": 550.0,
+     "resultado": -1866.25,
+     "falta": 1866.25,
+     "pago_pessoas": 0.0,
+     "deve_pessoas": 0.0,
+     "livre": 0.0,
+     "metas": 550.0
+    },
+    {
+     "mes": "2026-12",
+     "renda": 2600.0,
+     "custo": 2710.0,
+     "cartao": 250.0,
+     "reembolsos": 0.0,
+     "unicos": 2600.0,
+     "aportes": 550.0,
+     "resultado": 1690.0,
+     "falta": 0.0,
+     "pago_pessoas": 0.0,
+     "deve_pessoas": 0.0,
+     "livre": 1690.0,
+     "metas": 1100.0
+    },
+    {
+     "mes": "2027-01",
+     "renda": 2600.0,
+     "custo": 2710.0,
+     "cartao": 250.0,
+     "reembolsos": 0.0,
+     "unicos": -1800.0,
+     "aportes": 550.0,
+     "resultado": -2710.0,
+     "falta": 2710.0,
+     "pago_pessoas": 0.0,
+     "deve_pessoas": 0.0,
+     "livre": 1690.0,
+     "metas": 1650.0
+    },
+    {
+     "mes": "2027-02",
+     "renda": 2600.0,
+     "custo": 2710.0,
+     "cartao": 250.0,
+     "reembolsos": 0.0,
+     "unicos": 0,
+     "aportes": 550.0,
+     "resultado": -910.0,
+     "falta": 910.0,
+     "pago_pessoas": 0.0,
+     "deve_pessoas": 0.0,
+     "livre": 1690.0,
+     "metas": 2200.0
+    },
+    {
+     "mes": "2027-03",
+     "renda": 2600.0,
+     "custo": 2710.0,
+     "cartao": 0.0,
+     "reembolsos": 0.0,
+     "unicos": 0,
+     "aportes": 550.0,
+     "resultado": -660.0,
+     "falta": 660.0,
+     "pago_pessoas": 0.0,
+     "deve_pessoas": 0.0,
+     "livre": 1690.0,
+     "metas": 2750.0
+    }
+   ],
+   "plano_falta": 6146.25,
+   "entradas": {
+    "salario": 2600.0,
+    "pais": 200.0
+   }
+  },
+  "detalhe": {
+   "id": 164
+  }
+ },
+ "pendente": {
+  "antes": {
+   "periodo": "2026-10",
+   "totais": {
+    "renda": 2800.0,
+    "gasto": 1921.55,
+    "juros": 4.9,
+    "resultado": 878.45
+   },
+   "pode_gastar": 1048.58,
+   "teto_variavel": 1680.0,
+   "gasto_variavel": 631.42,
+   "ritmo": 0.6452,
+   "pendentes": 3,
+   "conta": {
+    "saldo": 3753.24,
+    "saldo_real": null,
+    "diferenca": null,
+    "cobertura": "2026-10-16"
+   },
+   "cartao": {
+    "divida": 1206.25,
+    "futuras": 750.0,
+    "limite": 3000.0,
+    "limite_livre": 1043.75
+   },
+   "pessoas": {
+    "marina": {
+     "saldo": 650.0,
+     "a_vencer": 0
+    },
+    "teo": {
+     "saldo": 60.0,
+     "a_vencer": 0
+    },
+    "mae": {
+     "saldo": 0.0,
+     "a_vencer": 0
+    }
+   },
+   "metas": {
+    "Reserva de emergência": {
+     "planejado_periodo": 300.0,
+     "guardado_periodo": 300.0,
+     "guardado_total": 1800.0,
+     "falta_periodo": 0.0,
+     "completude_alvo": 0.3
+    },
+    "Notebook novo": {
+     "planejado_periodo": 250.0,
+     "guardado_periodo": 0,
+     "guardado_total": 0,
+     "falta_periodo": 250.0,
+     "completude_alvo": 0.0,
+     "por_mes_ate_prazo": 562.5
+    }
+   },
+   "categorias": {
+    "aluguel-condominio": {
+     "nome": "Aluguel e condomínio",
+     "gasto": 650.0,
+     "parcelas": 0.0,
+     "teto": 650.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "contas-casa": {
+     "nome": "Contas da casa (luz, gás, internet)",
+     "gasto": 91.7,
+     "parcelas": 0.0,
+     "teto": 150.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "casa-moveis": {
+     "nome": "Casa e móveis",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "mercado": {
+     "nome": "Mercado planejado",
+     "gasto": 406.13,
+     "parcelas": 0.0,
+     "teto": 600.0,
+     "acima": 0.0,
+     "n": 3
+    },
+    "ru": {
+     "nome": "RU (dias de aula)",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "conveniencia": {
+     "nome": "Conveniência e lanches",
+     "gasto": 17.93,
+     "parcelas": 0.0,
+     "teto": 100.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "delivery": {
+     "nome": "Delivery e restaurante",
+     "gasto": 105.3,
+     "parcelas": 0.0,
+     "teto": 250.0,
+     "acima": 0.0,
+     "n": 3
+    },
+    "remedios": {
+     "nome": "Remédios",
+     "gasto": 43.73,
+     "parcelas": 0.0,
+     "teto": 80.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "consultas": {
+     "nome": "Consultas e terapia",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "academia": {
+     "nome": "Academia",
+     "gasto": 90.0,
+     "parcelas": 0.0,
+     "teto": 90.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "saude-outros": {
+     "nome": "Saúde (outros)",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "app-transporte": {
+     "nome": "App (Uber/99)",
+     "gasto": 66.22,
+     "parcelas": 0.0,
+     "teto": 150.0,
+     "acima": 0.0,
+     "n": 3
+    },
+    "onibus": {
+     "nome": "Ônibus e combustível",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": 80.0,
+     "acima": 0.0,
+     "n": 0
+    },
+    "assinaturas": {
+     "nome": "Assinaturas e celular",
+     "gasto": 59.8,
+     "parcelas": 0.0,
+     "teto": 60.0,
+     "acima": 0.0,
+     "n": 2
+    },
+    "ferramentas": {
+     "nome": "Ferramentas de trabalho",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "eletronicos": {
+     "nome": "Eletrônicos",
+     "gasto": 0.0,
+     "parcelas": 250.0,
+     "teto": 150.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "vestuario": {
+     "nome": "Vestuário e imagem",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": 150.0,
+     "acima": 0.0,
+     "n": 0
+    },
+    "lazer": {
+     "nome": "Lazer e rolê",
+     "gasto": 35.84,
+     "parcelas": 0.0,
+     "teto": 200.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "viagem": {
+     "nome": "Viagem",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "hobbies": {
+     "nome": "Hobbies",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "pets": {
+     "nome": "Pets",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "familia": {
+     "nome": "Família e presentes",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "juros": {
+     "nome": "Juros e taxas",
+     "gasto": 4.9,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 1
+    },
+    "outros": {
+     "nome": "Outros",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    }
+   },
+   "grupos": {
+    "Moradia": 741.7,
+    "Alimentação": 529.36,
+    "Saúde": 133.73,
+    "Transporte": 66.22,
+    "Assinaturas": 59.8,
+    "Compras": 250.0,
+    "Lazer": 35.84,
+    "Financeiro": 4.9
+   },
+   "top": [
+    {
+     "nome": "IMOBILIARIA EXEMPLO LTDA",
+     "n": 1,
+     "total": 650.0
+    },
+    {
+     "nome": "Supermercado Exemplo",
+     "n": 2,
+     "total": 361.13
+    },
+    {
+     "nome": "Loja Eletro Exemplo - Parcela 3/6",
+     "n": 1,
+     "total": 250.0
+    },
+    {
+     "nome": "Picpay*Recarga Exemplo",
+     "n": 2,
+     "total": 104.9
+    },
+    {
+     "nome": "LUZ DISTRIBUIDORA EXEMPLO",
+     "n": 1,
+     "total": 91.7
+    }
+   ],
+   "compromissos": [
+    {
+     "mes": "2026-11",
+     "descricao": "Loja Eletro Exemplo - Parcela 4/6",
+     "valor": 250.0,
+     "parcela": "4/6",
+     "pessoa": null
+    },
+    {
+     "mes": "2026-12",
+     "descricao": "Loja Eletro Exemplo - Parcela 5/6",
+     "valor": 250.0,
+     "parcela": "5/6",
+     "pessoa": null
+    },
+    {
+     "mes": "2027-01",
+     "descricao": "Loja Eletro Exemplo - Parcela 6/6",
+     "valor": 250.0,
+     "parcela": "6/6",
+     "pessoa": null
+    }
+   ],
+   "plano": [
+    {
+     "mes": "2026-11",
+     "renda": 2600.0,
+     "custo": 2710.0,
+     "cartao": 1206.25,
+     "reembolsos": 0.0,
+     "unicos": 0,
+     "aportes": 550.0,
+     "resultado": -1866.25,
+     "falta": 1866.25,
+     "pago_pessoas": 0.0,
+     "deve_pessoas": 0.0,
+     "livre": 0.0,
+     "metas": 550.0
+    },
+    {
+     "mes": "2026-12",
+     "renda": 2600.0,
+     "custo": 2710.0,
+     "cartao": 250.0,
+     "reembolsos": 0.0,
+     "unicos": 2600.0,
+     "aportes": 550.0,
+     "resultado": 1690.0,
+     "falta": 0.0,
+     "pago_pessoas": 0.0,
+     "deve_pessoas": 0.0,
+     "livre": 1690.0,
+     "metas": 1100.0
+    },
+    {
+     "mes": "2027-01",
+     "renda": 2600.0,
+     "custo": 2710.0,
+     "cartao": 250.0,
+     "reembolsos": 0.0,
+     "unicos": -1800.0,
+     "aportes": 550.0,
+     "resultado": -2710.0,
+     "falta": 2710.0,
+     "pago_pessoas": 0.0,
+     "deve_pessoas": 0.0,
+     "livre": 1690.0,
+     "metas": 1650.0
+    },
+    {
+     "mes": "2027-02",
+     "renda": 2600.0,
+     "custo": 2710.0,
+     "cartao": 250.0,
+     "reembolsos": 0.0,
+     "unicos": 0,
+     "aportes": 550.0,
+     "resultado": -910.0,
+     "falta": 910.0,
+     "pago_pessoas": 0.0,
+     "deve_pessoas": 0.0,
+     "livre": 1690.0,
+     "metas": 2200.0
+    },
+    {
+     "mes": "2027-03",
+     "renda": 2600.0,
+     "custo": 2710.0,
+     "cartao": 0.0,
+     "reembolsos": 0.0,
+     "unicos": 0,
+     "aportes": 550.0,
+     "resultado": -660.0,
+     "falta": 660.0,
+     "pago_pessoas": 0.0,
+     "deve_pessoas": 0.0,
+     "livre": 1690.0,
+     "metas": 2750.0
+    }
+   ],
+   "plano_falta": 6146.25,
+   "entradas": {
+    "salario": 2600.0,
+    "pais": 200.0
+   }
+  },
+  "depois": {
+   "periodo": "2026-10",
+   "totais": {
+    "renda": 2800.0,
+    "gasto": 2011.45,
+    "juros": 4.9,
+    "resultado": 788.55
+   },
+   "pode_gastar": 958.68,
+   "teto_variavel": 1680.0,
+   "gasto_variavel": 721.32,
+   "ritmo": 0.6452,
+   "pendentes": 2,
+   "conta": {
+    "saldo": 3753.24,
+    "saldo_real": null,
+    "diferenca": null,
+    "cobertura": "2026-10-16"
+   },
+   "cartao": {
+    "divida": 1206.25,
+    "futuras": 750.0,
+    "limite": 3000.0,
+    "limite_livre": 1043.75
+   },
+   "pessoas": {
+    "marina": {
+     "saldo": 650.0,
+     "a_vencer": 0
+    },
+    "teo": {
+     "saldo": 60.0,
+     "a_vencer": 0
+    },
+    "mae": {
+     "saldo": 0.0,
+     "a_vencer": 0
+    }
+   },
+   "metas": {
+    "Reserva de emergência": {
+     "planejado_periodo": 300.0,
+     "guardado_periodo": 300.0,
+     "guardado_total": 1800.0,
+     "falta_periodo": 0.0,
+     "completude_alvo": 0.3
+    },
+    "Notebook novo": {
+     "planejado_periodo": 250.0,
+     "guardado_periodo": 0,
+     "guardado_total": 0,
+     "falta_periodo": 250.0,
+     "completude_alvo": 0.0,
+     "por_mes_ate_prazo": 562.5
+    }
+   },
+   "categorias": {
+    "aluguel-condominio": {
+     "nome": "Aluguel e condomínio",
+     "gasto": 650.0,
+     "parcelas": 0.0,
+     "teto": 650.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "contas-casa": {
+     "nome": "Contas da casa (luz, gás, internet)",
+     "gasto": 91.7,
+     "parcelas": 0.0,
+     "teto": 150.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "casa-moveis": {
+     "nome": "Casa e móveis",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "mercado": {
+     "nome": "Mercado planejado",
+     "gasto": 406.13,
+     "parcelas": 0.0,
+     "teto": 600.0,
+     "acima": 0.0,
+     "n": 3
+    },
+    "ru": {
+     "nome": "RU (dias de aula)",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "conveniencia": {
+     "nome": "Conveniência e lanches",
+     "gasto": 17.93,
+     "parcelas": 0.0,
+     "teto": 100.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "delivery": {
+     "nome": "Delivery e restaurante",
+     "gasto": 105.3,
+     "parcelas": 0.0,
+     "teto": 250.0,
+     "acima": 0.0,
+     "n": 3
+    },
+    "remedios": {
+     "nome": "Remédios",
+     "gasto": 43.73,
+     "parcelas": 0.0,
+     "teto": 80.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "consultas": {
+     "nome": "Consultas e terapia",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "academia": {
+     "nome": "Academia",
+     "gasto": 90.0,
+     "parcelas": 0.0,
+     "teto": 90.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "saude-outros": {
+     "nome": "Saúde (outros)",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "app-transporte": {
+     "nome": "App (Uber/99)",
+     "gasto": 66.22,
+     "parcelas": 0.0,
+     "teto": 150.0,
+     "acima": 0.0,
+     "n": 3
+    },
+    "onibus": {
+     "nome": "Ônibus e combustível",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": 80.0,
+     "acima": 0.0,
+     "n": 0
+    },
+    "assinaturas": {
+     "nome": "Assinaturas e celular",
+     "gasto": 59.8,
+     "parcelas": 0.0,
+     "teto": 60.0,
+     "acima": 0.0,
+     "n": 2
+    },
+    "ferramentas": {
+     "nome": "Ferramentas de trabalho",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "eletronicos": {
+     "nome": "Eletrônicos",
+     "gasto": 0.0,
+     "parcelas": 250.0,
+     "teto": 150.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "vestuario": {
+     "nome": "Vestuário e imagem",
+     "gasto": 89.9,
+     "parcelas": 0.0,
+     "teto": 150.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "lazer": {
+     "nome": "Lazer e rolê",
+     "gasto": 35.84,
+     "parcelas": 0.0,
+     "teto": 200.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "viagem": {
+     "nome": "Viagem",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "hobbies": {
+     "nome": "Hobbies",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "pets": {
+     "nome": "Pets",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "familia": {
+     "nome": "Família e presentes",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "juros": {
+     "nome": "Juros e taxas",
+     "gasto": 4.9,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 1
+    },
+    "outros": {
+     "nome": "Outros",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    }
+   },
+   "grupos": {
+    "Moradia": 741.7,
+    "Alimentação": 529.36,
+    "Saúde": 133.73,
+    "Transporte": 66.22,
+    "Assinaturas": 59.8,
+    "Compras": 339.9,
+    "Lazer": 35.84,
+    "Financeiro": 4.9
+   },
+   "top": [
+    {
+     "nome": "IMOBILIARIA EXEMPLO LTDA",
+     "n": 1,
+     "total": 650.0
+    },
+    {
+     "nome": "Supermercado Exemplo",
+     "n": 2,
+     "total": 361.13
+    },
+    {
+     "nome": "Loja Eletro Exemplo - Parcela 3/6",
+     "n": 1,
+     "total": 250.0
+    },
+    {
+     "nome": "Picpay*Recarga Exemplo",
+     "n": 2,
+     "total": 104.9
+    },
+    {
+     "nome": "LUZ DISTRIBUIDORA EXEMPLO",
+     "n": 1,
+     "total": 91.7
+    }
+   ],
+   "compromissos": [
+    {
+     "mes": "2026-11",
+     "descricao": "Loja Eletro Exemplo - Parcela 4/6",
+     "valor": 250.0,
+     "parcela": "4/6",
+     "pessoa": null
+    },
+    {
+     "mes": "2026-12",
+     "descricao": "Loja Eletro Exemplo - Parcela 5/6",
+     "valor": 250.0,
+     "parcela": "5/6",
+     "pessoa": null
+    },
+    {
+     "mes": "2027-01",
+     "descricao": "Loja Eletro Exemplo - Parcela 6/6",
+     "valor": 250.0,
+     "parcela": "6/6",
+     "pessoa": null
+    }
+   ],
+   "plano": [
+    {
+     "mes": "2026-11",
+     "renda": 2600.0,
+     "custo": 2710.0,
+     "cartao": 1206.25,
+     "reembolsos": 0.0,
+     "unicos": 0,
+     "aportes": 550.0,
+     "resultado": -1866.25,
+     "falta": 1866.25,
+     "pago_pessoas": 0.0,
+     "deve_pessoas": 0.0,
+     "livre": 0.0,
+     "metas": 550.0
+    },
+    {
+     "mes": "2026-12",
+     "renda": 2600.0,
+     "custo": 2710.0,
+     "cartao": 250.0,
+     "reembolsos": 0.0,
+     "unicos": 2600.0,
+     "aportes": 550.0,
+     "resultado": 1690.0,
+     "falta": 0.0,
+     "pago_pessoas": 0.0,
+     "deve_pessoas": 0.0,
+     "livre": 1690.0,
+     "metas": 1100.0
+    },
+    {
+     "mes": "2027-01",
+     "renda": 2600.0,
+     "custo": 2710.0,
+     "cartao": 250.0,
+     "reembolsos": 0.0,
+     "unicos": -1800.0,
+     "aportes": 550.0,
+     "resultado": -2710.0,
+     "falta": 2710.0,
+     "pago_pessoas": 0.0,
+     "deve_pessoas": 0.0,
+     "livre": 1690.0,
+     "metas": 1650.0
+    },
+    {
+     "mes": "2027-02",
+     "renda": 2600.0,
+     "custo": 2710.0,
+     "cartao": 250.0,
+     "reembolsos": 0.0,
+     "unicos": 0,
+     "aportes": 550.0,
+     "resultado": -910.0,
+     "falta": 910.0,
+     "pago_pessoas": 0.0,
+     "deve_pessoas": 0.0,
+     "livre": 1690.0,
+     "metas": 2200.0
+    },
+    {
+     "mes": "2027-03",
+     "renda": 2600.0,
+     "custo": 2710.0,
+     "cartao": 0.0,
+     "reembolsos": 0.0,
+     "unicos": 0,
+     "aportes": 550.0,
+     "resultado": -660.0,
+     "falta": 660.0,
+     "pago_pessoas": 0.0,
+     "deve_pessoas": 0.0,
+     "livre": 1690.0,
+     "metas": 2750.0
+    }
+   ],
+   "plano_falta": 6146.25,
+   "entradas": {
+    "salario": 2600.0,
+    "pais": 200.0
+   }
+  },
+  "detalhe": {
+   "ok": true,
+   "regra": "LOJA NOVA EXEMPLO"
+  }
+ },
+ "extrato": {
+  "antes": {
+   "periodo": "2026-10",
+   "totais": {
+    "renda": 2800.0,
+    "gasto": 2011.45,
+    "juros": 4.9,
+    "resultado": 788.55
+   },
+   "pode_gastar": 958.68,
+   "teto_variavel": 1680.0,
+   "gasto_variavel": 721.32,
+   "ritmo": 0.6452,
+   "pendentes": 2,
+   "conta": {
+    "saldo": 3753.24,
+    "saldo_real": null,
+    "diferenca": null,
+    "cobertura": "2026-10-16"
+   },
+   "cartao": {
+    "divida": 1206.25,
+    "futuras": 750.0,
+    "limite": 3000.0,
+    "limite_livre": 1043.75
+   },
+   "pessoas": {
+    "marina": {
+     "saldo": 650.0,
+     "a_vencer": 0
+    },
+    "teo": {
+     "saldo": 60.0,
+     "a_vencer": 0
+    },
+    "mae": {
+     "saldo": 0.0,
+     "a_vencer": 0
+    }
+   },
+   "metas": {
+    "Reserva de emergência": {
+     "planejado_periodo": 300.0,
+     "guardado_periodo": 300.0,
+     "guardado_total": 1800.0,
+     "falta_periodo": 0.0,
+     "completude_alvo": 0.3
+    },
+    "Notebook novo": {
+     "planejado_periodo": 250.0,
+     "guardado_periodo": 0,
+     "guardado_total": 0,
+     "falta_periodo": 250.0,
+     "completude_alvo": 0.0,
+     "por_mes_ate_prazo": 562.5
+    }
+   },
+   "categorias": {
+    "aluguel-condominio": {
+     "nome": "Aluguel e condomínio",
+     "gasto": 650.0,
+     "parcelas": 0.0,
+     "teto": 650.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "contas-casa": {
+     "nome": "Contas da casa (luz, gás, internet)",
+     "gasto": 91.7,
+     "parcelas": 0.0,
+     "teto": 150.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "casa-moveis": {
+     "nome": "Casa e móveis",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "mercado": {
+     "nome": "Mercado planejado",
+     "gasto": 406.13,
+     "parcelas": 0.0,
+     "teto": 600.0,
+     "acima": 0.0,
+     "n": 3
+    },
+    "ru": {
+     "nome": "RU (dias de aula)",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "conveniencia": {
+     "nome": "Conveniência e lanches",
+     "gasto": 17.93,
+     "parcelas": 0.0,
+     "teto": 100.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "delivery": {
+     "nome": "Delivery e restaurante",
+     "gasto": 105.3,
+     "parcelas": 0.0,
+     "teto": 250.0,
+     "acima": 0.0,
+     "n": 3
+    },
+    "remedios": {
+     "nome": "Remédios",
+     "gasto": 43.73,
+     "parcelas": 0.0,
+     "teto": 80.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "consultas": {
+     "nome": "Consultas e terapia",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "academia": {
+     "nome": "Academia",
+     "gasto": 90.0,
+     "parcelas": 0.0,
+     "teto": 90.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "saude-outros": {
+     "nome": "Saúde (outros)",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "app-transporte": {
+     "nome": "App (Uber/99)",
+     "gasto": 66.22,
+     "parcelas": 0.0,
+     "teto": 150.0,
+     "acima": 0.0,
+     "n": 3
+    },
+    "onibus": {
+     "nome": "Ônibus e combustível",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": 80.0,
+     "acima": 0.0,
+     "n": 0
+    },
+    "assinaturas": {
+     "nome": "Assinaturas e celular",
+     "gasto": 59.8,
+     "parcelas": 0.0,
+     "teto": 60.0,
+     "acima": 0.0,
+     "n": 2
+    },
+    "ferramentas": {
+     "nome": "Ferramentas de trabalho",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "eletronicos": {
+     "nome": "Eletrônicos",
+     "gasto": 0.0,
+     "parcelas": 250.0,
+     "teto": 150.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "vestuario": {
+     "nome": "Vestuário e imagem",
+     "gasto": 89.9,
+     "parcelas": 0.0,
+     "teto": 150.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "lazer": {
+     "nome": "Lazer e rolê",
+     "gasto": 35.84,
+     "parcelas": 0.0,
+     "teto": 200.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "viagem": {
+     "nome": "Viagem",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "hobbies": {
+     "nome": "Hobbies",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "pets": {
+     "nome": "Pets",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "familia": {
+     "nome": "Família e presentes",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "juros": {
+     "nome": "Juros e taxas",
+     "gasto": 4.9,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 1
+    },
+    "outros": {
+     "nome": "Outros",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    }
+   },
+   "grupos": {
+    "Moradia": 741.7,
+    "Alimentação": 529.36,
+    "Saúde": 133.73,
+    "Transporte": 66.22,
+    "Assinaturas": 59.8,
+    "Compras": 339.9,
+    "Lazer": 35.84,
+    "Financeiro": 4.9
+   },
+   "top": [
+    {
+     "nome": "IMOBILIARIA EXEMPLO LTDA",
+     "n": 1,
+     "total": 650.0
+    },
+    {
+     "nome": "Supermercado Exemplo",
+     "n": 2,
+     "total": 361.13
+    },
+    {
+     "nome": "Loja Eletro Exemplo - Parcela 3/6",
+     "n": 1,
+     "total": 250.0
+    },
+    {
+     "nome": "Picpay*Recarga Exemplo",
+     "n": 2,
+     "total": 104.9
+    },
+    {
+     "nome": "LUZ DISTRIBUIDORA EXEMPLO",
+     "n": 1,
+     "total": 91.7
+    }
+   ],
+   "compromissos": [
+    {
+     "mes": "2026-11",
+     "descricao": "Loja Eletro Exemplo - Parcela 4/6",
+     "valor": 250.0,
+     "parcela": "4/6",
+     "pessoa": null
+    },
+    {
+     "mes": "2026-12",
+     "descricao": "Loja Eletro Exemplo - Parcela 5/6",
+     "valor": 250.0,
+     "parcela": "5/6",
+     "pessoa": null
+    },
+    {
+     "mes": "2027-01",
+     "descricao": "Loja Eletro Exemplo - Parcela 6/6",
+     "valor": 250.0,
+     "parcela": "6/6",
+     "pessoa": null
+    }
+   ],
+   "plano": [
+    {
+     "mes": "2026-11",
+     "renda": 2600.0,
+     "custo": 2710.0,
+     "cartao": 1206.25,
+     "reembolsos": 0.0,
+     "unicos": 0,
+     "aportes": 550.0,
+     "resultado": -1866.25,
+     "falta": 1866.25,
+     "pago_pessoas": 0.0,
+     "deve_pessoas": 0.0,
+     "livre": 0.0,
+     "metas": 550.0
+    },
+    {
+     "mes": "2026-12",
+     "renda": 2600.0,
+     "custo": 2710.0,
+     "cartao": 250.0,
+     "reembolsos": 0.0,
+     "unicos": 2600.0,
+     "aportes": 550.0,
+     "resultado": 1690.0,
+     "falta": 0.0,
+     "pago_pessoas": 0.0,
+     "deve_pessoas": 0.0,
+     "livre": 1690.0,
+     "metas": 1100.0
+    },
+    {
+     "mes": "2027-01",
+     "renda": 2600.0,
+     "custo": 2710.0,
+     "cartao": 250.0,
+     "reembolsos": 0.0,
+     "unicos": -1800.0,
+     "aportes": 550.0,
+     "resultado": -2710.0,
+     "falta": 2710.0,
+     "pago_pessoas": 0.0,
+     "deve_pessoas": 0.0,
+     "livre": 1690.0,
+     "metas": 1650.0
+    },
+    {
+     "mes": "2027-02",
+     "renda": 2600.0,
+     "custo": 2710.0,
+     "cartao": 250.0,
+     "reembolsos": 0.0,
+     "unicos": 0,
+     "aportes": 550.0,
+     "resultado": -910.0,
+     "falta": 910.0,
+     "pago_pessoas": 0.0,
+     "deve_pessoas": 0.0,
+     "livre": 1690.0,
+     "metas": 2200.0
+    },
+    {
+     "mes": "2027-03",
+     "renda": 2600.0,
+     "custo": 2710.0,
+     "cartao": 0.0,
+     "reembolsos": 0.0,
+     "unicos": 0,
+     "aportes": 550.0,
+     "resultado": -660.0,
+     "falta": 660.0,
+     "pago_pessoas": 0.0,
+     "deve_pessoas": 0.0,
+     "livre": 1690.0,
+     "metas": 2750.0
+    }
+   ],
+   "plano_falta": 6146.25,
+   "entradas": {
+    "salario": 2600.0,
+    "pais": 200.0
+   }
+  },
+  "depois": {
+   "periodo": "2026-10",
+   "totais": {
+    "renda": 2800.0,
+    "gasto": 2073.75,
+    "juros": 4.9,
+    "resultado": 726.25
+   },
+   "pode_gastar": 896.38,
+   "teto_variavel": 1680.0,
+   "gasto_variavel": 783.62,
+   "ritmo": 0.6452,
+   "pendentes": 3,
+   "conta": {
+    "saldo": 4340.94,
+    "saldo_real": null,
+    "diferenca": null,
+    "cobertura": "2026-10-19"
+   },
+   "cartao": {
+    "divida": 1206.25,
+    "futuras": 750.0,
+    "limite": 3000.0,
+    "limite_livre": 1043.75
+   },
+   "pessoas": {
+    "marina": {
+     "saldo": 650.0,
+     "a_vencer": 0
+    },
+    "teo": {
+     "saldo": 60.0,
+     "a_vencer": 0
+    },
+    "mae": {
+     "saldo": 0.0,
+     "a_vencer": 0
+    }
+   },
+   "metas": {
+    "Reserva de emergência": {
+     "planejado_periodo": 300.0,
+     "guardado_periodo": 300.0,
+     "guardado_total": 1800.0,
+     "falta_periodo": 0.0,
+     "completude_alvo": 0.3
+    },
+    "Notebook novo": {
+     "planejado_periodo": 250.0,
+     "guardado_periodo": 0,
+     "guardado_total": 0,
+     "falta_periodo": 250.0,
+     "completude_alvo": 0.0,
+     "por_mes_ate_prazo": 562.5
+    }
+   },
+   "categorias": {
+    "aluguel-condominio": {
+     "nome": "Aluguel e condomínio",
+     "gasto": 650.0,
+     "parcelas": 0.0,
+     "teto": 650.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "contas-casa": {
+     "nome": "Contas da casa (luz, gás, internet)",
+     "gasto": 91.7,
+     "parcelas": 0.0,
+     "teto": 150.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "casa-moveis": {
+     "nome": "Casa e móveis",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "mercado": {
+     "nome": "Mercado planejado",
+     "gasto": 468.43,
+     "parcelas": 0.0,
+     "teto": 600.0,
+     "acima": 0.0,
+     "n": 4
+    },
+    "ru": {
+     "nome": "RU (dias de aula)",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "conveniencia": {
+     "nome": "Conveniência e lanches",
+     "gasto": 17.93,
+     "parcelas": 0.0,
+     "teto": 100.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "delivery": {
+     "nome": "Delivery e restaurante",
+     "gasto": 105.3,
+     "parcelas": 0.0,
+     "teto": 250.0,
+     "acima": 0.0,
+     "n": 3
+    },
+    "remedios": {
+     "nome": "Remédios",
+     "gasto": 43.73,
+     "parcelas": 0.0,
+     "teto": 80.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "consultas": {
+     "nome": "Consultas e terapia",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "academia": {
+     "nome": "Academia",
+     "gasto": 90.0,
+     "parcelas": 0.0,
+     "teto": 90.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "saude-outros": {
+     "nome": "Saúde (outros)",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "app-transporte": {
+     "nome": "App (Uber/99)",
+     "gasto": 66.22,
+     "parcelas": 0.0,
+     "teto": 150.0,
+     "acima": 0.0,
+     "n": 3
+    },
+    "onibus": {
+     "nome": "Ônibus e combustível",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": 80.0,
+     "acima": 0.0,
+     "n": 0
+    },
+    "assinaturas": {
+     "nome": "Assinaturas e celular",
+     "gasto": 59.8,
+     "parcelas": 0.0,
+     "teto": 60.0,
+     "acima": 0.0,
+     "n": 2
+    },
+    "ferramentas": {
+     "nome": "Ferramentas de trabalho",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "eletronicos": {
+     "nome": "Eletrônicos",
+     "gasto": 0.0,
+     "parcelas": 250.0,
+     "teto": 150.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "vestuario": {
+     "nome": "Vestuário e imagem",
+     "gasto": 89.9,
+     "parcelas": 0.0,
+     "teto": 150.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "lazer": {
+     "nome": "Lazer e rolê",
+     "gasto": 35.84,
+     "parcelas": 0.0,
+     "teto": 200.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "viagem": {
+     "nome": "Viagem",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "hobbies": {
+     "nome": "Hobbies",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "pets": {
+     "nome": "Pets",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "familia": {
+     "nome": "Família e presentes",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "juros": {
+     "nome": "Juros e taxas",
+     "gasto": 4.9,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 1
+    },
+    "outros": {
+     "nome": "Outros",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    }
+   },
+   "grupos": {
+    "Moradia": 741.7,
+    "Alimentação": 591.66,
+    "Saúde": 133.73,
+    "Transporte": 66.22,
+    "Assinaturas": 59.8,
+    "Compras": 339.9,
+    "Lazer": 35.84,
+    "Financeiro": 4.9
+   },
+   "top": [
+    {
+     "nome": "IMOBILIARIA EXEMPLO LTDA",
+     "n": 1,
+     "total": 650.0
+    },
+    {
+     "nome": "Supermercado Exemplo",
+     "n": 2,
+     "total": 361.13
+    },
+    {
+     "nome": "Loja Eletro Exemplo - Parcela 3/6",
+     "n": 1,
+     "total": 250.0
+    },
+    {
+     "nome": "Picpay*Recarga Exemplo",
+     "n": 2,
+     "total": 104.9
+    },
+    {
+     "nome": "LUZ DISTRIBUIDORA EXEMPLO",
+     "n": 1,
+     "total": 91.7
+    }
+   ],
+   "compromissos": [
+    {
+     "mes": "2026-11",
+     "descricao": "Loja Eletro Exemplo - Parcela 4/6",
+     "valor": 250.0,
+     "parcela": "4/6",
+     "pessoa": null
+    },
+    {
+     "mes": "2026-12",
+     "descricao": "Loja Eletro Exemplo - Parcela 5/6",
+     "valor": 250.0,
+     "parcela": "5/6",
+     "pessoa": null
+    },
+    {
+     "mes": "2027-01",
+     "descricao": "Loja Eletro Exemplo - Parcela 6/6",
+     "valor": 250.0,
+     "parcela": "6/6",
+     "pessoa": null
+    }
+   ],
+   "plano": [
+    {
+     "mes": "2026-11",
+     "renda": 2600.0,
+     "custo": 2710.0,
+     "cartao": 1206.25,
+     "reembolsos": 0.0,
+     "unicos": 0,
+     "aportes": 550.0,
+     "resultado": -1866.25,
+     "falta": 1866.25,
+     "pago_pessoas": 0.0,
+     "deve_pessoas": 0.0,
+     "livre": 0.0,
+     "metas": 550.0
+    },
+    {
+     "mes": "2026-12",
+     "renda": 2600.0,
+     "custo": 2710.0,
+     "cartao": 250.0,
+     "reembolsos": 0.0,
+     "unicos": 2600.0,
+     "aportes": 550.0,
+     "resultado": 1690.0,
+     "falta": 0.0,
+     "pago_pessoas": 0.0,
+     "deve_pessoas": 0.0,
+     "livre": 1690.0,
+     "metas": 1100.0
+    },
+    {
+     "mes": "2027-01",
+     "renda": 2600.0,
+     "custo": 2710.0,
+     "cartao": 250.0,
+     "reembolsos": 0.0,
+     "unicos": -1800.0,
+     "aportes": 550.0,
+     "resultado": -2710.0,
+     "falta": 2710.0,
+     "pago_pessoas": 0.0,
+     "deve_pessoas": 0.0,
+     "livre": 1690.0,
+     "metas": 1650.0
+    },
+    {
+     "mes": "2027-02",
+     "renda": 2600.0,
+     "custo": 2710.0,
+     "cartao": 250.0,
+     "reembolsos": 0.0,
+     "unicos": 0,
+     "aportes": 550.0,
+     "resultado": -910.0,
+     "falta": 910.0,
+     "pago_pessoas": 0.0,
+     "deve_pessoas": 0.0,
+     "livre": 1690.0,
+     "metas": 2200.0
+    },
+    {
+     "mes": "2027-03",
+     "renda": 2600.0,
+     "custo": 2710.0,
+     "cartao": 0.0,
+     "reembolsos": 0.0,
+     "unicos": 0,
+     "aportes": 550.0,
+     "resultado": -660.0,
+     "falta": 660.0,
+     "pago_pessoas": 0.0,
+     "deve_pessoas": 0.0,
+     "livre": 1690.0,
+     "metas": 2750.0
+    }
+   ],
+   "plano_falta": 6146.25,
+   "entradas": {
+    "salario": 2600.0,
+    "pais": 200.0
+   }
+  },
+  "detalhe": [
+   {
+    "arquivo": "extrato-outubro.csv",
+    "tipo": "extrato_csv",
+    "novos": 2,
+    "casados": 1,
+    "repetidos": 0,
+    "futuras": 0,
+    "avisos": []
+   }
+  ]
+ },
+ "marina_sugestao": [
+  {
+   "valor": 650.0,
+   "natureza": "acerto",
+   "categoria": null,
+   "pessoa": "marina",
+   "meta": null,
+   "obs": "",
+   "motivo": "acerto com Marina (confira)"
+  }
+ ],
+ "acerto": {
+  "antes": {
+   "periodo": "2026-10",
+   "totais": {
+    "renda": 2800.0,
+    "gasto": 2073.75,
+    "juros": 4.9,
+    "resultado": 726.25
+   },
+   "pode_gastar": 896.38,
+   "teto_variavel": 1680.0,
+   "gasto_variavel": 783.62,
+   "ritmo": 0.6452,
+   "pendentes": 3,
+   "conta": {
+    "saldo": 4340.94,
+    "saldo_real": null,
+    "diferenca": null,
+    "cobertura": "2026-10-19"
+   },
+   "cartao": {
+    "divida": 1206.25,
+    "futuras": 750.0,
+    "limite": 3000.0,
+    "limite_livre": 1043.75
+   },
+   "pessoas": {
+    "marina": {
+     "saldo": 650.0,
+     "a_vencer": 0
+    },
+    "teo": {
+     "saldo": 60.0,
+     "a_vencer": 0
+    },
+    "mae": {
+     "saldo": 0.0,
+     "a_vencer": 0
+    }
+   },
+   "metas": {
+    "Reserva de emergência": {
+     "planejado_periodo": 300.0,
+     "guardado_periodo": 300.0,
+     "guardado_total": 1800.0,
+     "falta_periodo": 0.0,
+     "completude_alvo": 0.3
+    },
+    "Notebook novo": {
+     "planejado_periodo": 250.0,
+     "guardado_periodo": 0,
+     "guardado_total": 0,
+     "falta_periodo": 250.0,
+     "completude_alvo": 0.0,
+     "por_mes_ate_prazo": 562.5
+    }
+   },
+   "categorias": {
+    "aluguel-condominio": {
+     "nome": "Aluguel e condomínio",
+     "gasto": 650.0,
+     "parcelas": 0.0,
+     "teto": 650.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "contas-casa": {
+     "nome": "Contas da casa (luz, gás, internet)",
+     "gasto": 91.7,
+     "parcelas": 0.0,
+     "teto": 150.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "casa-moveis": {
+     "nome": "Casa e móveis",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "mercado": {
+     "nome": "Mercado planejado",
+     "gasto": 468.43,
+     "parcelas": 0.0,
+     "teto": 600.0,
+     "acima": 0.0,
+     "n": 4
+    },
+    "ru": {
+     "nome": "RU (dias de aula)",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "conveniencia": {
+     "nome": "Conveniência e lanches",
+     "gasto": 17.93,
+     "parcelas": 0.0,
+     "teto": 100.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "delivery": {
+     "nome": "Delivery e restaurante",
+     "gasto": 105.3,
+     "parcelas": 0.0,
+     "teto": 250.0,
+     "acima": 0.0,
+     "n": 3
+    },
+    "remedios": {
+     "nome": "Remédios",
+     "gasto": 43.73,
+     "parcelas": 0.0,
+     "teto": 80.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "consultas": {
+     "nome": "Consultas e terapia",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "academia": {
+     "nome": "Academia",
+     "gasto": 90.0,
+     "parcelas": 0.0,
+     "teto": 90.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "saude-outros": {
+     "nome": "Saúde (outros)",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "app-transporte": {
+     "nome": "App (Uber/99)",
+     "gasto": 66.22,
+     "parcelas": 0.0,
+     "teto": 150.0,
+     "acima": 0.0,
+     "n": 3
+    },
+    "onibus": {
+     "nome": "Ônibus e combustível",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": 80.0,
+     "acima": 0.0,
+     "n": 0
+    },
+    "assinaturas": {
+     "nome": "Assinaturas e celular",
+     "gasto": 59.8,
+     "parcelas": 0.0,
+     "teto": 60.0,
+     "acima": 0.0,
+     "n": 2
+    },
+    "ferramentas": {
+     "nome": "Ferramentas de trabalho",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "eletronicos": {
+     "nome": "Eletrônicos",
+     "gasto": 0.0,
+     "parcelas": 250.0,
+     "teto": 150.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "vestuario": {
+     "nome": "Vestuário e imagem",
+     "gasto": 89.9,
+     "parcelas": 0.0,
+     "teto": 150.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "lazer": {
+     "nome": "Lazer e rolê",
+     "gasto": 35.84,
+     "parcelas": 0.0,
+     "teto": 200.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "viagem": {
+     "nome": "Viagem",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "hobbies": {
+     "nome": "Hobbies",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "pets": {
+     "nome": "Pets",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "familia": {
+     "nome": "Família e presentes",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "juros": {
+     "nome": "Juros e taxas",
+     "gasto": 4.9,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 1
+    },
+    "outros": {
+     "nome": "Outros",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    }
+   },
+   "grupos": {
+    "Moradia": 741.7,
+    "Alimentação": 591.66,
+    "Saúde": 133.73,
+    "Transporte": 66.22,
+    "Assinaturas": 59.8,
+    "Compras": 339.9,
+    "Lazer": 35.84,
+    "Financeiro": 4.9
+   },
+   "top": [
+    {
+     "nome": "IMOBILIARIA EXEMPLO LTDA",
+     "n": 1,
+     "total": 650.0
+    },
+    {
+     "nome": "Supermercado Exemplo",
+     "n": 2,
+     "total": 361.13
+    },
+    {
+     "nome": "Loja Eletro Exemplo - Parcela 3/6",
+     "n": 1,
+     "total": 250.0
+    },
+    {
+     "nome": "Picpay*Recarga Exemplo",
+     "n": 2,
+     "total": 104.9
+    },
+    {
+     "nome": "LUZ DISTRIBUIDORA EXEMPLO",
+     "n": 1,
+     "total": 91.7
+    }
+   ],
+   "compromissos": [
+    {
+     "mes": "2026-11",
+     "descricao": "Loja Eletro Exemplo - Parcela 4/6",
+     "valor": 250.0,
+     "parcela": "4/6",
+     "pessoa": null
+    },
+    {
+     "mes": "2026-12",
+     "descricao": "Loja Eletro Exemplo - Parcela 5/6",
+     "valor": 250.0,
+     "parcela": "5/6",
+     "pessoa": null
+    },
+    {
+     "mes": "2027-01",
+     "descricao": "Loja Eletro Exemplo - Parcela 6/6",
+     "valor": 250.0,
+     "parcela": "6/6",
+     "pessoa": null
+    }
+   ],
+   "plano": [
+    {
+     "mes": "2026-11",
+     "renda": 2600.0,
+     "custo": 2710.0,
+     "cartao": 1206.25,
+     "reembolsos": 0.0,
+     "unicos": 0,
+     "aportes": 550.0,
+     "resultado": -1866.25,
+     "falta": 1866.25,
+     "pago_pessoas": 0.0,
+     "deve_pessoas": 0.0,
+     "livre": 0.0,
+     "metas": 550.0
+    },
+    {
+     "mes": "2026-12",
+     "renda": 2600.0,
+     "custo": 2710.0,
+     "cartao": 250.0,
+     "reembolsos": 0.0,
+     "unicos": 2600.0,
+     "aportes": 550.0,
+     "resultado": 1690.0,
+     "falta": 0.0,
+     "pago_pessoas": 0.0,
+     "deve_pessoas": 0.0,
+     "livre": 1690.0,
+     "metas": 1100.0
+    },
+    {
+     "mes": "2027-01",
+     "renda": 2600.0,
+     "custo": 2710.0,
+     "cartao": 250.0,
+     "reembolsos": 0.0,
+     "unicos": -1800.0,
+     "aportes": 550.0,
+     "resultado": -2710.0,
+     "falta": 2710.0,
+     "pago_pessoas": 0.0,
+     "deve_pessoas": 0.0,
+     "livre": 1690.0,
+     "metas": 1650.0
+    },
+    {
+     "mes": "2027-02",
+     "renda": 2600.0,
+     "custo": 2710.0,
+     "cartao": 250.0,
+     "reembolsos": 0.0,
+     "unicos": 0,
+     "aportes": 550.0,
+     "resultado": -910.0,
+     "falta": 910.0,
+     "pago_pessoas": 0.0,
+     "deve_pessoas": 0.0,
+     "livre": 1690.0,
+     "metas": 2200.0
+    },
+    {
+     "mes": "2027-03",
+     "renda": 2600.0,
+     "custo": 2710.0,
+     "cartao": 0.0,
+     "reembolsos": 0.0,
+     "unicos": 0,
+     "aportes": 550.0,
+     "resultado": -660.0,
+     "falta": 660.0,
+     "pago_pessoas": 0.0,
+     "deve_pessoas": 0.0,
+     "livre": 1690.0,
+     "metas": 2750.0
+    }
+   ],
+   "plano_falta": 6146.25,
+   "entradas": {
+    "salario": 2600.0,
+    "pais": 200.0
+   }
+  },
+  "depois": {
+   "periodo": "2026-10",
+   "totais": {
+    "renda": 2800.0,
+    "gasto": 2073.75,
+    "juros": 4.9,
+    "resultado": 726.25
+   },
+   "pode_gastar": 896.38,
+   "teto_variavel": 1680.0,
+   "gasto_variavel": 783.62,
+   "ritmo": 0.6452,
+   "pendentes": 2,
+   "conta": {
+    "saldo": 4340.94,
+    "saldo_real": null,
+    "diferenca": null,
+    "cobertura": "2026-10-19"
+   },
+   "cartao": {
+    "divida": 1206.25,
+    "futuras": 750.0,
+    "limite": 3000.0,
+    "limite_livre": 1043.75
+   },
+   "pessoas": {
+    "marina": {
+     "saldo": 0.0,
+     "a_vencer": 0
+    },
+    "teo": {
+     "saldo": 60.0,
+     "a_vencer": 0
+    },
+    "mae": {
+     "saldo": 0.0,
+     "a_vencer": 0
+    }
+   },
+   "metas": {
+    "Reserva de emergência": {
+     "planejado_periodo": 300.0,
+     "guardado_periodo": 300.0,
+     "guardado_total": 1800.0,
+     "falta_periodo": 0.0,
+     "completude_alvo": 0.3
+    },
+    "Notebook novo": {
+     "planejado_periodo": 250.0,
+     "guardado_periodo": 0,
+     "guardado_total": 0,
+     "falta_periodo": 250.0,
+     "completude_alvo": 0.0,
+     "por_mes_ate_prazo": 562.5
+    }
+   },
+   "categorias": {
+    "aluguel-condominio": {
+     "nome": "Aluguel e condomínio",
+     "gasto": 650.0,
+     "parcelas": 0.0,
+     "teto": 650.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "contas-casa": {
+     "nome": "Contas da casa (luz, gás, internet)",
+     "gasto": 91.7,
+     "parcelas": 0.0,
+     "teto": 150.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "casa-moveis": {
+     "nome": "Casa e móveis",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "mercado": {
+     "nome": "Mercado planejado",
+     "gasto": 468.43,
+     "parcelas": 0.0,
+     "teto": 600.0,
+     "acima": 0.0,
+     "n": 4
+    },
+    "ru": {
+     "nome": "RU (dias de aula)",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "conveniencia": {
+     "nome": "Conveniência e lanches",
+     "gasto": 17.93,
+     "parcelas": 0.0,
+     "teto": 100.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "delivery": {
+     "nome": "Delivery e restaurante",
+     "gasto": 105.3,
+     "parcelas": 0.0,
+     "teto": 250.0,
+     "acima": 0.0,
+     "n": 3
+    },
+    "remedios": {
+     "nome": "Remédios",
+     "gasto": 43.73,
+     "parcelas": 0.0,
+     "teto": 80.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "consultas": {
+     "nome": "Consultas e terapia",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "academia": {
+     "nome": "Academia",
+     "gasto": 90.0,
+     "parcelas": 0.0,
+     "teto": 90.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "saude-outros": {
+     "nome": "Saúde (outros)",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "app-transporte": {
+     "nome": "App (Uber/99)",
+     "gasto": 66.22,
+     "parcelas": 0.0,
+     "teto": 150.0,
+     "acima": 0.0,
+     "n": 3
+    },
+    "onibus": {
+     "nome": "Ônibus e combustível",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": 80.0,
+     "acima": 0.0,
+     "n": 0
+    },
+    "assinaturas": {
+     "nome": "Assinaturas e celular",
+     "gasto": 59.8,
+     "parcelas": 0.0,
+     "teto": 60.0,
+     "acima": 0.0,
+     "n": 2
+    },
+    "ferramentas": {
+     "nome": "Ferramentas de trabalho",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "eletronicos": {
+     "nome": "Eletrônicos",
+     "gasto": 0.0,
+     "parcelas": 250.0,
+     "teto": 150.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "vestuario": {
+     "nome": "Vestuário e imagem",
+     "gasto": 89.9,
+     "parcelas": 0.0,
+     "teto": 150.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "lazer": {
+     "nome": "Lazer e rolê",
+     "gasto": 35.84,
+     "parcelas": 0.0,
+     "teto": 200.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "viagem": {
+     "nome": "Viagem",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "hobbies": {
+     "nome": "Hobbies",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "pets": {
+     "nome": "Pets",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "familia": {
+     "nome": "Família e presentes",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "juros": {
+     "nome": "Juros e taxas",
+     "gasto": 4.9,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 1
+    },
+    "outros": {
+     "nome": "Outros",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    }
+   },
+   "grupos": {
+    "Moradia": 741.7,
+    "Alimentação": 591.66,
+    "Saúde": 133.73,
+    "Transporte": 66.22,
+    "Assinaturas": 59.8,
+    "Compras": 339.9,
+    "Lazer": 35.84,
+    "Financeiro": 4.9
+   },
+   "top": [
+    {
+     "nome": "IMOBILIARIA EXEMPLO LTDA",
+     "n": 1,
+     "total": 650.0
+    },
+    {
+     "nome": "Supermercado Exemplo",
+     "n": 2,
+     "total": 361.13
+    },
+    {
+     "nome": "Loja Eletro Exemplo - Parcela 3/6",
+     "n": 1,
+     "total": 250.0
+    },
+    {
+     "nome": "Picpay*Recarga Exemplo",
+     "n": 2,
+     "total": 104.9
+    },
+    {
+     "nome": "LUZ DISTRIBUIDORA EXEMPLO",
+     "n": 1,
+     "total": 91.7
+    }
+   ],
+   "compromissos": [
+    {
+     "mes": "2026-11",
+     "descricao": "Loja Eletro Exemplo - Parcela 4/6",
+     "valor": 250.0,
+     "parcela": "4/6",
+     "pessoa": null
+    },
+    {
+     "mes": "2026-12",
+     "descricao": "Loja Eletro Exemplo - Parcela 5/6",
+     "valor": 250.0,
+     "parcela": "5/6",
+     "pessoa": null
+    },
+    {
+     "mes": "2027-01",
+     "descricao": "Loja Eletro Exemplo - Parcela 6/6",
+     "valor": 250.0,
+     "parcela": "6/6",
+     "pessoa": null
+    }
+   ],
+   "plano": [
+    {
+     "mes": "2026-11",
+     "renda": 2600.0,
+     "custo": 2710.0,
+     "cartao": 1206.25,
+     "reembolsos": 0.0,
+     "unicos": 0,
+     "aportes": 550.0,
+     "resultado": -1866.25,
+     "falta": 1866.25,
+     "pago_pessoas": 0.0,
+     "deve_pessoas": 0.0,
+     "livre": 0.0,
+     "metas": 550.0
+    },
+    {
+     "mes": "2026-12",
+     "renda": 2600.0,
+     "custo": 2710.0,
+     "cartao": 250.0,
+     "reembolsos": 0.0,
+     "unicos": 2600.0,
+     "aportes": 550.0,
+     "resultado": 1690.0,
+     "falta": 0.0,
+     "pago_pessoas": 0.0,
+     "deve_pessoas": 0.0,
+     "livre": 1690.0,
+     "metas": 1100.0
+    },
+    {
+     "mes": "2027-01",
+     "renda": 2600.0,
+     "custo": 2710.0,
+     "cartao": 250.0,
+     "reembolsos": 0.0,
+     "unicos": -1800.0,
+     "aportes": 550.0,
+     "resultado": -2710.0,
+     "falta": 2710.0,
+     "pago_pessoas": 0.0,
+     "deve_pessoas": 0.0,
+     "livre": 1690.0,
+     "metas": 1650.0
+    },
+    {
+     "mes": "2027-02",
+     "renda": 2600.0,
+     "custo": 2710.0,
+     "cartao": 250.0,
+     "reembolsos": 0.0,
+     "unicos": 0,
+     "aportes": 550.0,
+     "resultado": -910.0,
+     "falta": 910.0,
+     "pago_pessoas": 0.0,
+     "deve_pessoas": 0.0,
+     "livre": 1690.0,
+     "metas": 2200.0
+    },
+    {
+     "mes": "2027-03",
+     "renda": 2600.0,
+     "custo": 2710.0,
+     "cartao": 0.0,
+     "reembolsos": 0.0,
+     "unicos": 0,
+     "aportes": 550.0,
+     "resultado": -660.0,
+     "falta": 660.0,
+     "pago_pessoas": 0.0,
+     "deve_pessoas": 0.0,
+     "livre": 1690.0,
+     "metas": 2750.0
+    }
+   ],
+   "plano_falta": 6146.25,
+   "entradas": {
+    "salario": 2600.0,
+    "pais": 200.0
+   }
+  },
+  "detalhe": {
+   "ok": true,
+   "regra": null
+  }
+ },
+ "fatura": {
+  "antes": {
+   "periodo": "2026-10",
+   "totais": {
+    "renda": 2800.0,
+    "gasto": 2073.75,
+    "juros": 4.9,
+    "resultado": 726.25
+   },
+   "pode_gastar": 896.38,
+   "teto_variavel": 1680.0,
+   "gasto_variavel": 783.62,
+   "ritmo": 0.6452,
+   "pendentes": 2,
+   "conta": {
+    "saldo": 4340.94,
+    "saldo_real": null,
+    "diferenca": null,
+    "cobertura": "2026-10-19"
+   },
+   "cartao": {
+    "divida": 1206.25,
+    "futuras": 750.0,
+    "limite": 3000.0,
+    "limite_livre": 1043.75
+   },
+   "pessoas": {
+    "marina": {
+     "saldo": 0.0,
+     "a_vencer": 0
+    },
+    "teo": {
+     "saldo": 60.0,
+     "a_vencer": 0
+    },
+    "mae": {
+     "saldo": 0.0,
+     "a_vencer": 0
+    }
+   },
+   "metas": {
+    "Reserva de emergência": {
+     "planejado_periodo": 300.0,
+     "guardado_periodo": 300.0,
+     "guardado_total": 1800.0,
+     "falta_periodo": 0.0,
+     "completude_alvo": 0.3
+    },
+    "Notebook novo": {
+     "planejado_periodo": 250.0,
+     "guardado_periodo": 0,
+     "guardado_total": 0,
+     "falta_periodo": 250.0,
+     "completude_alvo": 0.0,
+     "por_mes_ate_prazo": 562.5
+    }
+   },
+   "categorias": {
+    "aluguel-condominio": {
+     "nome": "Aluguel e condomínio",
+     "gasto": 650.0,
+     "parcelas": 0.0,
+     "teto": 650.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "contas-casa": {
+     "nome": "Contas da casa (luz, gás, internet)",
+     "gasto": 91.7,
+     "parcelas": 0.0,
+     "teto": 150.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "casa-moveis": {
+     "nome": "Casa e móveis",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "mercado": {
+     "nome": "Mercado planejado",
+     "gasto": 468.43,
+     "parcelas": 0.0,
+     "teto": 600.0,
+     "acima": 0.0,
+     "n": 4
+    },
+    "ru": {
+     "nome": "RU (dias de aula)",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "conveniencia": {
+     "nome": "Conveniência e lanches",
+     "gasto": 17.93,
+     "parcelas": 0.0,
+     "teto": 100.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "delivery": {
+     "nome": "Delivery e restaurante",
+     "gasto": 105.3,
+     "parcelas": 0.0,
+     "teto": 250.0,
+     "acima": 0.0,
+     "n": 3
+    },
+    "remedios": {
+     "nome": "Remédios",
+     "gasto": 43.73,
+     "parcelas": 0.0,
+     "teto": 80.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "consultas": {
+     "nome": "Consultas e terapia",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "academia": {
+     "nome": "Academia",
+     "gasto": 90.0,
+     "parcelas": 0.0,
+     "teto": 90.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "saude-outros": {
+     "nome": "Saúde (outros)",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "app-transporte": {
+     "nome": "App (Uber/99)",
+     "gasto": 66.22,
+     "parcelas": 0.0,
+     "teto": 150.0,
+     "acima": 0.0,
+     "n": 3
+    },
+    "onibus": {
+     "nome": "Ônibus e combustível",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": 80.0,
+     "acima": 0.0,
+     "n": 0
+    },
+    "assinaturas": {
+     "nome": "Assinaturas e celular",
+     "gasto": 59.8,
+     "parcelas": 0.0,
+     "teto": 60.0,
+     "acima": 0.0,
+     "n": 2
+    },
+    "ferramentas": {
+     "nome": "Ferramentas de trabalho",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "eletronicos": {
+     "nome": "Eletrônicos",
+     "gasto": 0.0,
+     "parcelas": 250.0,
+     "teto": 150.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "vestuario": {
+     "nome": "Vestuário e imagem",
+     "gasto": 89.9,
+     "parcelas": 0.0,
+     "teto": 150.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "lazer": {
+     "nome": "Lazer e rolê",
+     "gasto": 35.84,
+     "parcelas": 0.0,
+     "teto": 200.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "viagem": {
+     "nome": "Viagem",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "hobbies": {
+     "nome": "Hobbies",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "pets": {
+     "nome": "Pets",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "familia": {
+     "nome": "Família e presentes",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "juros": {
+     "nome": "Juros e taxas",
+     "gasto": 4.9,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 1
+    },
+    "outros": {
+     "nome": "Outros",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    }
+   },
+   "grupos": {
+    "Moradia": 741.7,
+    "Alimentação": 591.66,
+    "Saúde": 133.73,
+    "Transporte": 66.22,
+    "Assinaturas": 59.8,
+    "Compras": 339.9,
+    "Lazer": 35.84,
+    "Financeiro": 4.9
+   },
+   "top": [
+    {
+     "nome": "IMOBILIARIA EXEMPLO LTDA",
+     "n": 1,
+     "total": 650.0
+    },
+    {
+     "nome": "Supermercado Exemplo",
+     "n": 2,
+     "total": 361.13
+    },
+    {
+     "nome": "Loja Eletro Exemplo - Parcela 3/6",
+     "n": 1,
+     "total": 250.0
+    },
+    {
+     "nome": "Picpay*Recarga Exemplo",
+     "n": 2,
+     "total": 104.9
+    },
+    {
+     "nome": "LUZ DISTRIBUIDORA EXEMPLO",
+     "n": 1,
+     "total": 91.7
+    }
+   ],
+   "compromissos": [
+    {
+     "mes": "2026-11",
+     "descricao": "Loja Eletro Exemplo - Parcela 4/6",
+     "valor": 250.0,
+     "parcela": "4/6",
+     "pessoa": null
+    },
+    {
+     "mes": "2026-12",
+     "descricao": "Loja Eletro Exemplo - Parcela 5/6",
+     "valor": 250.0,
+     "parcela": "5/6",
+     "pessoa": null
+    },
+    {
+     "mes": "2027-01",
+     "descricao": "Loja Eletro Exemplo - Parcela 6/6",
+     "valor": 250.0,
+     "parcela": "6/6",
+     "pessoa": null
+    }
+   ],
+   "plano": [
+    {
+     "mes": "2026-11",
+     "renda": 2600.0,
+     "custo": 2710.0,
+     "cartao": 1206.25,
+     "reembolsos": 0.0,
+     "unicos": 0,
+     "aportes": 550.0,
+     "resultado": -1866.25,
+     "falta": 1866.25,
+     "pago_pessoas": 0.0,
+     "deve_pessoas": 0.0,
+     "livre": 0.0,
+     "metas": 550.0
+    },
+    {
+     "mes": "2026-12",
+     "renda": 2600.0,
+     "custo": 2710.0,
+     "cartao": 250.0,
+     "reembolsos": 0.0,
+     "unicos": 2600.0,
+     "aportes": 550.0,
+     "resultado": 1690.0,
+     "falta": 0.0,
+     "pago_pessoas": 0.0,
+     "deve_pessoas": 0.0,
+     "livre": 1690.0,
+     "metas": 1100.0
+    },
+    {
+     "mes": "2027-01",
+     "renda": 2600.0,
+     "custo": 2710.0,
+     "cartao": 250.0,
+     "reembolsos": 0.0,
+     "unicos": -1800.0,
+     "aportes": 550.0,
+     "resultado": -2710.0,
+     "falta": 2710.0,
+     "pago_pessoas": 0.0,
+     "deve_pessoas": 0.0,
+     "livre": 1690.0,
+     "metas": 1650.0
+    },
+    {
+     "mes": "2027-02",
+     "renda": 2600.0,
+     "custo": 2710.0,
+     "cartao": 250.0,
+     "reembolsos": 0.0,
+     "unicos": 0,
+     "aportes": 550.0,
+     "resultado": -910.0,
+     "falta": 910.0,
+     "pago_pessoas": 0.0,
+     "deve_pessoas": 0.0,
+     "livre": 1690.0,
+     "metas": 2200.0
+    },
+    {
+     "mes": "2027-03",
+     "renda": 2600.0,
+     "custo": 2710.0,
+     "cartao": 0.0,
+     "reembolsos": 0.0,
+     "unicos": 0,
+     "aportes": 550.0,
+     "resultado": -660.0,
+     "falta": 660.0,
+     "pago_pessoas": 0.0,
+     "deve_pessoas": 0.0,
+     "livre": 1690.0,
+     "metas": 2750.0
+    }
+   ],
+   "plano_falta": 6146.25,
+   "entradas": {
+    "salario": 2600.0,
+    "pais": 200.0
+   }
+  },
+  "depois": {
+   "periodo": "2026-10",
+   "totais": {
+    "renda": 2800.0,
+    "gasto": 2096.85,
+    "juros": 4.9,
+    "resultado": 703.15
+   },
+   "pode_gastar": 873.28,
+   "teto_variavel": 1680.0,
+   "gasto_variavel": 806.72,
+   "ritmo": 0.6452,
+   "pendentes": 3,
+   "conta": {
+    "saldo": 4340.94,
+    "saldo_real": null,
+    "diferenca": null,
+    "cobertura": "2026-10-19"
+   },
+   "cartao": {
+    "divida": 1349.35,
+    "futuras": 990.0,
+    "limite": 3000.0,
+    "limite_livre": 660.65
+   },
+   "pessoas": {
+    "marina": {
+     "saldo": 0.0,
+     "a_vencer": 0
+    },
+    "teo": {
+     "saldo": 60.0,
+     "a_vencer": 0
+    },
+    "mae": {
+     "saldo": 0.0,
+     "a_vencer": 0
+    }
+   },
+   "metas": {
+    "Reserva de emergência": {
+     "planejado_periodo": 300.0,
+     "guardado_periodo": 300.0,
+     "guardado_total": 1800.0,
+     "falta_periodo": 0.0,
+     "completude_alvo": 0.3
+    },
+    "Notebook novo": {
+     "planejado_periodo": 250.0,
+     "guardado_periodo": 0,
+     "guardado_total": 0,
+     "falta_periodo": 250.0,
+     "completude_alvo": 0.0,
+     "por_mes_ate_prazo": 562.5
+    }
+   },
+   "categorias": {
+    "aluguel-condominio": {
+     "nome": "Aluguel e condomínio",
+     "gasto": 650.0,
+     "parcelas": 0.0,
+     "teto": 650.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "contas-casa": {
+     "nome": "Contas da casa (luz, gás, internet)",
+     "gasto": 91.7,
+     "parcelas": 0.0,
+     "teto": 150.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "casa-moveis": {
+     "nome": "Casa e móveis",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "mercado": {
+     "nome": "Mercado planejado",
+     "gasto": 468.43,
+     "parcelas": 0.0,
+     "teto": 600.0,
+     "acima": 0.0,
+     "n": 4
+    },
+    "ru": {
+     "nome": "RU (dias de aula)",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "conveniencia": {
+     "nome": "Conveniência e lanches",
+     "gasto": 17.93,
+     "parcelas": 0.0,
+     "teto": 100.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "delivery": {
+     "nome": "Delivery e restaurante",
+     "gasto": 105.3,
+     "parcelas": 0.0,
+     "teto": 250.0,
+     "acima": 0.0,
+     "n": 3
+    },
+    "remedios": {
+     "nome": "Remédios",
+     "gasto": 43.73,
+     "parcelas": 0.0,
+     "teto": 80.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "consultas": {
+     "nome": "Consultas e terapia",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "academia": {
+     "nome": "Academia",
+     "gasto": 90.0,
+     "parcelas": 0.0,
+     "teto": 90.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "saude-outros": {
+     "nome": "Saúde (outros)",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "app-transporte": {
+     "nome": "App (Uber/99)",
+     "gasto": 89.32,
+     "parcelas": 0.0,
+     "teto": 150.0,
+     "acima": 0.0,
+     "n": 4
+    },
+    "onibus": {
+     "nome": "Ônibus e combustível",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": 80.0,
+     "acima": 0.0,
+     "n": 0
+    },
+    "assinaturas": {
+     "nome": "Assinaturas e celular",
+     "gasto": 59.8,
+     "parcelas": 0.0,
+     "teto": 60.0,
+     "acima": 0.0,
+     "n": 2
+    },
+    "ferramentas": {
+     "nome": "Ferramentas de trabalho",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "eletronicos": {
+     "nome": "Eletrônicos",
+     "gasto": 0.0,
+     "parcelas": 250.0,
+     "teto": 150.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "vestuario": {
+     "nome": "Vestuário e imagem",
+     "gasto": 89.9,
+     "parcelas": 0.0,
+     "teto": 150.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "lazer": {
+     "nome": "Lazer e rolê",
+     "gasto": 35.84,
+     "parcelas": 0.0,
+     "teto": 200.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "viagem": {
+     "nome": "Viagem",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "hobbies": {
+     "nome": "Hobbies",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "pets": {
+     "nome": "Pets",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "familia": {
+     "nome": "Família e presentes",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "juros": {
+     "nome": "Juros e taxas",
+     "gasto": 4.9,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 1
+    },
+    "outros": {
+     "nome": "Outros",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    }
+   },
+   "grupos": {
+    "Moradia": 741.7,
+    "Alimentação": 591.66,
+    "Saúde": 133.73,
+    "Transporte": 89.32,
+    "Assinaturas": 59.8,
+    "Compras": 339.9,
+    "Lazer": 35.84,
+    "Financeiro": 4.9
+   },
+   "top": [
+    {
+     "nome": "IMOBILIARIA EXEMPLO LTDA",
+     "n": 1,
+     "total": 650.0
+    },
+    {
+     "nome": "Supermercado Exemplo",
+     "n": 2,
+     "total": 361.13
+    },
+    {
+     "nome": "Loja Eletro Exemplo - Parcela 3/6",
+     "n": 1,
+     "total": 250.0
+    },
+    {
+     "nome": "Picpay*Recarga Exemplo",
+     "n": 2,
+     "total": 104.9
+    },
+    {
+     "nome": "LUZ DISTRIBUIDORA EXEMPLO",
+     "n": 1,
+     "total": 91.7
+    }
+   ],
+   "compromissos": [
+    {
+     "mes": "2026-11",
+     "descricao": "Loja Eletro Exemplo - Parcela 4/6",
+     "valor": 250.0,
+     "parcela": "4/6",
+     "pessoa": null
+    },
+    {
+     "mes": "2026-11",
+     "descricao": "Loja Casa Exemplo - Parcela 2/3",
+     "valor": 120.0,
+     "parcela": "2/3",
+     "pessoa": null
+    },
+    {
+     "mes": "2026-12",
+     "descricao": "Loja Eletro Exemplo - Parcela 5/6",
+     "valor": 250.0,
+     "parcela": "5/6",
+     "pessoa": null
+    },
+    {
+     "mes": "2026-12",
+     "descricao": "Loja Casa Exemplo - Parcela 3/3",
+     "valor": 120.0,
+     "parcela": "3/3",
+     "pessoa": null
+    },
+    {
+     "mes": "2027-01",
+     "descricao": "Loja Eletro Exemplo - Parcela 6/6",
+     "valor": 250.0,
+     "parcela": "6/6",
+     "pessoa": null
+    }
+   ],
+   "plano": [
+    {
+     "mes": "2026-11",
+     "renda": 2600.0,
+     "custo": 2710.0,
+     "cartao": 1349.35,
+     "reembolsos": 0.0,
+     "unicos": 0,
+     "aportes": 550.0,
+     "resultado": -2009.35,
+     "falta": 2009.35,
+     "pago_pessoas": 0.0,
+     "deve_pessoas": 0.0,
+     "livre": 0.0,
+     "metas": 550.0
+    },
+    {
+     "mes": "2026-12",
+     "renda": 2600.0,
+     "custo": 2710.0,
+     "cartao": 370.0,
+     "reembolsos": 0.0,
+     "unicos": 2600.0,
+     "aportes": 550.0,
+     "resultado": 1570.0,
+     "falta": 0.0,
+     "pago_pessoas": 0.0,
+     "deve_pessoas": 0.0,
+     "livre": 1570.0,
+     "metas": 1100.0
+    },
+    {
+     "mes": "2027-01",
+     "renda": 2600.0,
+     "custo": 2710.0,
+     "cartao": 370.0,
+     "reembolsos": 0.0,
+     "unicos": -1800.0,
+     "aportes": 550.0,
+     "resultado": -2830.0,
+     "falta": 2830.0,
+     "pago_pessoas": 0.0,
+     "deve_pessoas": 0.0,
+     "livre": 1570.0,
+     "metas": 1650.0
+    },
+    {
+     "mes": "2027-02",
+     "renda": 2600.0,
+     "custo": 2710.0,
+     "cartao": 250.0,
+     "reembolsos": 0.0,
+     "unicos": 0,
+     "aportes": 550.0,
+     "resultado": -910.0,
+     "falta": 910.0,
+     "pago_pessoas": 0.0,
+     "deve_pessoas": 0.0,
+     "livre": 1570.0,
+     "metas": 2200.0
+    },
+    {
+     "mes": "2027-03",
+     "renda": 2600.0,
+     "custo": 2710.0,
+     "cartao": 0.0,
+     "reembolsos": 0.0,
+     "unicos": 0,
+     "aportes": 550.0,
+     "resultado": -660.0,
+     "falta": 660.0,
+     "pago_pessoas": 0.0,
+     "deve_pessoas": 0.0,
+     "livre": 1570.0,
+     "metas": 2750.0
+    }
+   ],
+   "plano_falta": 6409.35,
+   "entradas": {
+    "salario": 2600.0,
+    "pais": 200.0
+   }
+  },
+  "detalhe": [
+   {
+    "arquivo": "fatura-novembro.csv",
+    "tipo": "fatura_csv",
+    "novos": 2,
+    "casados": 0,
+    "repetidos": 0,
+    "futuras": 2,
+    "avisos": []
+   }
+  ]
+ },
+ "push": {
+  "antes": {
+   "periodo": "2026-10",
+   "totais": {
+    "renda": 2800.0,
+    "gasto": 2096.85,
+    "juros": 4.9,
+    "resultado": 703.15
+   },
+   "pode_gastar": 873.28,
+   "teto_variavel": 1680.0,
+   "gasto_variavel": 806.72,
+   "ritmo": 0.6452,
+   "pendentes": 3,
+   "conta": {
+    "saldo": 4340.94,
+    "saldo_real": null,
+    "diferenca": null,
+    "cobertura": "2026-10-19"
+   },
+   "cartao": {
+    "divida": 1349.35,
+    "futuras": 990.0,
+    "limite": 3000.0,
+    "limite_livre": 660.65
+   },
+   "pessoas": {
+    "marina": {
+     "saldo": 0.0,
+     "a_vencer": 0
+    },
+    "teo": {
+     "saldo": 60.0,
+     "a_vencer": 0
+    },
+    "mae": {
+     "saldo": 0.0,
+     "a_vencer": 0
+    }
+   },
+   "metas": {
+    "Reserva de emergência": {
+     "planejado_periodo": 300.0,
+     "guardado_periodo": 300.0,
+     "guardado_total": 1800.0,
+     "falta_periodo": 0.0,
+     "completude_alvo": 0.3
+    },
+    "Notebook novo": {
+     "planejado_periodo": 250.0,
+     "guardado_periodo": 0,
+     "guardado_total": 0,
+     "falta_periodo": 250.0,
+     "completude_alvo": 0.0,
+     "por_mes_ate_prazo": 562.5
+    }
+   },
+   "categorias": {
+    "aluguel-condominio": {
+     "nome": "Aluguel e condomínio",
+     "gasto": 650.0,
+     "parcelas": 0.0,
+     "teto": 650.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "contas-casa": {
+     "nome": "Contas da casa (luz, gás, internet)",
+     "gasto": 91.7,
+     "parcelas": 0.0,
+     "teto": 150.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "casa-moveis": {
+     "nome": "Casa e móveis",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "mercado": {
+     "nome": "Mercado planejado",
+     "gasto": 468.43,
+     "parcelas": 0.0,
+     "teto": 600.0,
+     "acima": 0.0,
+     "n": 4
+    },
+    "ru": {
+     "nome": "RU (dias de aula)",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "conveniencia": {
+     "nome": "Conveniência e lanches",
+     "gasto": 17.93,
+     "parcelas": 0.0,
+     "teto": 100.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "delivery": {
+     "nome": "Delivery e restaurante",
+     "gasto": 105.3,
+     "parcelas": 0.0,
+     "teto": 250.0,
+     "acima": 0.0,
+     "n": 3
+    },
+    "remedios": {
+     "nome": "Remédios",
+     "gasto": 43.73,
+     "parcelas": 0.0,
+     "teto": 80.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "consultas": {
+     "nome": "Consultas e terapia",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "academia": {
+     "nome": "Academia",
+     "gasto": 90.0,
+     "parcelas": 0.0,
+     "teto": 90.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "saude-outros": {
+     "nome": "Saúde (outros)",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "app-transporte": {
+     "nome": "App (Uber/99)",
+     "gasto": 89.32,
+     "parcelas": 0.0,
+     "teto": 150.0,
+     "acima": 0.0,
+     "n": 4
+    },
+    "onibus": {
+     "nome": "Ônibus e combustível",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": 80.0,
+     "acima": 0.0,
+     "n": 0
+    },
+    "assinaturas": {
+     "nome": "Assinaturas e celular",
+     "gasto": 59.8,
+     "parcelas": 0.0,
+     "teto": 60.0,
+     "acima": 0.0,
+     "n": 2
+    },
+    "ferramentas": {
+     "nome": "Ferramentas de trabalho",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "eletronicos": {
+     "nome": "Eletrônicos",
+     "gasto": 0.0,
+     "parcelas": 250.0,
+     "teto": 150.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "vestuario": {
+     "nome": "Vestuário e imagem",
+     "gasto": 89.9,
+     "parcelas": 0.0,
+     "teto": 150.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "lazer": {
+     "nome": "Lazer e rolê",
+     "gasto": 35.84,
+     "parcelas": 0.0,
+     "teto": 200.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "viagem": {
+     "nome": "Viagem",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "hobbies": {
+     "nome": "Hobbies",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "pets": {
+     "nome": "Pets",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "familia": {
+     "nome": "Família e presentes",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "juros": {
+     "nome": "Juros e taxas",
+     "gasto": 4.9,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 1
+    },
+    "outros": {
+     "nome": "Outros",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    }
+   },
+   "grupos": {
+    "Moradia": 741.7,
+    "Alimentação": 591.66,
+    "Saúde": 133.73,
+    "Transporte": 89.32,
+    "Assinaturas": 59.8,
+    "Compras": 339.9,
+    "Lazer": 35.84,
+    "Financeiro": 4.9
+   },
+   "top": [
+    {
+     "nome": "IMOBILIARIA EXEMPLO LTDA",
+     "n": 1,
+     "total": 650.0
+    },
+    {
+     "nome": "Supermercado Exemplo",
+     "n": 2,
+     "total": 361.13
+    },
+    {
+     "nome": "Loja Eletro Exemplo - Parcela 3/6",
+     "n": 1,
+     "total": 250.0
+    },
+    {
+     "nome": "Picpay*Recarga Exemplo",
+     "n": 2,
+     "total": 104.9
+    },
+    {
+     "nome": "LUZ DISTRIBUIDORA EXEMPLO",
+     "n": 1,
+     "total": 91.7
+    }
+   ],
+   "compromissos": [
+    {
+     "mes": "2026-11",
+     "descricao": "Loja Eletro Exemplo - Parcela 4/6",
+     "valor": 250.0,
+     "parcela": "4/6",
+     "pessoa": null
+    },
+    {
+     "mes": "2026-11",
+     "descricao": "Loja Casa Exemplo - Parcela 2/3",
+     "valor": 120.0,
+     "parcela": "2/3",
+     "pessoa": null
+    },
+    {
+     "mes": "2026-12",
+     "descricao": "Loja Eletro Exemplo - Parcela 5/6",
+     "valor": 250.0,
+     "parcela": "5/6",
+     "pessoa": null
+    },
+    {
+     "mes": "2026-12",
+     "descricao": "Loja Casa Exemplo - Parcela 3/3",
+     "valor": 120.0,
+     "parcela": "3/3",
+     "pessoa": null
+    },
+    {
+     "mes": "2027-01",
+     "descricao": "Loja Eletro Exemplo - Parcela 6/6",
+     "valor": 250.0,
+     "parcela": "6/6",
+     "pessoa": null
+    }
+   ],
+   "plano": [
+    {
+     "mes": "2026-11",
+     "renda": 2600.0,
+     "custo": 2710.0,
+     "cartao": 1349.35,
+     "reembolsos": 0.0,
+     "unicos": 0,
+     "aportes": 550.0,
+     "resultado": -2009.35,
+     "falta": 2009.35,
+     "pago_pessoas": 0.0,
+     "deve_pessoas": 0.0,
+     "livre": 0.0,
+     "metas": 550.0
+    },
+    {
+     "mes": "2026-12",
+     "renda": 2600.0,
+     "custo": 2710.0,
+     "cartao": 370.0,
+     "reembolsos": 0.0,
+     "unicos": 2600.0,
+     "aportes": 550.0,
+     "resultado": 1570.0,
+     "falta": 0.0,
+     "pago_pessoas": 0.0,
+     "deve_pessoas": 0.0,
+     "livre": 1570.0,
+     "metas": 1100.0
+    },
+    {
+     "mes": "2027-01",
+     "renda": 2600.0,
+     "custo": 2710.0,
+     "cartao": 370.0,
+     "reembolsos": 0.0,
+     "unicos": -1800.0,
+     "aportes": 550.0,
+     "resultado": -2830.0,
+     "falta": 2830.0,
+     "pago_pessoas": 0.0,
+     "deve_pessoas": 0.0,
+     "livre": 1570.0,
+     "metas": 1650.0
+    },
+    {
+     "mes": "2027-02",
+     "renda": 2600.0,
+     "custo": 2710.0,
+     "cartao": 250.0,
+     "reembolsos": 0.0,
+     "unicos": 0,
+     "aportes": 550.0,
+     "resultado": -910.0,
+     "falta": 910.0,
+     "pago_pessoas": 0.0,
+     "deve_pessoas": 0.0,
+     "livre": 1570.0,
+     "metas": 2200.0
+    },
+    {
+     "mes": "2027-03",
+     "renda": 2600.0,
+     "custo": 2710.0,
+     "cartao": 0.0,
+     "reembolsos": 0.0,
+     "unicos": 0,
+     "aportes": 550.0,
+     "resultado": -660.0,
+     "falta": 660.0,
+     "pago_pessoas": 0.0,
+     "deve_pessoas": 0.0,
+     "livre": 1570.0,
+     "metas": 2750.0
+    }
+   ],
+   "plano_falta": 6409.35,
+   "entradas": {
+    "salario": 2600.0,
+    "pais": 200.0
+   }
+  },
+  "depois": {
+   "periodo": "2026-10",
+   "totais": {
+    "renda": 2800.0,
+    "gasto": 2129.25,
+    "juros": 4.9,
+    "resultado": 670.75
+   },
+   "pode_gastar": 873.28,
+   "teto_variavel": 1680.0,
+   "gasto_variavel": 806.72,
+   "ritmo": 0.6452,
+   "pendentes": 3,
+   "conta": {
+    "saldo": 4340.94,
+    "saldo_real": null,
+    "diferenca": null,
+    "cobertura": "2026-10-19"
+   },
+   "cartao": {
+    "divida": 1381.75,
+    "futuras": 990.0,
+    "limite": 3000.0,
+    "limite_livre": 628.25
+   },
+   "pessoas": {
+    "marina": {
+     "saldo": 0.0,
+     "a_vencer": 0
+    },
+    "teo": {
+     "saldo": 60.0,
+     "a_vencer": 0
+    },
+    "mae": {
+     "saldo": 0.0,
+     "a_vencer": 0
+    }
+   },
+   "metas": {
+    "Reserva de emergência": {
+     "planejado_periodo": 300.0,
+     "guardado_periodo": 300.0,
+     "guardado_total": 1800.0,
+     "falta_periodo": 0.0,
+     "completude_alvo": 0.3
+    },
+    "Notebook novo": {
+     "planejado_periodo": 250.0,
+     "guardado_periodo": 0,
+     "guardado_total": 0,
+     "falta_periodo": 250.0,
+     "completude_alvo": 0.0,
+     "por_mes_ate_prazo": 562.5
+    }
+   },
+   "categorias": {
+    "aluguel-condominio": {
+     "nome": "Aluguel e condomínio",
+     "gasto": 650.0,
+     "parcelas": 0.0,
+     "teto": 650.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "contas-casa": {
+     "nome": "Contas da casa (luz, gás, internet)",
+     "gasto": 91.7,
+     "parcelas": 0.0,
+     "teto": 150.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "casa-moveis": {
+     "nome": "Casa e móveis",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "mercado": {
+     "nome": "Mercado planejado",
+     "gasto": 468.43,
+     "parcelas": 0.0,
+     "teto": 600.0,
+     "acima": 0.0,
+     "n": 4
+    },
+    "ru": {
+     "nome": "RU (dias de aula)",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "conveniencia": {
+     "nome": "Conveniência e lanches",
+     "gasto": 17.93,
+     "parcelas": 0.0,
+     "teto": 100.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "delivery": {
+     "nome": "Delivery e restaurante",
+     "gasto": 105.3,
+     "parcelas": 0.0,
+     "teto": 250.0,
+     "acima": 0.0,
+     "n": 3
+    },
+    "remedios": {
+     "nome": "Remédios",
+     "gasto": 76.13,
+     "parcelas": 0.0,
+     "teto": 80.0,
+     "acima": 0.0,
+     "n": 2
+    },
+    "consultas": {
+     "nome": "Consultas e terapia",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "academia": {
+     "nome": "Academia",
+     "gasto": 90.0,
+     "parcelas": 0.0,
+     "teto": 90.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "saude-outros": {
+     "nome": "Saúde (outros)",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "app-transporte": {
+     "nome": "App (Uber/99)",
+     "gasto": 89.32,
+     "parcelas": 0.0,
+     "teto": 150.0,
+     "acima": 0.0,
+     "n": 4
+    },
+    "onibus": {
+     "nome": "Ônibus e combustível",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": 80.0,
+     "acima": 0.0,
+     "n": 0
+    },
+    "assinaturas": {
+     "nome": "Assinaturas e celular",
+     "gasto": 59.8,
+     "parcelas": 0.0,
+     "teto": 60.0,
+     "acima": 0.0,
+     "n": 2
+    },
+    "ferramentas": {
+     "nome": "Ferramentas de trabalho",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "eletronicos": {
+     "nome": "Eletrônicos",
+     "gasto": 0.0,
+     "parcelas": 250.0,
+     "teto": 150.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "vestuario": {
+     "nome": "Vestuário e imagem",
+     "gasto": 89.9,
+     "parcelas": 0.0,
+     "teto": 150.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "lazer": {
+     "nome": "Lazer e rolê",
+     "gasto": 35.84,
+     "parcelas": 0.0,
+     "teto": 200.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "viagem": {
+     "nome": "Viagem",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "hobbies": {
+     "nome": "Hobbies",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "pets": {
+     "nome": "Pets",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "familia": {
+     "nome": "Família e presentes",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "juros": {
+     "nome": "Juros e taxas",
+     "gasto": 4.9,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 1
+    },
+    "outros": {
+     "nome": "Outros",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    }
+   },
+   "grupos": {
+    "Moradia": 741.7,
+    "Alimentação": 591.66,
+    "Saúde": 166.13,
+    "Transporte": 89.32,
+    "Assinaturas": 59.8,
+    "Compras": 339.9,
+    "Lazer": 35.84,
+    "Financeiro": 4.9
+   },
+   "top": [
+    {
+     "nome": "IMOBILIARIA EXEMPLO LTDA",
+     "n": 1,
+     "total": 650.0
+    },
+    {
+     "nome": "Supermercado Exemplo",
+     "n": 2,
+     "total": 361.13
+    },
+    {
+     "nome": "Loja Eletro Exemplo - Parcela 3/6",
+     "n": 1,
+     "total": 250.0
+    },
+    {
+     "nome": "Picpay*Recarga Exemplo",
+     "n": 2,
+     "total": 104.9
+    },
+    {
+     "nome": "LUZ DISTRIBUIDORA EXEMPLO",
+     "n": 1,
+     "total": 91.7
+    }
+   ],
+   "compromissos": [
+    {
+     "mes": "2026-11",
+     "descricao": "Loja Eletro Exemplo - Parcela 4/6",
+     "valor": 250.0,
+     "parcela": "4/6",
+     "pessoa": null
+    },
+    {
+     "mes": "2026-11",
+     "descricao": "Loja Casa Exemplo - Parcela 2/3",
+     "valor": 120.0,
+     "parcela": "2/3",
+     "pessoa": null
+    },
+    {
+     "mes": "2026-12",
+     "descricao": "Loja Eletro Exemplo - Parcela 5/6",
+     "valor": 250.0,
+     "parcela": "5/6",
+     "pessoa": null
+    },
+    {
+     "mes": "2026-12",
+     "descricao": "Loja Casa Exemplo - Parcela 3/3",
+     "valor": 120.0,
+     "parcela": "3/3",
+     "pessoa": null
+    },
+    {
+     "mes": "2027-01",
+     "descricao": "Loja Eletro Exemplo - Parcela 6/6",
+     "valor": 250.0,
+     "parcela": "6/6",
+     "pessoa": null
+    }
+   ],
+   "plano": [
+    {
+     "mes": "2026-11",
+     "renda": 2600.0,
+     "custo": 2710.0,
+     "cartao": 1381.75,
+     "reembolsos": 0.0,
+     "unicos": 0,
+     "aportes": 550.0,
+     "resultado": -2041.75,
+     "falta": 2041.75,
+     "pago_pessoas": 0.0,
+     "deve_pessoas": 0.0,
+     "livre": 0.0,
+     "metas": 550.0
+    },
+    {
+     "mes": "2026-12",
+     "renda": 2600.0,
+     "custo": 2710.0,
+     "cartao": 370.0,
+     "reembolsos": 0.0,
+     "unicos": 2600.0,
+     "aportes": 550.0,
+     "resultado": 1570.0,
+     "falta": 0.0,
+     "pago_pessoas": 0.0,
+     "deve_pessoas": 0.0,
+     "livre": 1570.0,
+     "metas": 1100.0
+    },
+    {
+     "mes": "2027-01",
+     "renda": 2600.0,
+     "custo": 2710.0,
+     "cartao": 370.0,
+     "reembolsos": 0.0,
+     "unicos": -1800.0,
+     "aportes": 550.0,
+     "resultado": -2830.0,
+     "falta": 2830.0,
+     "pago_pessoas": 0.0,
+     "deve_pessoas": 0.0,
+     "livre": 1570.0,
+     "metas": 1650.0
+    },
+    {
+     "mes": "2027-02",
+     "renda": 2600.0,
+     "custo": 2710.0,
+     "cartao": 250.0,
+     "reembolsos": 0.0,
+     "unicos": 0,
+     "aportes": 550.0,
+     "resultado": -910.0,
+     "falta": 910.0,
+     "pago_pessoas": 0.0,
+     "deve_pessoas": 0.0,
+     "livre": 1570.0,
+     "metas": 2200.0
+    },
+    {
+     "mes": "2027-03",
+     "renda": 2600.0,
+     "custo": 2710.0,
+     "cartao": 0.0,
+     "reembolsos": 0.0,
+     "unicos": 0,
+     "aportes": 550.0,
+     "resultado": -660.0,
+     "falta": 660.0,
+     "pago_pessoas": 0.0,
+     "deve_pessoas": 0.0,
+     "livre": 1570.0,
+     "metas": 2750.0
+    }
+   ],
+   "plano_falta": 6441.75,
+   "entradas": {
+    "salario": 2600.0,
+    "pais": 200.0
+   }
+  },
+  "detalhe": {
+   "status": "queued",
+   "inbox_id": 1
+  }
+ },
+ "orcamento": {
+  "antes": {
+   "periodo": "2026-10",
+   "totais": {
+    "renda": 2800.0,
+    "gasto": 2129.25,
+    "juros": 4.9,
+    "resultado": 670.75
+   },
+   "pode_gastar": 873.28,
+   "teto_variavel": 1680.0,
+   "gasto_variavel": 806.72,
+   "ritmo": 0.6452,
+   "pendentes": 3,
+   "conta": {
+    "saldo": 4340.94,
+    "saldo_real": null,
+    "diferenca": null,
+    "cobertura": "2026-10-19"
+   },
+   "cartao": {
+    "divida": 1381.75,
+    "futuras": 990.0,
+    "limite": 3000.0,
+    "limite_livre": 628.25
+   },
+   "pessoas": {
+    "marina": {
+     "saldo": 0.0,
+     "a_vencer": 0
+    },
+    "teo": {
+     "saldo": 60.0,
+     "a_vencer": 0
+    },
+    "mae": {
+     "saldo": 0.0,
+     "a_vencer": 0
+    }
+   },
+   "metas": {
+    "Reserva de emergência": {
+     "planejado_periodo": 300.0,
+     "guardado_periodo": 300.0,
+     "guardado_total": 1800.0,
+     "falta_periodo": 0.0,
+     "completude_alvo": 0.3
+    },
+    "Notebook novo": {
+     "planejado_periodo": 250.0,
+     "guardado_periodo": 0,
+     "guardado_total": 0,
+     "falta_periodo": 250.0,
+     "completude_alvo": 0.0,
+     "por_mes_ate_prazo": 562.5
+    }
+   },
+   "categorias": {
+    "aluguel-condominio": {
+     "nome": "Aluguel e condomínio",
+     "gasto": 650.0,
+     "parcelas": 0.0,
+     "teto": 650.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "contas-casa": {
+     "nome": "Contas da casa (luz, gás, internet)",
+     "gasto": 91.7,
+     "parcelas": 0.0,
+     "teto": 150.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "casa-moveis": {
+     "nome": "Casa e móveis",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "mercado": {
+     "nome": "Mercado planejado",
+     "gasto": 468.43,
+     "parcelas": 0.0,
+     "teto": 600.0,
+     "acima": 0.0,
+     "n": 4
+    },
+    "ru": {
+     "nome": "RU (dias de aula)",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "conveniencia": {
+     "nome": "Conveniência e lanches",
+     "gasto": 17.93,
+     "parcelas": 0.0,
+     "teto": 100.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "delivery": {
+     "nome": "Delivery e restaurante",
+     "gasto": 105.3,
+     "parcelas": 0.0,
+     "teto": 250.0,
+     "acima": 0.0,
+     "n": 3
+    },
+    "remedios": {
+     "nome": "Remédios",
+     "gasto": 76.13,
+     "parcelas": 0.0,
+     "teto": 80.0,
+     "acima": 0.0,
+     "n": 2
+    },
+    "consultas": {
+     "nome": "Consultas e terapia",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "academia": {
+     "nome": "Academia",
+     "gasto": 90.0,
+     "parcelas": 0.0,
+     "teto": 90.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "saude-outros": {
+     "nome": "Saúde (outros)",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "app-transporte": {
+     "nome": "App (Uber/99)",
+     "gasto": 89.32,
+     "parcelas": 0.0,
+     "teto": 150.0,
+     "acima": 0.0,
+     "n": 4
+    },
+    "onibus": {
+     "nome": "Ônibus e combustível",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": 80.0,
+     "acima": 0.0,
+     "n": 0
+    },
+    "assinaturas": {
+     "nome": "Assinaturas e celular",
+     "gasto": 59.8,
+     "parcelas": 0.0,
+     "teto": 60.0,
+     "acima": 0.0,
+     "n": 2
+    },
+    "ferramentas": {
+     "nome": "Ferramentas de trabalho",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "eletronicos": {
+     "nome": "Eletrônicos",
+     "gasto": 0.0,
+     "parcelas": 250.0,
+     "teto": 150.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "vestuario": {
+     "nome": "Vestuário e imagem",
+     "gasto": 89.9,
+     "parcelas": 0.0,
+     "teto": 150.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "lazer": {
+     "nome": "Lazer e rolê",
+     "gasto": 35.84,
+     "parcelas": 0.0,
+     "teto": 200.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "viagem": {
+     "nome": "Viagem",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "hobbies": {
+     "nome": "Hobbies",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "pets": {
+     "nome": "Pets",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "familia": {
+     "nome": "Família e presentes",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "juros": {
+     "nome": "Juros e taxas",
+     "gasto": 4.9,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 1
+    },
+    "outros": {
+     "nome": "Outros",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    }
+   },
+   "grupos": {
+    "Moradia": 741.7,
+    "Alimentação": 591.66,
+    "Saúde": 166.13,
+    "Transporte": 89.32,
+    "Assinaturas": 59.8,
+    "Compras": 339.9,
+    "Lazer": 35.84,
+    "Financeiro": 4.9
+   },
+   "top": [
+    {
+     "nome": "IMOBILIARIA EXEMPLO LTDA",
+     "n": 1,
+     "total": 650.0
+    },
+    {
+     "nome": "Supermercado Exemplo",
+     "n": 2,
+     "total": 361.13
+    },
+    {
+     "nome": "Loja Eletro Exemplo - Parcela 3/6",
+     "n": 1,
+     "total": 250.0
+    },
+    {
+     "nome": "Picpay*Recarga Exemplo",
+     "n": 2,
+     "total": 104.9
+    },
+    {
+     "nome": "LUZ DISTRIBUIDORA EXEMPLO",
+     "n": 1,
+     "total": 91.7
+    }
+   ],
+   "compromissos": [
+    {
+     "mes": "2026-11",
+     "descricao": "Loja Eletro Exemplo - Parcela 4/6",
+     "valor": 250.0,
+     "parcela": "4/6",
+     "pessoa": null
+    },
+    {
+     "mes": "2026-11",
+     "descricao": "Loja Casa Exemplo - Parcela 2/3",
+     "valor": 120.0,
+     "parcela": "2/3",
+     "pessoa": null
+    },
+    {
+     "mes": "2026-12",
+     "descricao": "Loja Eletro Exemplo - Parcela 5/6",
+     "valor": 250.0,
+     "parcela": "5/6",
+     "pessoa": null
+    },
+    {
+     "mes": "2026-12",
+     "descricao": "Loja Casa Exemplo - Parcela 3/3",
+     "valor": 120.0,
+     "parcela": "3/3",
+     "pessoa": null
+    },
+    {
+     "mes": "2027-01",
+     "descricao": "Loja Eletro Exemplo - Parcela 6/6",
+     "valor": 250.0,
+     "parcela": "6/6",
+     "pessoa": null
+    }
+   ],
+   "plano": [
+    {
+     "mes": "2026-11",
+     "renda": 2600.0,
+     "custo": 2710.0,
+     "cartao": 1381.75,
+     "reembolsos": 0.0,
+     "unicos": 0,
+     "aportes": 550.0,
+     "resultado": -2041.75,
+     "falta": 2041.75,
+     "pago_pessoas": 0.0,
+     "deve_pessoas": 0.0,
+     "livre": 0.0,
+     "metas": 550.0
+    },
+    {
+     "mes": "2026-12",
+     "renda": 2600.0,
+     "custo": 2710.0,
+     "cartao": 370.0,
+     "reembolsos": 0.0,
+     "unicos": 2600.0,
+     "aportes": 550.0,
+     "resultado": 1570.0,
+     "falta": 0.0,
+     "pago_pessoas": 0.0,
+     "deve_pessoas": 0.0,
+     "livre": 1570.0,
+     "metas": 1100.0
+    },
+    {
+     "mes": "2027-01",
+     "renda": 2600.0,
+     "custo": 2710.0,
+     "cartao": 370.0,
+     "reembolsos": 0.0,
+     "unicos": -1800.0,
+     "aportes": 550.0,
+     "resultado": -2830.0,
+     "falta": 2830.0,
+     "pago_pessoas": 0.0,
+     "deve_pessoas": 0.0,
+     "livre": 1570.0,
+     "metas": 1650.0
+    },
+    {
+     "mes": "2027-02",
+     "renda": 2600.0,
+     "custo": 2710.0,
+     "cartao": 250.0,
+     "reembolsos": 0.0,
+     "unicos": 0,
+     "aportes": 550.0,
+     "resultado": -910.0,
+     "falta": 910.0,
+     "pago_pessoas": 0.0,
+     "deve_pessoas": 0.0,
+     "livre": 1570.0,
+     "metas": 2200.0
+    },
+    {
+     "mes": "2027-03",
+     "renda": 2600.0,
+     "custo": 2710.0,
+     "cartao": 0.0,
+     "reembolsos": 0.0,
+     "unicos": 0,
+     "aportes": 550.0,
+     "resultado": -660.0,
+     "falta": 660.0,
+     "pago_pessoas": 0.0,
+     "deve_pessoas": 0.0,
+     "livre": 1570.0,
+     "metas": 2750.0
+    }
+   ],
+   "plano_falta": 6441.75,
+   "entradas": {
+    "salario": 2600.0,
+    "pais": 200.0
+   }
+  },
+  "depois": {
+   "periodo": "2026-10",
+   "totais": {
+    "renda": 2800.0,
+    "gasto": 2129.25,
+    "juros": 4.9,
+    "resultado": 670.75
+   },
+   "pode_gastar": 973.28,
+   "teto_variavel": 1780.0,
+   "gasto_variavel": 806.72,
+   "ritmo": 0.6452,
+   "pendentes": 3,
+   "conta": {
+    "saldo": 4340.94,
+    "saldo_real": null,
+    "diferenca": null,
+    "cobertura": "2026-10-19"
+   },
+   "cartao": {
+    "divida": 1381.75,
+    "futuras": 990.0,
+    "limite": 3000.0,
+    "limite_livre": 628.25
+   },
+   "pessoas": {
+    "marina": {
+     "saldo": 0.0,
+     "a_vencer": 0
+    },
+    "teo": {
+     "saldo": 60.0,
+     "a_vencer": 0
+    },
+    "mae": {
+     "saldo": 0.0,
+     "a_vencer": 0
+    }
+   },
+   "metas": {
+    "Reserva de emergência": {
+     "planejado_periodo": 300.0,
+     "guardado_periodo": 300.0,
+     "guardado_total": 1800.0,
+     "falta_periodo": 0.0,
+     "completude_alvo": 0.3
+    },
+    "Notebook novo": {
+     "planejado_periodo": 250.0,
+     "guardado_periodo": 0,
+     "guardado_total": 0,
+     "falta_periodo": 250.0,
+     "completude_alvo": 0.0,
+     "por_mes_ate_prazo": 562.5
+    }
+   },
+   "categorias": {
+    "aluguel-condominio": {
+     "nome": "Aluguel e condomínio",
+     "gasto": 650.0,
+     "parcelas": 0.0,
+     "teto": 650.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "contas-casa": {
+     "nome": "Contas da casa (luz, gás, internet)",
+     "gasto": 91.7,
+     "parcelas": 0.0,
+     "teto": 150.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "casa-moveis": {
+     "nome": "Casa e móveis",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "mercado": {
+     "nome": "Mercado planejado",
+     "gasto": 468.43,
+     "parcelas": 0.0,
+     "teto": 700.0,
+     "acima": 0.0,
+     "n": 4
+    },
+    "ru": {
+     "nome": "RU (dias de aula)",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "conveniencia": {
+     "nome": "Conveniência e lanches",
+     "gasto": 17.93,
+     "parcelas": 0.0,
+     "teto": 100.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "delivery": {
+     "nome": "Delivery e restaurante",
+     "gasto": 105.3,
+     "parcelas": 0.0,
+     "teto": 250.0,
+     "acima": 0.0,
+     "n": 3
+    },
+    "remedios": {
+     "nome": "Remédios",
+     "gasto": 76.13,
+     "parcelas": 0.0,
+     "teto": 80.0,
+     "acima": 0.0,
+     "n": 2
+    },
+    "consultas": {
+     "nome": "Consultas e terapia",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "academia": {
+     "nome": "Academia",
+     "gasto": 90.0,
+     "parcelas": 0.0,
+     "teto": 90.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "saude-outros": {
+     "nome": "Saúde (outros)",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "app-transporte": {
+     "nome": "App (Uber/99)",
+     "gasto": 89.32,
+     "parcelas": 0.0,
+     "teto": 150.0,
+     "acima": 0.0,
+     "n": 4
+    },
+    "onibus": {
+     "nome": "Ônibus e combustível",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": 80.0,
+     "acima": 0.0,
+     "n": 0
+    },
+    "assinaturas": {
+     "nome": "Assinaturas e celular",
+     "gasto": 59.8,
+     "parcelas": 0.0,
+     "teto": 60.0,
+     "acima": 0.0,
+     "n": 2
+    },
+    "ferramentas": {
+     "nome": "Ferramentas de trabalho",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "eletronicos": {
+     "nome": "Eletrônicos",
+     "gasto": 0.0,
+     "parcelas": 250.0,
+     "teto": 150.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "vestuario": {
+     "nome": "Vestuário e imagem",
+     "gasto": 89.9,
+     "parcelas": 0.0,
+     "teto": 150.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "lazer": {
+     "nome": "Lazer e rolê",
+     "gasto": 35.84,
+     "parcelas": 0.0,
+     "teto": 200.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "viagem": {
+     "nome": "Viagem",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "hobbies": {
+     "nome": "Hobbies",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "pets": {
+     "nome": "Pets",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "familia": {
+     "nome": "Família e presentes",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "juros": {
+     "nome": "Juros e taxas",
+     "gasto": 4.9,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 1
+    },
+    "outros": {
+     "nome": "Outros",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    }
+   },
+   "grupos": {
+    "Moradia": 741.7,
+    "Alimentação": 591.66,
+    "Saúde": 166.13,
+    "Transporte": 89.32,
+    "Assinaturas": 59.8,
+    "Compras": 339.9,
+    "Lazer": 35.84,
+    "Financeiro": 4.9
+   },
+   "top": [
+    {
+     "nome": "IMOBILIARIA EXEMPLO LTDA",
+     "n": 1,
+     "total": 650.0
+    },
+    {
+     "nome": "Supermercado Exemplo",
+     "n": 2,
+     "total": 361.13
+    },
+    {
+     "nome": "Loja Eletro Exemplo - Parcela 3/6",
+     "n": 1,
+     "total": 250.0
+    },
+    {
+     "nome": "Picpay*Recarga Exemplo",
+     "n": 2,
+     "total": 104.9
+    },
+    {
+     "nome": "LUZ DISTRIBUIDORA EXEMPLO",
+     "n": 1,
+     "total": 91.7
+    }
+   ],
+   "compromissos": [
+    {
+     "mes": "2026-11",
+     "descricao": "Loja Eletro Exemplo - Parcela 4/6",
+     "valor": 250.0,
+     "parcela": "4/6",
+     "pessoa": null
+    },
+    {
+     "mes": "2026-11",
+     "descricao": "Loja Casa Exemplo - Parcela 2/3",
+     "valor": 120.0,
+     "parcela": "2/3",
+     "pessoa": null
+    },
+    {
+     "mes": "2026-12",
+     "descricao": "Loja Eletro Exemplo - Parcela 5/6",
+     "valor": 250.0,
+     "parcela": "5/6",
+     "pessoa": null
+    },
+    {
+     "mes": "2026-12",
+     "descricao": "Loja Casa Exemplo - Parcela 3/3",
+     "valor": 120.0,
+     "parcela": "3/3",
+     "pessoa": null
+    },
+    {
+     "mes": "2027-01",
+     "descricao": "Loja Eletro Exemplo - Parcela 6/6",
+     "valor": 250.0,
+     "parcela": "6/6",
+     "pessoa": null
+    }
+   ],
+   "plano": [
+    {
+     "mes": "2026-11",
+     "renda": 2600.0,
+     "custo": 2710.0,
+     "cartao": 1381.75,
+     "reembolsos": 0.0,
+     "unicos": 0,
+     "aportes": 550.0,
+     "resultado": -2041.75,
+     "falta": 2041.75,
+     "pago_pessoas": 0.0,
+     "deve_pessoas": 0.0,
+     "livre": 0.0,
+     "metas": 550.0
+    },
+    {
+     "mes": "2026-12",
+     "renda": 2600.0,
+     "custo": 2710.0,
+     "cartao": 370.0,
+     "reembolsos": 0.0,
+     "unicos": 2600.0,
+     "aportes": 550.0,
+     "resultado": 1570.0,
+     "falta": 0.0,
+     "pago_pessoas": 0.0,
+     "deve_pessoas": 0.0,
+     "livre": 1570.0,
+     "metas": 1100.0
+    },
+    {
+     "mes": "2027-01",
+     "renda": 2600.0,
+     "custo": 2710.0,
+     "cartao": 370.0,
+     "reembolsos": 0.0,
+     "unicos": -1800.0,
+     "aportes": 550.0,
+     "resultado": -2830.0,
+     "falta": 2830.0,
+     "pago_pessoas": 0.0,
+     "deve_pessoas": 0.0,
+     "livre": 1570.0,
+     "metas": 1650.0
+    },
+    {
+     "mes": "2027-02",
+     "renda": 2600.0,
+     "custo": 2710.0,
+     "cartao": 250.0,
+     "reembolsos": 0.0,
+     "unicos": 0,
+     "aportes": 550.0,
+     "resultado": -910.0,
+     "falta": 910.0,
+     "pago_pessoas": 0.0,
+     "deve_pessoas": 0.0,
+     "livre": 1570.0,
+     "metas": 2200.0
+    },
+    {
+     "mes": "2027-03",
+     "renda": 2600.0,
+     "custo": 2710.0,
+     "cartao": 0.0,
+     "reembolsos": 0.0,
+     "unicos": 0,
+     "aportes": 550.0,
+     "resultado": -660.0,
+     "falta": 660.0,
+     "pago_pessoas": 0.0,
+     "deve_pessoas": 0.0,
+     "livre": 1570.0,
+     "metas": 2750.0
+    }
+   ],
+   "plano_falta": 6441.75,
+   "entradas": {
+    "salario": 2600.0,
+    "pais": 200.0
+   }
+  },
+  "detalhe": {
+   "ok": true
+  }
+ },
+ "meta": {
+  "antes": {
+   "periodo": "2026-10",
+   "totais": {
+    "renda": 2800.0,
+    "gasto": 2129.25,
+    "juros": 4.9,
+    "resultado": 670.75
+   },
+   "pode_gastar": 973.28,
+   "teto_variavel": 1780.0,
+   "gasto_variavel": 806.72,
+   "ritmo": 0.6452,
+   "pendentes": 3,
+   "conta": {
+    "saldo": 4340.94,
+    "saldo_real": null,
+    "diferenca": null,
+    "cobertura": "2026-10-19"
+   },
+   "cartao": {
+    "divida": 1381.75,
+    "futuras": 990.0,
+    "limite": 3000.0,
+    "limite_livre": 628.25
+   },
+   "pessoas": {
+    "marina": {
+     "saldo": 0.0,
+     "a_vencer": 0
+    },
+    "teo": {
+     "saldo": 60.0,
+     "a_vencer": 0
+    },
+    "mae": {
+     "saldo": 0.0,
+     "a_vencer": 0
+    }
+   },
+   "metas": {
+    "Reserva de emergência": {
+     "planejado_periodo": 300.0,
+     "guardado_periodo": 300.0,
+     "guardado_total": 1800.0,
+     "falta_periodo": 0.0,
+     "completude_alvo": 0.3
+    },
+    "Notebook novo": {
+     "planejado_periodo": 250.0,
+     "guardado_periodo": 0,
+     "guardado_total": 0,
+     "falta_periodo": 250.0,
+     "completude_alvo": 0.0,
+     "por_mes_ate_prazo": 562.5
+    }
+   },
+   "categorias": {
+    "aluguel-condominio": {
+     "nome": "Aluguel e condomínio",
+     "gasto": 650.0,
+     "parcelas": 0.0,
+     "teto": 650.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "contas-casa": {
+     "nome": "Contas da casa (luz, gás, internet)",
+     "gasto": 91.7,
+     "parcelas": 0.0,
+     "teto": 150.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "casa-moveis": {
+     "nome": "Casa e móveis",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "mercado": {
+     "nome": "Mercado planejado",
+     "gasto": 468.43,
+     "parcelas": 0.0,
+     "teto": 700.0,
+     "acima": 0.0,
+     "n": 4
+    },
+    "ru": {
+     "nome": "RU (dias de aula)",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "conveniencia": {
+     "nome": "Conveniência e lanches",
+     "gasto": 17.93,
+     "parcelas": 0.0,
+     "teto": 100.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "delivery": {
+     "nome": "Delivery e restaurante",
+     "gasto": 105.3,
+     "parcelas": 0.0,
+     "teto": 250.0,
+     "acima": 0.0,
+     "n": 3
+    },
+    "remedios": {
+     "nome": "Remédios",
+     "gasto": 76.13,
+     "parcelas": 0.0,
+     "teto": 80.0,
+     "acima": 0.0,
+     "n": 2
+    },
+    "consultas": {
+     "nome": "Consultas e terapia",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "academia": {
+     "nome": "Academia",
+     "gasto": 90.0,
+     "parcelas": 0.0,
+     "teto": 90.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "saude-outros": {
+     "nome": "Saúde (outros)",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "app-transporte": {
+     "nome": "App (Uber/99)",
+     "gasto": 89.32,
+     "parcelas": 0.0,
+     "teto": 150.0,
+     "acima": 0.0,
+     "n": 4
+    },
+    "onibus": {
+     "nome": "Ônibus e combustível",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": 80.0,
+     "acima": 0.0,
+     "n": 0
+    },
+    "assinaturas": {
+     "nome": "Assinaturas e celular",
+     "gasto": 59.8,
+     "parcelas": 0.0,
+     "teto": 60.0,
+     "acima": 0.0,
+     "n": 2
+    },
+    "ferramentas": {
+     "nome": "Ferramentas de trabalho",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "eletronicos": {
+     "nome": "Eletrônicos",
+     "gasto": 0.0,
+     "parcelas": 250.0,
+     "teto": 150.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "vestuario": {
+     "nome": "Vestuário e imagem",
+     "gasto": 89.9,
+     "parcelas": 0.0,
+     "teto": 150.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "lazer": {
+     "nome": "Lazer e rolê",
+     "gasto": 35.84,
+     "parcelas": 0.0,
+     "teto": 200.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "viagem": {
+     "nome": "Viagem",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "hobbies": {
+     "nome": "Hobbies",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "pets": {
+     "nome": "Pets",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "familia": {
+     "nome": "Família e presentes",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "juros": {
+     "nome": "Juros e taxas",
+     "gasto": 4.9,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 1
+    },
+    "outros": {
+     "nome": "Outros",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    }
+   },
+   "grupos": {
+    "Moradia": 741.7,
+    "Alimentação": 591.66,
+    "Saúde": 166.13,
+    "Transporte": 89.32,
+    "Assinaturas": 59.8,
+    "Compras": 339.9,
+    "Lazer": 35.84,
+    "Financeiro": 4.9
+   },
+   "top": [
+    {
+     "nome": "IMOBILIARIA EXEMPLO LTDA",
+     "n": 1,
+     "total": 650.0
+    },
+    {
+     "nome": "Supermercado Exemplo",
+     "n": 2,
+     "total": 361.13
+    },
+    {
+     "nome": "Loja Eletro Exemplo - Parcela 3/6",
+     "n": 1,
+     "total": 250.0
+    },
+    {
+     "nome": "Picpay*Recarga Exemplo",
+     "n": 2,
+     "total": 104.9
+    },
+    {
+     "nome": "LUZ DISTRIBUIDORA EXEMPLO",
+     "n": 1,
+     "total": 91.7
+    }
+   ],
+   "compromissos": [
+    {
+     "mes": "2026-11",
+     "descricao": "Loja Eletro Exemplo - Parcela 4/6",
+     "valor": 250.0,
+     "parcela": "4/6",
+     "pessoa": null
+    },
+    {
+     "mes": "2026-11",
+     "descricao": "Loja Casa Exemplo - Parcela 2/3",
+     "valor": 120.0,
+     "parcela": "2/3",
+     "pessoa": null
+    },
+    {
+     "mes": "2026-12",
+     "descricao": "Loja Eletro Exemplo - Parcela 5/6",
+     "valor": 250.0,
+     "parcela": "5/6",
+     "pessoa": null
+    },
+    {
+     "mes": "2026-12",
+     "descricao": "Loja Casa Exemplo - Parcela 3/3",
+     "valor": 120.0,
+     "parcela": "3/3",
+     "pessoa": null
+    },
+    {
+     "mes": "2027-01",
+     "descricao": "Loja Eletro Exemplo - Parcela 6/6",
+     "valor": 250.0,
+     "parcela": "6/6",
+     "pessoa": null
+    }
+   ],
+   "plano": [
+    {
+     "mes": "2026-11",
+     "renda": 2600.0,
+     "custo": 2710.0,
+     "cartao": 1381.75,
+     "reembolsos": 0.0,
+     "unicos": 0,
+     "aportes": 550.0,
+     "resultado": -2041.75,
+     "falta": 2041.75,
+     "pago_pessoas": 0.0,
+     "deve_pessoas": 0.0,
+     "livre": 0.0,
+     "metas": 550.0
+    },
+    {
+     "mes": "2026-12",
+     "renda": 2600.0,
+     "custo": 2710.0,
+     "cartao": 370.0,
+     "reembolsos": 0.0,
+     "unicos": 2600.0,
+     "aportes": 550.0,
+     "resultado": 1570.0,
+     "falta": 0.0,
+     "pago_pessoas": 0.0,
+     "deve_pessoas": 0.0,
+     "livre": 1570.0,
+     "metas": 1100.0
+    },
+    {
+     "mes": "2027-01",
+     "renda": 2600.0,
+     "custo": 2710.0,
+     "cartao": 370.0,
+     "reembolsos": 0.0,
+     "unicos": -1800.0,
+     "aportes": 550.0,
+     "resultado": -2830.0,
+     "falta": 2830.0,
+     "pago_pessoas": 0.0,
+     "deve_pessoas": 0.0,
+     "livre": 1570.0,
+     "metas": 1650.0
+    },
+    {
+     "mes": "2027-02",
+     "renda": 2600.0,
+     "custo": 2710.0,
+     "cartao": 250.0,
+     "reembolsos": 0.0,
+     "unicos": 0,
+     "aportes": 550.0,
+     "resultado": -910.0,
+     "falta": 910.0,
+     "pago_pessoas": 0.0,
+     "deve_pessoas": 0.0,
+     "livre": 1570.0,
+     "metas": 2200.0
+    },
+    {
+     "mes": "2027-03",
+     "renda": 2600.0,
+     "custo": 2710.0,
+     "cartao": 0.0,
+     "reembolsos": 0.0,
+     "unicos": 0,
+     "aportes": 550.0,
+     "resultado": -660.0,
+     "falta": 660.0,
+     "pago_pessoas": 0.0,
+     "deve_pessoas": 0.0,
+     "livre": 1570.0,
+     "metas": 2750.0
+    }
+   ],
+   "plano_falta": 6441.75,
+   "entradas": {
+    "salario": 2600.0,
+    "pais": 200.0
+   }
+  },
+  "depois": {
+   "periodo": "2026-10",
+   "totais": {
+    "renda": 2800.0,
+    "gasto": 2129.25,
+    "juros": 4.9,
+    "resultado": 670.75
+   },
+   "pode_gastar": 973.28,
+   "teto_variavel": 1780.0,
+   "gasto_variavel": 806.72,
+   "ritmo": 0.6452,
+   "pendentes": 3,
+   "conta": {
+    "saldo": 4090.94,
+    "saldo_real": null,
+    "diferenca": null,
+    "cobertura": "2026-10-19"
+   },
+   "cartao": {
+    "divida": 1381.75,
+    "futuras": 990.0,
+    "limite": 3000.0,
+    "limite_livre": 628.25
+   },
+   "pessoas": {
+    "marina": {
+     "saldo": 0.0,
+     "a_vencer": 0
+    },
+    "teo": {
+     "saldo": 60.0,
+     "a_vencer": 0
+    },
+    "mae": {
+     "saldo": 0.0,
+     "a_vencer": 0
+    }
+   },
+   "metas": {
+    "Reserva de emergência": {
+     "planejado_periodo": 300.0,
+     "guardado_periodo": 300.0,
+     "guardado_total": 1800.0,
+     "falta_periodo": 0.0,
+     "completude_alvo": 0.3
+    },
+    "Notebook novo": {
+     "planejado_periodo": 250.0,
+     "guardado_periodo": 250.0,
+     "guardado_total": 250.0,
+     "falta_periodo": 0.0,
+     "completude_alvo": 0.0556,
+     "por_mes_ate_prazo": 531.25
+    }
+   },
+   "categorias": {
+    "aluguel-condominio": {
+     "nome": "Aluguel e condomínio",
+     "gasto": 650.0,
+     "parcelas": 0.0,
+     "teto": 650.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "contas-casa": {
+     "nome": "Contas da casa (luz, gás, internet)",
+     "gasto": 91.7,
+     "parcelas": 0.0,
+     "teto": 150.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "casa-moveis": {
+     "nome": "Casa e móveis",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "mercado": {
+     "nome": "Mercado planejado",
+     "gasto": 468.43,
+     "parcelas": 0.0,
+     "teto": 700.0,
+     "acima": 0.0,
+     "n": 4
+    },
+    "ru": {
+     "nome": "RU (dias de aula)",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "conveniencia": {
+     "nome": "Conveniência e lanches",
+     "gasto": 17.93,
+     "parcelas": 0.0,
+     "teto": 100.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "delivery": {
+     "nome": "Delivery e restaurante",
+     "gasto": 105.3,
+     "parcelas": 0.0,
+     "teto": 250.0,
+     "acima": 0.0,
+     "n": 3
+    },
+    "remedios": {
+     "nome": "Remédios",
+     "gasto": 76.13,
+     "parcelas": 0.0,
+     "teto": 80.0,
+     "acima": 0.0,
+     "n": 2
+    },
+    "consultas": {
+     "nome": "Consultas e terapia",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "academia": {
+     "nome": "Academia",
+     "gasto": 90.0,
+     "parcelas": 0.0,
+     "teto": 90.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "saude-outros": {
+     "nome": "Saúde (outros)",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "app-transporte": {
+     "nome": "App (Uber/99)",
+     "gasto": 89.32,
+     "parcelas": 0.0,
+     "teto": 150.0,
+     "acima": 0.0,
+     "n": 4
+    },
+    "onibus": {
+     "nome": "Ônibus e combustível",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": 80.0,
+     "acima": 0.0,
+     "n": 0
+    },
+    "assinaturas": {
+     "nome": "Assinaturas e celular",
+     "gasto": 59.8,
+     "parcelas": 0.0,
+     "teto": 60.0,
+     "acima": 0.0,
+     "n": 2
+    },
+    "ferramentas": {
+     "nome": "Ferramentas de trabalho",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "eletronicos": {
+     "nome": "Eletrônicos",
+     "gasto": 0.0,
+     "parcelas": 250.0,
+     "teto": 150.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "vestuario": {
+     "nome": "Vestuário e imagem",
+     "gasto": 89.9,
+     "parcelas": 0.0,
+     "teto": 150.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "lazer": {
+     "nome": "Lazer e rolê",
+     "gasto": 35.84,
+     "parcelas": 0.0,
+     "teto": 200.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "viagem": {
+     "nome": "Viagem",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "hobbies": {
+     "nome": "Hobbies",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "pets": {
+     "nome": "Pets",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "familia": {
+     "nome": "Família e presentes",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "juros": {
+     "nome": "Juros e taxas",
+     "gasto": 4.9,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 1
+    },
+    "outros": {
+     "nome": "Outros",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    }
+   },
+   "grupos": {
+    "Moradia": 741.7,
+    "Alimentação": 591.66,
+    "Saúde": 166.13,
+    "Transporte": 89.32,
+    "Assinaturas": 59.8,
+    "Compras": 339.9,
+    "Lazer": 35.84,
+    "Financeiro": 4.9
+   },
+   "top": [
+    {
+     "nome": "IMOBILIARIA EXEMPLO LTDA",
+     "n": 1,
+     "total": 650.0
+    },
+    {
+     "nome": "Supermercado Exemplo",
+     "n": 2,
+     "total": 361.13
+    },
+    {
+     "nome": "Loja Eletro Exemplo - Parcela 3/6",
+     "n": 1,
+     "total": 250.0
+    },
+    {
+     "nome": "Picpay*Recarga Exemplo",
+     "n": 2,
+     "total": 104.9
+    },
+    {
+     "nome": "LUZ DISTRIBUIDORA EXEMPLO",
+     "n": 1,
+     "total": 91.7
+    }
+   ],
+   "compromissos": [
+    {
+     "mes": "2026-11",
+     "descricao": "Loja Eletro Exemplo - Parcela 4/6",
+     "valor": 250.0,
+     "parcela": "4/6",
+     "pessoa": null
+    },
+    {
+     "mes": "2026-11",
+     "descricao": "Loja Casa Exemplo - Parcela 2/3",
+     "valor": 120.0,
+     "parcela": "2/3",
+     "pessoa": null
+    },
+    {
+     "mes": "2026-12",
+     "descricao": "Loja Eletro Exemplo - Parcela 5/6",
+     "valor": 250.0,
+     "parcela": "5/6",
+     "pessoa": null
+    },
+    {
+     "mes": "2026-12",
+     "descricao": "Loja Casa Exemplo - Parcela 3/3",
+     "valor": 120.0,
+     "parcela": "3/3",
+     "pessoa": null
+    },
+    {
+     "mes": "2027-01",
+     "descricao": "Loja Eletro Exemplo - Parcela 6/6",
+     "valor": 250.0,
+     "parcela": "6/6",
+     "pessoa": null
+    }
+   ],
+   "plano": [
+    {
+     "mes": "2026-11",
+     "renda": 2600.0,
+     "custo": 2710.0,
+     "cartao": 1381.75,
+     "reembolsos": 0.0,
+     "unicos": 0,
+     "aportes": 550.0,
+     "resultado": -2041.75,
+     "falta": 2041.75,
+     "pago_pessoas": 0.0,
+     "deve_pessoas": 0.0,
+     "livre": 0.0,
+     "metas": 550.0
+    },
+    {
+     "mes": "2026-12",
+     "renda": 2600.0,
+     "custo": 2710.0,
+     "cartao": 370.0,
+     "reembolsos": 0.0,
+     "unicos": 2600.0,
+     "aportes": 550.0,
+     "resultado": 1570.0,
+     "falta": 0.0,
+     "pago_pessoas": 0.0,
+     "deve_pessoas": 0.0,
+     "livre": 1570.0,
+     "metas": 1100.0
+    },
+    {
+     "mes": "2027-01",
+     "renda": 2600.0,
+     "custo": 2710.0,
+     "cartao": 370.0,
+     "reembolsos": 0.0,
+     "unicos": -1800.0,
+     "aportes": 550.0,
+     "resultado": -2830.0,
+     "falta": 2830.0,
+     "pago_pessoas": 0.0,
+     "deve_pessoas": 0.0,
+     "livre": 1570.0,
+     "metas": 1650.0
+    },
+    {
+     "mes": "2027-02",
+     "renda": 2600.0,
+     "custo": 2710.0,
+     "cartao": 250.0,
+     "reembolsos": 0.0,
+     "unicos": 0,
+     "aportes": 550.0,
+     "resultado": -910.0,
+     "falta": 910.0,
+     "pago_pessoas": 0.0,
+     "deve_pessoas": 0.0,
+     "livre": 1570.0,
+     "metas": 2200.0
+    },
+    {
+     "mes": "2027-03",
+     "renda": 2600.0,
+     "custo": 2710.0,
+     "cartao": 0.0,
+     "reembolsos": 0.0,
+     "unicos": 0,
+     "aportes": 550.0,
+     "resultado": -660.0,
+     "falta": 660.0,
+     "pago_pessoas": 0.0,
+     "deve_pessoas": 0.0,
+     "livre": 1570.0,
+     "metas": 2750.0
+    }
+   ],
+   "plano_falta": 6441.75,
+   "entradas": {
+    "salario": 2600.0,
+    "pais": 200.0
+   }
+  },
+  "detalhe": {
+   "id": 170
+  }
+ },
+ "saldo_informado": 4063.04,
+ "saldo": {
+  "antes": {
+   "periodo": "2026-10",
+   "totais": {
+    "renda": 2800.0,
+    "gasto": 2129.25,
+    "juros": 4.9,
+    "resultado": 670.75
+   },
+   "pode_gastar": 973.28,
+   "teto_variavel": 1780.0,
+   "gasto_variavel": 806.72,
+   "ritmo": 0.6452,
+   "pendentes": 3,
+   "conta": {
+    "saldo": 4090.94,
+    "saldo_real": null,
+    "diferenca": null,
+    "cobertura": "2026-10-19"
+   },
+   "cartao": {
+    "divida": 1381.75,
+    "futuras": 990.0,
+    "limite": 3000.0,
+    "limite_livre": 628.25
+   },
+   "pessoas": {
+    "marina": {
+     "saldo": 0.0,
+     "a_vencer": 0
+    },
+    "teo": {
+     "saldo": 60.0,
+     "a_vencer": 0
+    },
+    "mae": {
+     "saldo": 0.0,
+     "a_vencer": 0
+    }
+   },
+   "metas": {
+    "Reserva de emergência": {
+     "planejado_periodo": 300.0,
+     "guardado_periodo": 300.0,
+     "guardado_total": 1800.0,
+     "falta_periodo": 0.0,
+     "completude_alvo": 0.3
+    },
+    "Notebook novo": {
+     "planejado_periodo": 250.0,
+     "guardado_periodo": 250.0,
+     "guardado_total": 250.0,
+     "falta_periodo": 0.0,
+     "completude_alvo": 0.0556,
+     "por_mes_ate_prazo": 531.25
+    }
+   },
+   "categorias": {
+    "aluguel-condominio": {
+     "nome": "Aluguel e condomínio",
+     "gasto": 650.0,
+     "parcelas": 0.0,
+     "teto": 650.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "contas-casa": {
+     "nome": "Contas da casa (luz, gás, internet)",
+     "gasto": 91.7,
+     "parcelas": 0.0,
+     "teto": 150.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "casa-moveis": {
+     "nome": "Casa e móveis",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "mercado": {
+     "nome": "Mercado planejado",
+     "gasto": 468.43,
+     "parcelas": 0.0,
+     "teto": 700.0,
+     "acima": 0.0,
+     "n": 4
+    },
+    "ru": {
+     "nome": "RU (dias de aula)",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "conveniencia": {
+     "nome": "Conveniência e lanches",
+     "gasto": 17.93,
+     "parcelas": 0.0,
+     "teto": 100.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "delivery": {
+     "nome": "Delivery e restaurante",
+     "gasto": 105.3,
+     "parcelas": 0.0,
+     "teto": 250.0,
+     "acima": 0.0,
+     "n": 3
+    },
+    "remedios": {
+     "nome": "Remédios",
+     "gasto": 76.13,
+     "parcelas": 0.0,
+     "teto": 80.0,
+     "acima": 0.0,
+     "n": 2
+    },
+    "consultas": {
+     "nome": "Consultas e terapia",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "academia": {
+     "nome": "Academia",
+     "gasto": 90.0,
+     "parcelas": 0.0,
+     "teto": 90.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "saude-outros": {
+     "nome": "Saúde (outros)",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "app-transporte": {
+     "nome": "App (Uber/99)",
+     "gasto": 89.32,
+     "parcelas": 0.0,
+     "teto": 150.0,
+     "acima": 0.0,
+     "n": 4
+    },
+    "onibus": {
+     "nome": "Ônibus e combustível",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": 80.0,
+     "acima": 0.0,
+     "n": 0
+    },
+    "assinaturas": {
+     "nome": "Assinaturas e celular",
+     "gasto": 59.8,
+     "parcelas": 0.0,
+     "teto": 60.0,
+     "acima": 0.0,
+     "n": 2
+    },
+    "ferramentas": {
+     "nome": "Ferramentas de trabalho",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "eletronicos": {
+     "nome": "Eletrônicos",
+     "gasto": 0.0,
+     "parcelas": 250.0,
+     "teto": 150.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "vestuario": {
+     "nome": "Vestuário e imagem",
+     "gasto": 89.9,
+     "parcelas": 0.0,
+     "teto": 150.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "lazer": {
+     "nome": "Lazer e rolê",
+     "gasto": 35.84,
+     "parcelas": 0.0,
+     "teto": 200.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "viagem": {
+     "nome": "Viagem",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "hobbies": {
+     "nome": "Hobbies",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "pets": {
+     "nome": "Pets",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "familia": {
+     "nome": "Família e presentes",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "juros": {
+     "nome": "Juros e taxas",
+     "gasto": 4.9,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 1
+    },
+    "outros": {
+     "nome": "Outros",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    }
+   },
+   "grupos": {
+    "Moradia": 741.7,
+    "Alimentação": 591.66,
+    "Saúde": 166.13,
+    "Transporte": 89.32,
+    "Assinaturas": 59.8,
+    "Compras": 339.9,
+    "Lazer": 35.84,
+    "Financeiro": 4.9
+   },
+   "top": [
+    {
+     "nome": "IMOBILIARIA EXEMPLO LTDA",
+     "n": 1,
+     "total": 650.0
+    },
+    {
+     "nome": "Supermercado Exemplo",
+     "n": 2,
+     "total": 361.13
+    },
+    {
+     "nome": "Loja Eletro Exemplo - Parcela 3/6",
+     "n": 1,
+     "total": 250.0
+    },
+    {
+     "nome": "Picpay*Recarga Exemplo",
+     "n": 2,
+     "total": 104.9
+    },
+    {
+     "nome": "LUZ DISTRIBUIDORA EXEMPLO",
+     "n": 1,
+     "total": 91.7
+    }
+   ],
+   "compromissos": [
+    {
+     "mes": "2026-11",
+     "descricao": "Loja Eletro Exemplo - Parcela 4/6",
+     "valor": 250.0,
+     "parcela": "4/6",
+     "pessoa": null
+    },
+    {
+     "mes": "2026-11",
+     "descricao": "Loja Casa Exemplo - Parcela 2/3",
+     "valor": 120.0,
+     "parcela": "2/3",
+     "pessoa": null
+    },
+    {
+     "mes": "2026-12",
+     "descricao": "Loja Eletro Exemplo - Parcela 5/6",
+     "valor": 250.0,
+     "parcela": "5/6",
+     "pessoa": null
+    },
+    {
+     "mes": "2026-12",
+     "descricao": "Loja Casa Exemplo - Parcela 3/3",
+     "valor": 120.0,
+     "parcela": "3/3",
+     "pessoa": null
+    },
+    {
+     "mes": "2027-01",
+     "descricao": "Loja Eletro Exemplo - Parcela 6/6",
+     "valor": 250.0,
+     "parcela": "6/6",
+     "pessoa": null
+    }
+   ],
+   "plano": [
+    {
+     "mes": "2026-11",
+     "renda": 2600.0,
+     "custo": 2710.0,
+     "cartao": 1381.75,
+     "reembolsos": 0.0,
+     "unicos": 0,
+     "aportes": 550.0,
+     "resultado": -2041.75,
+     "falta": 2041.75,
+     "pago_pessoas": 0.0,
+     "deve_pessoas": 0.0,
+     "livre": 0.0,
+     "metas": 550.0
+    },
+    {
+     "mes": "2026-12",
+     "renda": 2600.0,
+     "custo": 2710.0,
+     "cartao": 370.0,
+     "reembolsos": 0.0,
+     "unicos": 2600.0,
+     "aportes": 550.0,
+     "resultado": 1570.0,
+     "falta": 0.0,
+     "pago_pessoas": 0.0,
+     "deve_pessoas": 0.0,
+     "livre": 1570.0,
+     "metas": 1100.0
+    },
+    {
+     "mes": "2027-01",
+     "renda": 2600.0,
+     "custo": 2710.0,
+     "cartao": 370.0,
+     "reembolsos": 0.0,
+     "unicos": -1800.0,
+     "aportes": 550.0,
+     "resultado": -2830.0,
+     "falta": 2830.0,
+     "pago_pessoas": 0.0,
+     "deve_pessoas": 0.0,
+     "livre": 1570.0,
+     "metas": 1650.0
+    },
+    {
+     "mes": "2027-02",
+     "renda": 2600.0,
+     "custo": 2710.0,
+     "cartao": 250.0,
+     "reembolsos": 0.0,
+     "unicos": 0,
+     "aportes": 550.0,
+     "resultado": -910.0,
+     "falta": 910.0,
+     "pago_pessoas": 0.0,
+     "deve_pessoas": 0.0,
+     "livre": 1570.0,
+     "metas": 2200.0
+    },
+    {
+     "mes": "2027-03",
+     "renda": 2600.0,
+     "custo": 2710.0,
+     "cartao": 0.0,
+     "reembolsos": 0.0,
+     "unicos": 0,
+     "aportes": 550.0,
+     "resultado": -660.0,
+     "falta": 660.0,
+     "pago_pessoas": 0.0,
+     "deve_pessoas": 0.0,
+     "livre": 1570.0,
+     "metas": 2750.0
+    }
+   ],
+   "plano_falta": 6441.75,
+   "entradas": {
+    "salario": 2600.0,
+    "pais": 200.0
+   }
+  },
+  "depois": {
+   "periodo": "2026-10",
+   "totais": {
+    "renda": 2800.0,
+    "gasto": 2129.25,
+    "juros": 4.9,
+    "resultado": 670.75
+   },
+   "pode_gastar": 973.28,
+   "teto_variavel": 1780.0,
+   "gasto_variavel": 806.72,
+   "ritmo": 0.6452,
+   "pendentes": 3,
+   "conta": {
+    "saldo": 4090.94,
+    "saldo_real": 4063.04,
+    "diferenca": -27.9,
+    "cobertura": "2026-10-19"
+   },
+   "cartao": {
+    "divida": 1381.75,
+    "futuras": 990.0,
+    "limite": 3000.0,
+    "limite_livre": 628.25
+   },
+   "pessoas": {
+    "marina": {
+     "saldo": 0.0,
+     "a_vencer": 0
+    },
+    "teo": {
+     "saldo": 60.0,
+     "a_vencer": 0
+    },
+    "mae": {
+     "saldo": 0.0,
+     "a_vencer": 0
+    }
+   },
+   "metas": {
+    "Reserva de emergência": {
+     "planejado_periodo": 300.0,
+     "guardado_periodo": 300.0,
+     "guardado_total": 1800.0,
+     "falta_periodo": 0.0,
+     "completude_alvo": 0.3
+    },
+    "Notebook novo": {
+     "planejado_periodo": 250.0,
+     "guardado_periodo": 250.0,
+     "guardado_total": 250.0,
+     "falta_periodo": 0.0,
+     "completude_alvo": 0.0556,
+     "por_mes_ate_prazo": 531.25
+    }
+   },
+   "categorias": {
+    "aluguel-condominio": {
+     "nome": "Aluguel e condomínio",
+     "gasto": 650.0,
+     "parcelas": 0.0,
+     "teto": 650.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "contas-casa": {
+     "nome": "Contas da casa (luz, gás, internet)",
+     "gasto": 91.7,
+     "parcelas": 0.0,
+     "teto": 150.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "casa-moveis": {
+     "nome": "Casa e móveis",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "mercado": {
+     "nome": "Mercado planejado",
+     "gasto": 468.43,
+     "parcelas": 0.0,
+     "teto": 700.0,
+     "acima": 0.0,
+     "n": 4
+    },
+    "ru": {
+     "nome": "RU (dias de aula)",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "conveniencia": {
+     "nome": "Conveniência e lanches",
+     "gasto": 17.93,
+     "parcelas": 0.0,
+     "teto": 100.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "delivery": {
+     "nome": "Delivery e restaurante",
+     "gasto": 105.3,
+     "parcelas": 0.0,
+     "teto": 250.0,
+     "acima": 0.0,
+     "n": 3
+    },
+    "remedios": {
+     "nome": "Remédios",
+     "gasto": 76.13,
+     "parcelas": 0.0,
+     "teto": 80.0,
+     "acima": 0.0,
+     "n": 2
+    },
+    "consultas": {
+     "nome": "Consultas e terapia",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "academia": {
+     "nome": "Academia",
+     "gasto": 90.0,
+     "parcelas": 0.0,
+     "teto": 90.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "saude-outros": {
+     "nome": "Saúde (outros)",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "app-transporte": {
+     "nome": "App (Uber/99)",
+     "gasto": 89.32,
+     "parcelas": 0.0,
+     "teto": 150.0,
+     "acima": 0.0,
+     "n": 4
+    },
+    "onibus": {
+     "nome": "Ônibus e combustível",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": 80.0,
+     "acima": 0.0,
+     "n": 0
+    },
+    "assinaturas": {
+     "nome": "Assinaturas e celular",
+     "gasto": 59.8,
+     "parcelas": 0.0,
+     "teto": 60.0,
+     "acima": 0.0,
+     "n": 2
+    },
+    "ferramentas": {
+     "nome": "Ferramentas de trabalho",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "eletronicos": {
+     "nome": "Eletrônicos",
+     "gasto": 0.0,
+     "parcelas": 250.0,
+     "teto": 150.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "vestuario": {
+     "nome": "Vestuário e imagem",
+     "gasto": 89.9,
+     "parcelas": 0.0,
+     "teto": 150.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "lazer": {
+     "nome": "Lazer e rolê",
+     "gasto": 35.84,
+     "parcelas": 0.0,
+     "teto": 200.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "viagem": {
+     "nome": "Viagem",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "hobbies": {
+     "nome": "Hobbies",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "pets": {
+     "nome": "Pets",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "familia": {
+     "nome": "Família e presentes",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "juros": {
+     "nome": "Juros e taxas",
+     "gasto": 4.9,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 1
+    },
+    "outros": {
+     "nome": "Outros",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    }
+   },
+   "grupos": {
+    "Moradia": 741.7,
+    "Alimentação": 591.66,
+    "Saúde": 166.13,
+    "Transporte": 89.32,
+    "Assinaturas": 59.8,
+    "Compras": 339.9,
+    "Lazer": 35.84,
+    "Financeiro": 4.9
+   },
+   "top": [
+    {
+     "nome": "IMOBILIARIA EXEMPLO LTDA",
+     "n": 1,
+     "total": 650.0
+    },
+    {
+     "nome": "Supermercado Exemplo",
+     "n": 2,
+     "total": 361.13
+    },
+    {
+     "nome": "Loja Eletro Exemplo - Parcela 3/6",
+     "n": 1,
+     "total": 250.0
+    },
+    {
+     "nome": "Picpay*Recarga Exemplo",
+     "n": 2,
+     "total": 104.9
+    },
+    {
+     "nome": "LUZ DISTRIBUIDORA EXEMPLO",
+     "n": 1,
+     "total": 91.7
+    }
+   ],
+   "compromissos": [
+    {
+     "mes": "2026-11",
+     "descricao": "Loja Eletro Exemplo - Parcela 4/6",
+     "valor": 250.0,
+     "parcela": "4/6",
+     "pessoa": null
+    },
+    {
+     "mes": "2026-11",
+     "descricao": "Loja Casa Exemplo - Parcela 2/3",
+     "valor": 120.0,
+     "parcela": "2/3",
+     "pessoa": null
+    },
+    {
+     "mes": "2026-12",
+     "descricao": "Loja Eletro Exemplo - Parcela 5/6",
+     "valor": 250.0,
+     "parcela": "5/6",
+     "pessoa": null
+    },
+    {
+     "mes": "2026-12",
+     "descricao": "Loja Casa Exemplo - Parcela 3/3",
+     "valor": 120.0,
+     "parcela": "3/3",
+     "pessoa": null
+    },
+    {
+     "mes": "2027-01",
+     "descricao": "Loja Eletro Exemplo - Parcela 6/6",
+     "valor": 250.0,
+     "parcela": "6/6",
+     "pessoa": null
+    }
+   ],
+   "plano": [
+    {
+     "mes": "2026-11",
+     "renda": 2600.0,
+     "custo": 2710.0,
+     "cartao": 1381.75,
+     "reembolsos": 0.0,
+     "unicos": 0,
+     "aportes": 550.0,
+     "resultado": -2041.75,
+     "falta": 2041.75,
+     "pago_pessoas": 0.0,
+     "deve_pessoas": 0.0,
+     "livre": 0.0,
+     "metas": 550.0
+    },
+    {
+     "mes": "2026-12",
+     "renda": 2600.0,
+     "custo": 2710.0,
+     "cartao": 370.0,
+     "reembolsos": 0.0,
+     "unicos": 2600.0,
+     "aportes": 550.0,
+     "resultado": 1570.0,
+     "falta": 0.0,
+     "pago_pessoas": 0.0,
+     "deve_pessoas": 0.0,
+     "livre": 1570.0,
+     "metas": 1100.0
+    },
+    {
+     "mes": "2027-01",
+     "renda": 2600.0,
+     "custo": 2710.0,
+     "cartao": 370.0,
+     "reembolsos": 0.0,
+     "unicos": -1800.0,
+     "aportes": 550.0,
+     "resultado": -2830.0,
+     "falta": 2830.0,
+     "pago_pessoas": 0.0,
+     "deve_pessoas": 0.0,
+     "livre": 1570.0,
+     "metas": 1650.0
+    },
+    {
+     "mes": "2027-02",
+     "renda": 2600.0,
+     "custo": 2710.0,
+     "cartao": 250.0,
+     "reembolsos": 0.0,
+     "unicos": 0,
+     "aportes": 550.0,
+     "resultado": -910.0,
+     "falta": 910.0,
+     "pago_pessoas": 0.0,
+     "deve_pessoas": 0.0,
+     "livre": 1570.0,
+     "metas": 2200.0
+    },
+    {
+     "mes": "2027-03",
+     "renda": 2600.0,
+     "custo": 2710.0,
+     "cartao": 0.0,
+     "reembolsos": 0.0,
+     "unicos": 0,
+     "aportes": 550.0,
+     "resultado": -660.0,
+     "falta": 660.0,
+     "pago_pessoas": 0.0,
+     "deve_pessoas": 0.0,
+     "livre": 1570.0,
+     "metas": 2750.0
+    }
+   ],
+   "plano_falta": 6441.75,
+   "entradas": {
+    "salario": 2600.0,
+    "pais": 200.0
+   }
+  },
+  "detalhe": {
+   "ok": true
+  }
+ },
+ "evento": {
+  "antes": {
+   "periodo": "2026-10",
+   "totais": {
+    "renda": 2800.0,
+    "gasto": 2129.25,
+    "juros": 4.9,
+    "resultado": 670.75
+   },
+   "pode_gastar": 973.28,
+   "teto_variavel": 1780.0,
+   "gasto_variavel": 806.72,
+   "ritmo": 0.6452,
+   "pendentes": 3,
+   "conta": {
+    "saldo": 4090.94,
+    "saldo_real": 4063.04,
+    "diferenca": -27.9,
+    "cobertura": "2026-10-19"
+   },
+   "cartao": {
+    "divida": 1381.75,
+    "futuras": 990.0,
+    "limite": 3000.0,
+    "limite_livre": 628.25
+   },
+   "pessoas": {
+    "marina": {
+     "saldo": 0.0,
+     "a_vencer": 0
+    },
+    "teo": {
+     "saldo": 60.0,
+     "a_vencer": 0
+    },
+    "mae": {
+     "saldo": 0.0,
+     "a_vencer": 0
+    }
+   },
+   "metas": {
+    "Reserva de emergência": {
+     "planejado_periodo": 300.0,
+     "guardado_periodo": 300.0,
+     "guardado_total": 1800.0,
+     "falta_periodo": 0.0,
+     "completude_alvo": 0.3
+    },
+    "Notebook novo": {
+     "planejado_periodo": 250.0,
+     "guardado_periodo": 250.0,
+     "guardado_total": 250.0,
+     "falta_periodo": 0.0,
+     "completude_alvo": 0.0556,
+     "por_mes_ate_prazo": 531.25
+    }
+   },
+   "categorias": {
+    "aluguel-condominio": {
+     "nome": "Aluguel e condomínio",
+     "gasto": 650.0,
+     "parcelas": 0.0,
+     "teto": 650.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "contas-casa": {
+     "nome": "Contas da casa (luz, gás, internet)",
+     "gasto": 91.7,
+     "parcelas": 0.0,
+     "teto": 150.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "casa-moveis": {
+     "nome": "Casa e móveis",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "mercado": {
+     "nome": "Mercado planejado",
+     "gasto": 468.43,
+     "parcelas": 0.0,
+     "teto": 700.0,
+     "acima": 0.0,
+     "n": 4
+    },
+    "ru": {
+     "nome": "RU (dias de aula)",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "conveniencia": {
+     "nome": "Conveniência e lanches",
+     "gasto": 17.93,
+     "parcelas": 0.0,
+     "teto": 100.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "delivery": {
+     "nome": "Delivery e restaurante",
+     "gasto": 105.3,
+     "parcelas": 0.0,
+     "teto": 250.0,
+     "acima": 0.0,
+     "n": 3
+    },
+    "remedios": {
+     "nome": "Remédios",
+     "gasto": 76.13,
+     "parcelas": 0.0,
+     "teto": 80.0,
+     "acima": 0.0,
+     "n": 2
+    },
+    "consultas": {
+     "nome": "Consultas e terapia",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "academia": {
+     "nome": "Academia",
+     "gasto": 90.0,
+     "parcelas": 0.0,
+     "teto": 90.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "saude-outros": {
+     "nome": "Saúde (outros)",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "app-transporte": {
+     "nome": "App (Uber/99)",
+     "gasto": 89.32,
+     "parcelas": 0.0,
+     "teto": 150.0,
+     "acima": 0.0,
+     "n": 4
+    },
+    "onibus": {
+     "nome": "Ônibus e combustível",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": 80.0,
+     "acima": 0.0,
+     "n": 0
+    },
+    "assinaturas": {
+     "nome": "Assinaturas e celular",
+     "gasto": 59.8,
+     "parcelas": 0.0,
+     "teto": 60.0,
+     "acima": 0.0,
+     "n": 2
+    },
+    "ferramentas": {
+     "nome": "Ferramentas de trabalho",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "eletronicos": {
+     "nome": "Eletrônicos",
+     "gasto": 0.0,
+     "parcelas": 250.0,
+     "teto": 150.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "vestuario": {
+     "nome": "Vestuário e imagem",
+     "gasto": 89.9,
+     "parcelas": 0.0,
+     "teto": 150.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "lazer": {
+     "nome": "Lazer e rolê",
+     "gasto": 35.84,
+     "parcelas": 0.0,
+     "teto": 200.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "viagem": {
+     "nome": "Viagem",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "hobbies": {
+     "nome": "Hobbies",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "pets": {
+     "nome": "Pets",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "familia": {
+     "nome": "Família e presentes",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "juros": {
+     "nome": "Juros e taxas",
+     "gasto": 4.9,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 1
+    },
+    "outros": {
+     "nome": "Outros",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    }
+   },
+   "grupos": {
+    "Moradia": 741.7,
+    "Alimentação": 591.66,
+    "Saúde": 166.13,
+    "Transporte": 89.32,
+    "Assinaturas": 59.8,
+    "Compras": 339.9,
+    "Lazer": 35.84,
+    "Financeiro": 4.9
+   },
+   "top": [
+    {
+     "nome": "IMOBILIARIA EXEMPLO LTDA",
+     "n": 1,
+     "total": 650.0
+    },
+    {
+     "nome": "Supermercado Exemplo",
+     "n": 2,
+     "total": 361.13
+    },
+    {
+     "nome": "Loja Eletro Exemplo - Parcela 3/6",
+     "n": 1,
+     "total": 250.0
+    },
+    {
+     "nome": "Picpay*Recarga Exemplo",
+     "n": 2,
+     "total": 104.9
+    },
+    {
+     "nome": "LUZ DISTRIBUIDORA EXEMPLO",
+     "n": 1,
+     "total": 91.7
+    }
+   ],
+   "compromissos": [
+    {
+     "mes": "2026-11",
+     "descricao": "Loja Eletro Exemplo - Parcela 4/6",
+     "valor": 250.0,
+     "parcela": "4/6",
+     "pessoa": null
+    },
+    {
+     "mes": "2026-11",
+     "descricao": "Loja Casa Exemplo - Parcela 2/3",
+     "valor": 120.0,
+     "parcela": "2/3",
+     "pessoa": null
+    },
+    {
+     "mes": "2026-12",
+     "descricao": "Loja Eletro Exemplo - Parcela 5/6",
+     "valor": 250.0,
+     "parcela": "5/6",
+     "pessoa": null
+    },
+    {
+     "mes": "2026-12",
+     "descricao": "Loja Casa Exemplo - Parcela 3/3",
+     "valor": 120.0,
+     "parcela": "3/3",
+     "pessoa": null
+    },
+    {
+     "mes": "2027-01",
+     "descricao": "Loja Eletro Exemplo - Parcela 6/6",
+     "valor": 250.0,
+     "parcela": "6/6",
+     "pessoa": null
+    }
+   ],
+   "plano": [
+    {
+     "mes": "2026-11",
+     "renda": 2600.0,
+     "custo": 2710.0,
+     "cartao": 1381.75,
+     "reembolsos": 0.0,
+     "unicos": 0,
+     "aportes": 550.0,
+     "resultado": -2041.75,
+     "falta": 2041.75,
+     "pago_pessoas": 0.0,
+     "deve_pessoas": 0.0,
+     "livre": 0.0,
+     "metas": 550.0
+    },
+    {
+     "mes": "2026-12",
+     "renda": 2600.0,
+     "custo": 2710.0,
+     "cartao": 370.0,
+     "reembolsos": 0.0,
+     "unicos": 2600.0,
+     "aportes": 550.0,
+     "resultado": 1570.0,
+     "falta": 0.0,
+     "pago_pessoas": 0.0,
+     "deve_pessoas": 0.0,
+     "livre": 1570.0,
+     "metas": 1100.0
+    },
+    {
+     "mes": "2027-01",
+     "renda": 2600.0,
+     "custo": 2710.0,
+     "cartao": 370.0,
+     "reembolsos": 0.0,
+     "unicos": -1800.0,
+     "aportes": 550.0,
+     "resultado": -2830.0,
+     "falta": 2830.0,
+     "pago_pessoas": 0.0,
+     "deve_pessoas": 0.0,
+     "livre": 1570.0,
+     "metas": 1650.0
+    },
+    {
+     "mes": "2027-02",
+     "renda": 2600.0,
+     "custo": 2710.0,
+     "cartao": 250.0,
+     "reembolsos": 0.0,
+     "unicos": 0,
+     "aportes": 550.0,
+     "resultado": -910.0,
+     "falta": 910.0,
+     "pago_pessoas": 0.0,
+     "deve_pessoas": 0.0,
+     "livre": 1570.0,
+     "metas": 2200.0
+    },
+    {
+     "mes": "2027-03",
+     "renda": 2600.0,
+     "custo": 2710.0,
+     "cartao": 0.0,
+     "reembolsos": 0.0,
+     "unicos": 0,
+     "aportes": 550.0,
+     "resultado": -660.0,
+     "falta": 660.0,
+     "pago_pessoas": 0.0,
+     "deve_pessoas": 0.0,
+     "livre": 1570.0,
+     "metas": 2750.0
+    }
+   ],
+   "plano_falta": 6441.75,
+   "entradas": {
+    "salario": 2600.0,
+    "pais": 200.0
+   }
+  },
+  "depois": {
+   "periodo": "2026-10",
+   "totais": {
+    "renda": 2800.0,
+    "gasto": 2129.25,
+    "juros": 4.9,
+    "resultado": 670.75
+   },
+   "pode_gastar": 973.28,
+   "teto_variavel": 1780.0,
+   "gasto_variavel": 806.72,
+   "ritmo": 0.6452,
+   "pendentes": 3,
+   "conta": {
+    "saldo": 4090.94,
+    "saldo_real": 4063.04,
+    "diferenca": -27.9,
+    "cobertura": "2026-10-19"
+   },
+   "cartao": {
+    "divida": 1381.75,
+    "futuras": 990.0,
+    "limite": 3000.0,
+    "limite_livre": 628.25
+   },
+   "pessoas": {
+    "marina": {
+     "saldo": 0.0,
+     "a_vencer": 0
+    },
+    "teo": {
+     "saldo": 60.0,
+     "a_vencer": 0
+    },
+    "mae": {
+     "saldo": 0.0,
+     "a_vencer": 0
+    }
+   },
+   "metas": {
+    "Reserva de emergência": {
+     "planejado_periodo": 300.0,
+     "guardado_periodo": 300.0,
+     "guardado_total": 1800.0,
+     "falta_periodo": 0.0,
+     "completude_alvo": 0.3
+    },
+    "Notebook novo": {
+     "planejado_periodo": 250.0,
+     "guardado_periodo": 250.0,
+     "guardado_total": 250.0,
+     "falta_periodo": 0.0,
+     "completude_alvo": 0.0556,
+     "por_mes_ate_prazo": 531.25
+    }
+   },
+   "categorias": {
+    "aluguel-condominio": {
+     "nome": "Aluguel e condomínio",
+     "gasto": 650.0,
+     "parcelas": 0.0,
+     "teto": 650.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "contas-casa": {
+     "nome": "Contas da casa (luz, gás, internet)",
+     "gasto": 91.7,
+     "parcelas": 0.0,
+     "teto": 150.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "casa-moveis": {
+     "nome": "Casa e móveis",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "mercado": {
+     "nome": "Mercado planejado",
+     "gasto": 468.43,
+     "parcelas": 0.0,
+     "teto": 700.0,
+     "acima": 0.0,
+     "n": 4
+    },
+    "ru": {
+     "nome": "RU (dias de aula)",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "conveniencia": {
+     "nome": "Conveniência e lanches",
+     "gasto": 17.93,
+     "parcelas": 0.0,
+     "teto": 100.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "delivery": {
+     "nome": "Delivery e restaurante",
+     "gasto": 105.3,
+     "parcelas": 0.0,
+     "teto": 250.0,
+     "acima": 0.0,
+     "n": 3
+    },
+    "remedios": {
+     "nome": "Remédios",
+     "gasto": 76.13,
+     "parcelas": 0.0,
+     "teto": 80.0,
+     "acima": 0.0,
+     "n": 2
+    },
+    "consultas": {
+     "nome": "Consultas e terapia",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "academia": {
+     "nome": "Academia",
+     "gasto": 90.0,
+     "parcelas": 0.0,
+     "teto": 90.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "saude-outros": {
+     "nome": "Saúde (outros)",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "app-transporte": {
+     "nome": "App (Uber/99)",
+     "gasto": 89.32,
+     "parcelas": 0.0,
+     "teto": 150.0,
+     "acima": 0.0,
+     "n": 4
+    },
+    "onibus": {
+     "nome": "Ônibus e combustível",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": 80.0,
+     "acima": 0.0,
+     "n": 0
+    },
+    "assinaturas": {
+     "nome": "Assinaturas e celular",
+     "gasto": 59.8,
+     "parcelas": 0.0,
+     "teto": 60.0,
+     "acima": 0.0,
+     "n": 2
+    },
+    "ferramentas": {
+     "nome": "Ferramentas de trabalho",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "eletronicos": {
+     "nome": "Eletrônicos",
+     "gasto": 0.0,
+     "parcelas": 250.0,
+     "teto": 150.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "vestuario": {
+     "nome": "Vestuário e imagem",
+     "gasto": 89.9,
+     "parcelas": 0.0,
+     "teto": 150.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "lazer": {
+     "nome": "Lazer e rolê",
+     "gasto": 35.84,
+     "parcelas": 0.0,
+     "teto": 200.0,
+     "acima": 0.0,
+     "n": 1
+    },
+    "viagem": {
+     "nome": "Viagem",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "hobbies": {
+     "nome": "Hobbies",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "pets": {
+     "nome": "Pets",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "familia": {
+     "nome": "Família e presentes",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    },
+    "juros": {
+     "nome": "Juros e taxas",
+     "gasto": 4.9,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 1
+    },
+    "outros": {
+     "nome": "Outros",
+     "gasto": 0.0,
+     "parcelas": 0.0,
+     "teto": null,
+     "acima": 0.0,
+     "n": 0
+    }
+   },
+   "grupos": {
+    "Moradia": 741.7,
+    "Alimentação": 591.66,
+    "Saúde": 166.13,
+    "Transporte": 89.32,
+    "Assinaturas": 59.8,
+    "Compras": 339.9,
+    "Lazer": 35.84,
+    "Financeiro": 4.9
+   },
+   "top": [
+    {
+     "nome": "IMOBILIARIA EXEMPLO LTDA",
+     "n": 1,
+     "total": 650.0
+    },
+    {
+     "nome": "Supermercado Exemplo",
+     "n": 2,
+     "total": 361.13
+    },
+    {
+     "nome": "Loja Eletro Exemplo - Parcela 3/6",
+     "n": 1,
+     "total": 250.0
+    },
+    {
+     "nome": "Picpay*Recarga Exemplo",
+     "n": 2,
+     "total": 104.9
+    },
+    {
+     "nome": "LUZ DISTRIBUIDORA EXEMPLO",
+     "n": 1,
+     "total": 91.7
+    }
+   ],
+   "compromissos": [
+    {
+     "mes": "2026-11",
+     "descricao": "Loja Eletro Exemplo - Parcela 4/6",
+     "valor": 250.0,
+     "parcela": "4/6",
+     "pessoa": null
+    },
+    {
+     "mes": "2026-11",
+     "descricao": "Loja Casa Exemplo - Parcela 2/3",
+     "valor": 120.0,
+     "parcela": "2/3",
+     "pessoa": null
+    },
+    {
+     "mes": "2026-12",
+     "descricao": "Loja Eletro Exemplo - Parcela 5/6",
+     "valor": 250.0,
+     "parcela": "5/6",
+     "pessoa": null
+    },
+    {
+     "mes": "2026-12",
+     "descricao": "Loja Casa Exemplo - Parcela 3/3",
+     "valor": 120.0,
+     "parcela": "3/3",
+     "pessoa": null
+    },
+    {
+     "mes": "2027-01",
+     "descricao": "Loja Eletro Exemplo - Parcela 6/6",
+     "valor": 250.0,
+     "parcela": "6/6",
+     "pessoa": null
+    }
+   ],
+   "plano": [
+    {
+     "mes": "2026-11",
+     "renda": 2600.0,
+     "custo": 2710.0,
+     "cartao": 1381.75,
+     "reembolsos": 0.0,
+     "unicos": 0,
+     "aportes": 550.0,
+     "resultado": -2041.75,
+     "falta": 2041.75,
+     "pago_pessoas": 0.0,
+     "deve_pessoas": 0.0,
+     "livre": 0.0,
+     "metas": 550.0
+    },
+    {
+     "mes": "2026-12",
+     "renda": 2600.0,
+     "custo": 2710.0,
+     "cartao": 370.0,
+     "reembolsos": 0.0,
+     "unicos": 3400.0,
+     "aportes": 550.0,
+     "resultado": 2370.0,
+     "falta": 0.0,
+     "pago_pessoas": 0.0,
+     "deve_pessoas": 0.0,
+     "livre": 2370.0,
+     "metas": 1100.0
+    },
+    {
+     "mes": "2027-01",
+     "renda": 2600.0,
+     "custo": 2710.0,
+     "cartao": 370.0,
+     "reembolsos": 0.0,
+     "unicos": -1800.0,
+     "aportes": 550.0,
+     "resultado": -2830.0,
+     "falta": 2830.0,
+     "pago_pessoas": 0.0,
+     "deve_pessoas": 0.0,
+     "livre": 2370.0,
+     "metas": 1650.0
+    },
+    {
+     "mes": "2027-02",
+     "renda": 2600.0,
+     "custo": 2710.0,
+     "cartao": 250.0,
+     "reembolsos": 0.0,
+     "unicos": 0,
+     "aportes": 550.0,
+     "resultado": -910.0,
+     "falta": 910.0,
+     "pago_pessoas": 0.0,
+     "deve_pessoas": 0.0,
+     "livre": 2370.0,
+     "metas": 2200.0
+    },
+    {
+     "mes": "2027-03",
+     "renda": 2600.0,
+     "custo": 2710.0,
+     "cartao": 0.0,
+     "reembolsos": 0.0,
+     "unicos": 0,
+     "aportes": 550.0,
+     "resultado": -660.0,
+     "falta": 660.0,
+     "pago_pessoas": 0.0,
+     "deve_pessoas": 0.0,
+     "livre": 2370.0,
+     "metas": 2750.0
+    }
+   ],
+   "plano_falta": 6441.75,
+   "entradas": {
+    "salario": 2600.0,
+    "pais": 200.0
+   }
+  },
+  "detalhe": {
+   "id": 3
+  }
+ },
+ "final": {
+  "periodo": "2026-10",
+  "totais": {
+   "renda": 2800.0,
+   "gasto": 2129.25,
+   "juros": 4.9,
+   "resultado": 670.75
+  },
+  "pode_gastar": 973.28,
+  "teto_variavel": 1780.0,
+  "gasto_variavel": 806.72,
+  "ritmo": 0.6452,
+  "pendentes": 3,
+  "conta": {
+   "saldo": 4090.94,
+   "saldo_real": 4063.04,
+   "diferenca": -27.9,
+   "cobertura": "2026-10-19"
+  },
+  "cartao": {
+   "divida": 1381.75,
+   "futuras": 990.0,
+   "limite": 3000.0,
+   "limite_livre": 628.25
+  },
+  "pessoas": {
+   "marina": {
+    "saldo": 0.0,
+    "a_vencer": 0
+   },
+   "teo": {
+    "saldo": 60.0,
+    "a_vencer": 0
+   },
+   "mae": {
+    "saldo": 0.0,
+    "a_vencer": 0
+   }
+  },
+  "metas": {
+   "Reserva de emergência": {
+    "planejado_periodo": 300.0,
+    "guardado_periodo": 300.0,
+    "guardado_total": 1800.0,
+    "falta_periodo": 0.0,
+    "completude_alvo": 0.3
+   },
+   "Notebook novo": {
+    "planejado_periodo": 250.0,
+    "guardado_periodo": 250.0,
+    "guardado_total": 250.0,
+    "falta_periodo": 0.0,
+    "completude_alvo": 0.0556,
+    "por_mes_ate_prazo": 531.25
+   }
+  },
+  "categorias": {
+   "aluguel-condominio": {
+    "nome": "Aluguel e condomínio",
+    "gasto": 650.0,
+    "parcelas": 0.0,
+    "teto": 650.0,
+    "acima": 0.0,
+    "n": 1
+   },
+   "contas-casa": {
+    "nome": "Contas da casa (luz, gás, internet)",
+    "gasto": 91.7,
+    "parcelas": 0.0,
+    "teto": 150.0,
+    "acima": 0.0,
+    "n": 1
+   },
+   "casa-moveis": {
+    "nome": "Casa e móveis",
+    "gasto": 0.0,
+    "parcelas": 0.0,
+    "teto": null,
+    "acima": 0.0,
+    "n": 0
+   },
+   "mercado": {
+    "nome": "Mercado planejado",
+    "gasto": 468.43,
+    "parcelas": 0.0,
+    "teto": 700.0,
+    "acima": 0.0,
+    "n": 4
+   },
+   "ru": {
+    "nome": "RU (dias de aula)",
+    "gasto": 0.0,
+    "parcelas": 0.0,
+    "teto": null,
+    "acima": 0.0,
+    "n": 0
+   },
+   "conveniencia": {
+    "nome": "Conveniência e lanches",
+    "gasto": 17.93,
+    "parcelas": 0.0,
+    "teto": 100.0,
+    "acima": 0.0,
+    "n": 1
+   },
+   "delivery": {
+    "nome": "Delivery e restaurante",
+    "gasto": 105.3,
+    "parcelas": 0.0,
+    "teto": 250.0,
+    "acima": 0.0,
+    "n": 3
+   },
+   "remedios": {
+    "nome": "Remédios",
+    "gasto": 76.13,
+    "parcelas": 0.0,
+    "teto": 80.0,
+    "acima": 0.0,
+    "n": 2
+   },
+   "consultas": {
+    "nome": "Consultas e terapia",
+    "gasto": 0.0,
+    "parcelas": 0.0,
+    "teto": null,
+    "acima": 0.0,
+    "n": 0
+   },
+   "academia": {
+    "nome": "Academia",
+    "gasto": 90.0,
+    "parcelas": 0.0,
+    "teto": 90.0,
+    "acima": 0.0,
+    "n": 1
+   },
+   "saude-outros": {
+    "nome": "Saúde (outros)",
+    "gasto": 0.0,
+    "parcelas": 0.0,
+    "teto": null,
+    "acima": 0.0,
+    "n": 0
+   },
+   "app-transporte": {
+    "nome": "App (Uber/99)",
+    "gasto": 89.32,
+    "parcelas": 0.0,
+    "teto": 150.0,
+    "acima": 0.0,
+    "n": 4
+   },
+   "onibus": {
+    "nome": "Ônibus e combustível",
+    "gasto": 0.0,
+    "parcelas": 0.0,
+    "teto": 80.0,
+    "acima": 0.0,
+    "n": 0
+   },
+   "assinaturas": {
+    "nome": "Assinaturas e celular",
+    "gasto": 59.8,
+    "parcelas": 0.0,
+    "teto": 60.0,
+    "acima": 0.0,
+    "n": 2
+   },
+   "ferramentas": {
+    "nome": "Ferramentas de trabalho",
+    "gasto": 0.0,
+    "parcelas": 0.0,
+    "teto": null,
+    "acima": 0.0,
+    "n": 0
+   },
+   "eletronicos": {
+    "nome": "Eletrônicos",
+    "gasto": 0.0,
+    "parcelas": 250.0,
+    "teto": 150.0,
+    "acima": 0.0,
+    "n": 1
+   },
+   "vestuario": {
+    "nome": "Vestuário e imagem",
+    "gasto": 89.9,
+    "parcelas": 0.0,
+    "teto": 150.0,
+    "acima": 0.0,
+    "n": 1
+   },
+   "lazer": {
+    "nome": "Lazer e rolê",
+    "gasto": 35.84,
+    "parcelas": 0.0,
+    "teto": 200.0,
+    "acima": 0.0,
+    "n": 1
+   },
+   "viagem": {
+    "nome": "Viagem",
+    "gasto": 0.0,
+    "parcelas": 0.0,
+    "teto": null,
+    "acima": 0.0,
+    "n": 0
+   },
+   "hobbies": {
+    "nome": "Hobbies",
+    "gasto": 0.0,
+    "parcelas": 0.0,
+    "teto": null,
+    "acima": 0.0,
+    "n": 0
+   },
+   "pets": {
+    "nome": "Pets",
+    "gasto": 0.0,
+    "parcelas": 0.0,
+    "teto": null,
+    "acima": 0.0,
+    "n": 0
+   },
+   "familia": {
+    "nome": "Família e presentes",
+    "gasto": 0.0,
+    "parcelas": 0.0,
+    "teto": null,
+    "acima": 0.0,
+    "n": 0
+   },
+   "juros": {
+    "nome": "Juros e taxas",
+    "gasto": 4.9,
+    "parcelas": 0.0,
+    "teto": null,
+    "acima": 0.0,
+    "n": 1
+   },
+   "outros": {
+    "nome": "Outros",
+    "gasto": 0.0,
+    "parcelas": 0.0,
+    "teto": null,
+    "acima": 0.0,
+    "n": 0
+   }
+  },
+  "grupos": {
+   "Moradia": 741.7,
+   "Alimentação": 591.66,
+   "Saúde": 166.13,
+   "Transporte": 89.32,
+   "Assinaturas": 59.8,
+   "Compras": 339.9,
+   "Lazer": 35.84,
+   "Financeiro": 4.9
+  },
+  "top": [
+   {
+    "nome": "IMOBILIARIA EXEMPLO LTDA",
+    "n": 1,
+    "total": 650.0
+   },
+   {
+    "nome": "Supermercado Exemplo",
+    "n": 2,
+    "total": 361.13
+   },
+   {
+    "nome": "Loja Eletro Exemplo - Parcela 3/6",
+    "n": 1,
+    "total": 250.0
+   },
+   {
+    "nome": "Picpay*Recarga Exemplo",
+    "n": 2,
+    "total": 104.9
+   },
+   {
+    "nome": "LUZ DISTRIBUIDORA EXEMPLO",
+    "n": 1,
+    "total": 91.7
+   }
+  ],
+  "compromissos": [
+   {
+    "mes": "2026-11",
+    "descricao": "Loja Eletro Exemplo - Parcela 4/6",
+    "valor": 250.0,
+    "parcela": "4/6",
+    "pessoa": null
+   },
+   {
+    "mes": "2026-11",
+    "descricao": "Loja Casa Exemplo - Parcela 2/3",
+    "valor": 120.0,
+    "parcela": "2/3",
+    "pessoa": null
+   },
+   {
+    "mes": "2026-12",
+    "descricao": "Loja Eletro Exemplo - Parcela 5/6",
+    "valor": 250.0,
+    "parcela": "5/6",
+    "pessoa": null
+   },
+   {
+    "mes": "2026-12",
+    "descricao": "Loja Casa Exemplo - Parcela 3/3",
+    "valor": 120.0,
+    "parcela": "3/3",
+    "pessoa": null
+   },
+   {
+    "mes": "2027-01",
+    "descricao": "Loja Eletro Exemplo - Parcela 6/6",
+    "valor": 250.0,
+    "parcela": "6/6",
+    "pessoa": null
+   }
+  ],
+  "plano": [
+   {
+    "mes": "2026-11",
+    "renda": 2600.0,
+    "custo": 2710.0,
+    "cartao": 1381.75,
+    "reembolsos": 0.0,
+    "unicos": 0,
+    "aportes": 550.0,
+    "resultado": -2041.75,
+    "falta": 2041.75,
+    "pago_pessoas": 0.0,
+    "deve_pessoas": 0.0,
+    "livre": 0.0,
+    "metas": 550.0
+   },
+   {
+    "mes": "2026-12",
+    "renda": 2600.0,
+    "custo": 2710.0,
+    "cartao": 370.0,
+    "reembolsos": 0.0,
+    "unicos": 3400.0,
+    "aportes": 550.0,
+    "resultado": 2370.0,
+    "falta": 0.0,
+    "pago_pessoas": 0.0,
+    "deve_pessoas": 0.0,
+    "livre": 2370.0,
+    "metas": 1100.0
+   },
+   {
+    "mes": "2027-01",
+    "renda": 2600.0,
+    "custo": 2710.0,
+    "cartao": 370.0,
+    "reembolsos": 0.0,
+    "unicos": -1800.0,
+    "aportes": 550.0,
+    "resultado": -2830.0,
+    "falta": 2830.0,
+    "pago_pessoas": 0.0,
+    "deve_pessoas": 0.0,
+    "livre": 2370.0,
+    "metas": 1650.0
+   },
+   {
+    "mes": "2027-02",
+    "renda": 2600.0,
+    "custo": 2710.0,
+    "cartao": 250.0,
+    "reembolsos": 0.0,
+    "unicos": 0,
+    "aportes": 550.0,
+    "resultado": -910.0,
+    "falta": 910.0,
+    "pago_pessoas": 0.0,
+    "deve_pessoas": 0.0,
+    "livre": 2370.0,
+    "metas": 2200.0
+   },
+   {
+    "mes": "2027-03",
+    "renda": 2600.0,
+    "custo": 2710.0,
+    "cartao": 0.0,
+    "reembolsos": 0.0,
+    "unicos": 0,
+    "aportes": 550.0,
+    "resultado": -660.0,
+    "falta": 660.0,
+    "pago_pessoas": 0.0,
+    "deve_pessoas": 0.0,
+    "livre": 2370.0,
+    "metas": 2750.0
+   }
+  ],
+  "plano_falta": 6441.75,
+  "entradas": {
+   "salario": 2600.0,
+   "pais": 200.0
+  }
+ }
+}
