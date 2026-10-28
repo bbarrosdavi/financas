@@ -43,7 +43,10 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            // R8 tira do Compose o que o app não usa (o .apk cai uns 15 MB); o Chaquopy traz as próprias regras.
+            isMinifyEnabled = true
+            isShrinkResources = true
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"))
             // Sem o keystore local, cai na chave de depuração (instala, mas não atualiza um APK assinado de verdade).
             signingConfig = signingConfigs.findByName("release") ?: signingConfigs.getByName("debug")
         }
