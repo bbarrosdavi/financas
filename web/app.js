@@ -1565,7 +1565,7 @@ async function mostrarPasso(i) {
 // O destaque acompanha o alvo (rolagem, mudança de tamanho, o mosaico se arrumando) a cada quadro.
 function seguirTour() {
   if (!tourAberto()) return;
-  const el = tourEl && document.body.contains(tourEl) ? tourEl : null, m = el ? 6 : 0;
+  const el = tourEl?.isConnected ? tourEl : null, m = el ? 6 : 0;     // isConnected também vale dentro de shadow root
   const r = el ? el.getBoundingClientRect() : {left: innerWidth / 2, top: innerHeight / 2, width: 0, height: 0, right: innerWidth / 2, bottom: innerHeight / 2};
   Object.assign(tourFoco.style, {left: r.left - m + 'px', top: r.top - m + 'px', width: r.width + 2 * m + 'px', height: r.height + 2 * m + 'px'});
   const c = tourCaixa, w = c.offsetWidth, h = c.offsetHeight, folga = 12;
