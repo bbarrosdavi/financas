@@ -1,4 +1,4 @@
-"""Leitura dos arquivos do Nubank (extrato e fatura, em PDF ou CSV) e a escolha do leitor de cada arquivo.
+"""Leitura dos arquivos do Nubank (extrato e fatura, em .pdf ou .csv) e a escolha do leitor de cada arquivo.
 O Bradesco tem leitores próprios em app/bradesco.py.
 
 Cada leitor devolve uma lista de movimentos crus (data, conta, valor com o sinal
@@ -57,8 +57,8 @@ def texto_pdf(conteudo: bytes) -> str:
     try:
         r = subprocess.run(["pdftotext", "-layout", "-", "-"], input=conteudo, capture_output=True, check=True)
     except FileNotFoundError:        # o app do celular não tem o poppler
-        raise ValueError("Ler PDF precisa do poppler (pdftotext), que não existe aqui. Importe o CSV ou o Excel, "
-                         "ou importe o PDF no computador.") from None
+        raise ValueError("Ler .pdf precisa do poppler (pdftotext), que não existe aqui. Importe o .csv ou o .xlsx, "
+                         "ou importe o .pdf no computador.") from None
     return r.stdout.decode("utf-8", "replace")
 
 
@@ -163,7 +163,7 @@ def ler_fatura_csv(conteudo: str, hoje: date | None = None) -> Leitura:
     lt = Leitura("fatura_csv")
     linhas = list(csv.DictReader(io.StringIO(conteudo)))
     if not linhas or not {"date", "title", "amount"} <= set(linhas[0]):
-        raise ValueError("CSV de fatura esperado com colunas date,title,amount.")
+        raise ValueError(".csv de fatura esperado com colunas date,title,amount.")
     for r in linhas:
         titulo, valor = r["title"].strip(), numero(r["amount"])
         if titulo.startswith("Valor pendente do mês anterior"):
@@ -207,12 +207,12 @@ def ler_arquivo(nome: str, conteudo: bytes, hoje: date | None = None) -> Leitura
             return bradesco.ler_extrato_pdf(texto)
         if not texto.strip():           # PDF só de imagem: a fatura em aberto do aplicativo Bradesco
             return bradesco.ler_fatura_pdf(conteudo, hoje)
-        raise ValueError("PDF não reconhecido como extrato ou fatura do Nubank ou do Bradesco.")
-    if conteudo[:2] == b"PK":           # Excel (.xlsx)
+        raise ValueError(".pdf não reconhecido como extrato ou fatura do Nubank ou do Bradesco.")
+    if conteudo[:2] == b"PK":           # .xlsx
         linhas = bradesco.linhas_xlsx(conteudo)
         if bradesco.eh_extrato_tabela(linhas):
             return bradesco.ler_extrato_tabela(linhas, "extrato_bradesco_xlsx")
-        raise ValueError(f"{nome}: planilha não reconhecida como extrato do Bradesco.")
+        raise ValueError(f"{nome}: .xlsx não reconhecido como extrato do Bradesco.")
     texto = conteudo.decode("utf-8-sig", "replace")
     cab = texto.splitlines()[0] if texto else ""
     if cab.startswith("date,title,amount"):

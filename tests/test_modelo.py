@@ -169,5 +169,5 @@ def test_fatura_csv_com_ponto_decimal():
 def test_pdf_sem_poppler_explica_o_que_fazer(monkeypatch):
     import pytest
     monkeypatch.setenv("PATH", "/nao/existe")
-    with pytest.raises(ValueError, match="Importe o CSV ou o Excel"):
+    with pytest.raises(ValueError, match="Importe o .csv ou o .xlsx"):
         importadores.ler_arquivo("extrato.pdf", b"%PDF-1.4 qualquer coisa")

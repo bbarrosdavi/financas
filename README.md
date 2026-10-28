@@ -22,7 +22,7 @@ Os prints usam um banco de demonstração com pessoas, lugares e valores inventa
 | ![Orçamento](docs/prints/orcamento.png) | ![Pessoas](docs/prints/pessoas.png) |
 | **Orçamento**: categoria por mês (orçado, realizado e diferença) e despesas fixas por item. | **Pessoas**: quem te deve e a quem você deve, contas que alguém pagou por você e os acertos. |
 | ![Projeção](docs/prints/projecao.png) | ![Importar](docs/prints/importar.png) |
-| **Projeção**: mês a mês até o horizonte, com eventos como uma viagem ou uma renda que acaba. | **Importar**: extrato e fatura em PDF, CSV ou Excel; o que já existe não duplica. |
+| **Projeção**: mês a mês até o horizonte, com eventos como uma viagem ou uma renda que acaba. | **Importar**: extrato e fatura em .pdf, .csv ou .xlsx; o que já existe não duplica. |
 
 O **Painel** resume semana, mês ou ano: resultado, quanto ainda dá para gastar nas categorias variáveis,
 cada categoria contra o teto (e contra o período anterior), entradas e gastos dos últimos 12 meses e para
@@ -56,9 +56,9 @@ pessoa) é **pendente** e o site pergunta.
    e depois sincroniza com o servidor; ou o MacroDroid manda o push para `/api/v1/transaction/webhook` (ver
    [docs/MACRODROID.md](docs/MACRODROID.md)).
 2. **Arquivos**, na tela Importar (o tipo é reconhecido pelo conteúdo, não pelo nome):
-   - Nubank: extrato e fatura em PDF ou CSV (`app/importadores.py`).
-   - Bradesco (`app/bradesco.py`): extrato em PDF, CSV ou Excel (.xlsx), conferido pelo total e pela corrente
-     de saldos; e a fatura em aberto que o aplicativo gera em PDF, que é só imagem e é lida por OCR
+   - Nubank: extrato e fatura em .pdf ou .csv (`app/importadores.py`).
+   - Bradesco (`app/bradesco.py`): extrato em .pdf, .csv ou .xlsx, conferido pelo total e pela corrente
+     de saldos; e a fatura em aberto que o aplicativo gera em .pdf, que é só imagem e é lida por OCR
      (tesseract com português, relendo data e valor de cada linha só com dígitos). Cada cartão tem que fechar
      com o "Total para" impresso, senão nada entra. Na primeira importação nascem as contas Bradesco (com o
      saldo anterior ao primeiro lançamento do extrato) e Cartão Bradesco (devendo o saldo anterior da fatura).
@@ -100,7 +100,7 @@ Para usar no próprio PC (Windows 10 ou 11), sem instalar mais nada:
    de pé e abre o site.
 
 Não é preciso instalar Python, Docker, poppler nem tesseract: tudo vem no instalador, inclusive a leitura de
-PDF e o OCR da fatura do Bradesco. Os dados ficam em `%LOCALAPPDATA%\Financas` (o banco, os papéis de parede,
+.pdf e o OCR da fatura do Bradesco. Os dados ficam em `%LOCALAPPDATA%\Financas` (o banco, os papéis de parede,
 o `.env` com a senha e as chaves, e o log do servidor em `logs\servidor.log`). O desinstalador (em
 Configurações > Aplicativos) para o servidor, tira o início automático e a regra do firewall e pergunta se
 apaga os dados. A planilha no modelo antigo (.ods) precisa do LibreOffice e não existe nesta versão: o botão
@@ -126,7 +126,7 @@ O site abre em `http://localhost:8095`. O banco (SQLite) e os papéis de parede 
 casa (`PORTA` no `.env`) e ponha em `URL_PUBLICA` o endereço que o celular usa. Não exponha o site direto na
 internet.
 
-Fora do Docker, com Python 3.12 ou mais novo: ler PDF precisa do `pdftotext`/`pdftoppm` (poppler) e a fatura
+Fora do Docker, com Python 3.12 ou mais novo: ler .pdf precisa do `pdftotext`/`pdftoppm` (poppler) e a fatura
 do Bradesco precisa do `tesseract` com português (`tesseract-ocr-por`). No `.env`, aponte `DATABASE_PATH` e
 `PAPEIS_DIR` para pastas suas e rode:
 
@@ -144,7 +144,7 @@ python -m pytest -q
 
 ## App Android
 
-Um APK (`financas-<versão>.apk`) que faz o papel do MacroDroid e do site no celular, sem depender do
+Um .apk (`financas-<versão>.apk`) que faz o papel do MacroDroid e do site no celular, sem depender do
 computador:
 
 - A tela é a mesma do site (tudo que tem no site tem no app, no claro e no escuro), mas o banco fica no
@@ -157,7 +157,7 @@ computador:
 
 Instalar:
 
-1. Copie o APK para o celular e abra. O Android pede para permitir a instalação de apps dessa origem (o
+1. Copie o .apk para o celular e abra. O Android pede para permitir a instalação de apps dessa origem (o
    navegador ou o gerenciador de arquivos): permita só para essa instalação.
 2. Abra o **Finanças**. O tour mostra cada tela; no fim, vá em **Ajustes > Celular**.
 3. Toque em **Acesso a notificações** e ligue o Finanças. Sem isso, as compras não entram sozinhas.
@@ -174,20 +174,20 @@ compra que o celular viu depois de o extrato já estar no servidor são casadas,
 (`app/sync.py`). Não use o app e o MacroDroid ao mesmo tempo no mesmo celular: a mesma compra entraria duas
 vezes. Contra um servidor antigo, sem sincronização, o app manda só as compras, pelo webhook do MacroDroid.
 
-No celular, PDF de extrato não é lido (não há poppler nem tesseract no Android): importe o CSV ou o Excel, ou
-importe o PDF no computador, que ele chega ao celular na sincronização. A .ods também não existe no app.
+No celular, .pdf de extrato não é lido (não há poppler nem tesseract no Android): importe o .csv ou o .xlsx, ou
+importe o .pdf no computador, que ele chega ao celular na sincronização. A .ods também não existe no app.
 
-Para gerar o APK (Linux, Android SDK e JDK 17+):
+Para gerar o .apk (Linux, Android SDK e JDK 17+):
 
 ```sh
 cd android
 ./gradlew --no-daemon assembleRelease      # app/build/outputs/apk/release/app-release.apk
 ```
 
-O APK leva o `app/` e o `web/` do repositório (o Python roda no celular pelo Chaquopy). A assinatura usa um
+O .apk leva o `app/` e o `web/` do repositório (o Python roda no celular pelo Chaquopy). A assinatura usa um
 keystore que nunca entra no git: o build lê `~/.local/share/financas-android/keystore.properties` (ou o
 arquivo em `FINANCAS_KEYSTORE`), com `storeFile`, `storePassword`, `keyAlias` e `keyPassword`. Sem ele, o
-APK sai assinado com a chave de depuração, que não atualiza um APK assinado com a chave de verdade.
+.apk sai assinado com a chave de depuração, que não atualiza um .apk assinado com a chave de verdade.
 
 ## Acesso de fora de casa (Tailscale)
 

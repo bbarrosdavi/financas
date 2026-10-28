@@ -191,7 +191,7 @@ O painel mais importante. Na demonstração, em outubro até o dia 20:
 - **O que é**: parcelas que ainda vão cair no cartão, por mês da fatura.
 - **Na demonstração**: a compra parcelada em 6 vezes de R$ 250 está na 3ª parcela; faltam a 4/6 em nov/26, a
   5/6 em dez/26 e a 6/6 em jan/27. São os R$ 750 descontados do limite livre.
-- **De onde vem**: do número da parcela (3/6) que a fatura ou o celular trazem; a fatura em CSV também traz as
+- **De onde vem**: do número da parcela (3/6) que a fatura ou o celular trazem; a fatura em .csv também traz as
   parcelas futuras (passo 5).
 
 ### Maiores destinos
@@ -369,9 +369,9 @@ a próxima compra na Loja Nova Exemplo chega com a sugestão Vestuário.
 ![Pendentes antes](prints/guia/passo-pendente-antes.png)
 ![Pendentes depois](prints/guia/passo-pendente-depois.png)
 
-### Passo 3. Importar o extrato da conta (CSV)
+### Passo 3. Importar o extrato da conta (.csv)
 
-**Ação**: em **Importar**, soltar o extrato da conta em CSV (o arquivo que o app do Nubank exporta) com três
+**Ação**: em **Importar**, soltar o extrato da conta em .csv (o arquivo que o app do Nubank exporta) com três
 linhas:
 
 ```
@@ -418,9 +418,9 @@ pagou. Por isso o resultado não muda e o saldo dela zera.
 ![Pessoas antes](prints/guia/passo-acerto-antes.png)
 ![Pessoas depois](prints/guia/passo-acerto-depois.png)
 
-### Passo 5. Importar a fatura do cartão (CSV)
+### Passo 5. Importar a fatura do cartão (.csv)
 
-**Ação**: em **Importar**, soltar a fatura em CSV (o arquivo que o app do Nubank exporta) com uma corrida de
+**Ação**: em **Importar**, soltar a fatura em .csv (o arquivo que o app do Nubank exporta) com uma corrida de
 Uber de R$ 23,10 e uma compra parcelada em 3 vezes de R$ 120,00 (a 1ª parcela agora, a 2ª e a 3ª nos meses
 seguintes):
 
@@ -538,15 +538,15 @@ livre; e 3 pendentes (a recarga do PicPay, o Pix para o Téo e a Loja Casa Exemp
 
 | de onde | como | o que acontece |
 |---|---|---|
-| Extrato da conta do Nubank | PDF ou CSV, em Importar | entra conferido pelo total do banco; o que já existe não duplica |
-| Fatura do cartão do Nubank | PDF ou CSV, em Importar | as parcelas futuras vão para as Próximas cobranças |
-| Extrato do Bradesco | PDF, CSV ou Excel (.xlsx), em Importar | conferido pelo total e pela corrente de saldos; a conta Bradesco nasce na 1ª importação |
-| Fatura em aberto do Bradesco | o PDF que o app do Bradesco gera, em Importar | é imagem, lida por OCR (alguns segundos por página); só entra se cada cartão fechar com o "Total para" impresso |
+| Extrato da conta do Nubank | .pdf ou .csv, em Importar | entra conferido pelo total do banco; o que já existe não duplica |
+| Fatura do cartão do Nubank | .pdf ou .csv, em Importar | as parcelas futuras vão para as Próximas cobranças |
+| Extrato do Bradesco | .pdf, .csv ou .xlsx, em Importar | conferido pelo total e pela corrente de saldos; a conta Bradesco nasce na 1ª importação |
+| Fatura em aberto do Bradesco | o .pdf que o app do Bradesco gera, em Importar | é imagem, lida por OCR (alguns segundos por página); só entra se cada cartão fechar com o "Total para" impresso |
 | Compra no dia a dia | a notificação do banco, pelo app Finanças ou pelo MacroDroid | entra na hora; lugar conhecido já vem classificado, o resto vai para Pendentes |
 | O que não passa pelo banco | a primeira linha de Lançamentos | dinheiro vivo, conta paga por outra pessoa, acerto, aporte em meta |
 
 Extrato que não fecha com o próprio total é recusado inteiro (sinal de linha perdida no arquivo). No celular,
-PDF não é lido: importe o CSV ou o Excel, ou importe o PDF no computador, que ele chega ao celular na
+.pdf não é lido: importe o .csv ou o .xlsx, ou importe o .pdf no computador, que ele chega ao celular na
 sincronização.
 
 Um ritmo que funciona: deixar o celular mandar as compras, classificar os pendentes quando aparecerem, e uma
@@ -597,7 +597,7 @@ pela rede local". Fora de casa, use o Tailscale (veja o [README](../README.md#ac
 
 - **Sem servidor** (sem internet, fora de casa, computador desligado): tudo. A compra notificada vira
   lançamento na hora, na ordem em que chegou, com a mesma leitura e a mesma classificação do servidor; você
-  classifica, lança à mão, mexe no orçamento e importa CSV e Excel, tudo no celular.
+  classifica, lança à mão, mexe no orçamento e importa .csv e .xlsx, tudo no celular.
 - **Quando o servidor fica ao alcance**: o app sincroniza sozinho, a cada 15 minutos, ao abrir e ao sair do
   app e depois de cada compra (ou na hora, em **Sincronizar agora**). Ele manda o que mudou no celular e
   recebe o que mudou no computador: o extrato que você importou no PC aparece no celular, e o pendente que você

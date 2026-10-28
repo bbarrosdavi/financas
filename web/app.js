@@ -815,7 +815,7 @@ async function lancamentos(t) {
 // ---------------------------------------------------------------- importar e lançar à mão
 async function importar(t) {
   t.innerHTML = `<div class="titulo"><h2>Importar e lançar</h2></div>
-    <section class="painel vidro"><h3>Extrato e fatura do banco <small>Nubank ou Bradesco · PDF, CSV ou Excel</small></h3>
+    <section class="painel vidro"><h3>Extrato e fatura do banco <small>Nubank ou Bradesco · .pdf, .csv ou .xlsx</small></h3>
       <p class="sub">Quantos quiser de uma vez. O que já existe (mesmo arquivo de novo, ou o que veio pelo celular) não duplica. Extrato que não fecha com o total do banco é recusado. A fatura em aberto do Bradesco é imagem e é lida por OCR: leva uns segundos por página e só entra se cada cartão fechar com o total impresso. Para lançar algo à mão, use a primeira linha da tela <a href="#lancamentos">Lançamentos</a>.</p>
       <label class="drop" id="drop">Solte os arquivos aqui ou toque para escolher<input type="file" id="arq" multiple accept=".pdf,.csv,.xlsx" hidden></label>
       <div class="scroll" style="margin-top:10px"><table id="t-res"></table></div></section>
@@ -1418,7 +1418,7 @@ const AJUDA = {
   'lancamentos:titulo': `<p>Todos os lançamentos, filtráveis por mês, categoria, tipo e busca. A primeira linha da tabela lança algo à mão. Toque num lançamento para mudar a classificação, dividir em partes ou apagar (só os lançados à mão ou pelo celular).</p>
     <p>A última coluna é o saldo da conta (ou do cartão) logo depois de cada lançamento.</p>`,
   'importar:titulo': `<p>Traz extratos e faturas do Nubank e do Bradesco e mostra o que o filtro do celular descartou.</p>`,
-  'importar:s-extrato-e-fatura-do-banco': `<p>Solte o extrato da conta e a fatura do cartão. Nubank: PDF ou CSV. Bradesco: extrato em PDF, CSV ou Excel (.xlsx) e a fatura em aberto que o aplicativo gera em PDF. O que já existe não duplica, e o que veio pelo celular é casado com a linha do arquivo. Extrato que não fecha com o total ou com a corrente de saldos do banco é recusado. A fatura do Bradesco é imagem: é lida por OCR e só entra se cada cartão fechar com o "Total para" impresso. Na primeira importação, as contas Bradesco e Cartão Bradesco são criadas, a conta com o saldo que o extrato mostra antes do primeiro lançamento.</p>`,
+  'importar:s-extrato-e-fatura-do-banco': `<p>Solte o extrato da conta e a fatura do cartão. Nubank: .pdf ou .csv. Bradesco: extrato em .pdf, .csv ou .xlsx e a fatura em aberto que o aplicativo gera em .pdf. O que já existe não duplica, e o que veio pelo celular é casado com a linha do arquivo. Extrato que não fecha com o total ou com a corrente de saldos do banco é recusado. A fatura do Bradesco é imagem: é lida por OCR e só entra se cada cartão fechar com o "Total para" impresso. Na primeira importação, as contas Bradesco e Cartão Bradesco são criadas, a conta com o saldo que o extrato mostra antes do primeiro lançamento.</p>`,
   'importar:s-notificacoes-descartadas-pelo-filtro': `<p>Notificações do celular que o filtro entendeu que não eram compra. Se alguma era, <b>resgatar</b> a transforma em lançamento.</p>`,
   'importar:s-ultimas-importacoes': `<p>Histórico das importações: quantos lançamentos novos, quantos casaram com o que veio pelo celular e quantos já existiam.</p>`,
   'pessoas:titulo': `<p>Quanto você deve a cada pessoa e quanto cada uma te deve. Positivo: a pessoa te deve. Negativo: você deve a ela.</p>`,
@@ -1509,7 +1509,7 @@ const PASSOS_TOUR = [
   {rota: 'orcamento', alvo: cartaoTour('orc-fixas'), titulo: 'Despesas fixas', texto: `<p>Os itens que você paga todo mês em cada categoria (aluguel, internet, academia), com início e fim se tiverem.</p>
     <p class="tour-dados"><b>O que colocar:</b> cada conta fixa com o valor. Marque <b>usar a soma como orçamento</b> para a categoria orçar pela soma dos itens.</p>`},
   {rota: 'orcamento', alvo: cartaoTour('orc-metas'), titulo: 'Metas', texto: `<p class="tour-dados"><b>O que colocar:</b> o nome da meta, o objetivo em reais, o prazo, quanto guardar por mês e onde o dinheiro fica (a caixinha do banco, por exemplo).</p>`},
-  {rota: 'importar', alvo: cartaoTour('s-extrato-e-fatura-do-banco'), titulo: 'Importar extrato e fatura', texto: `<p>Solte aqui os arquivos do banco. <b>Nubank</b>: extrato e fatura em PDF ou CSV. <b>Bradesco</b>: extrato em PDF, CSV ou Excel e a fatura em aberto em PDF.</p>
+  {rota: 'importar', alvo: cartaoTour('s-extrato-e-fatura-do-banco'), titulo: 'Importar extrato e fatura', texto: `<p>Solte aqui os arquivos do banco. <b>Nubank</b>: extrato e fatura em .pdf ou .csv. <b>Bradesco</b>: extrato em .pdf, .csv ou .xlsx e a fatura em aberto em .pdf.</p>
     <p>O que já existe não duplica, e a compra que veio pelo celular é casada com a linha do arquivo. Extrato que não fecha com o total do banco é recusado.</p>
     <p class="tour-dados"><b>Quando:</b> uma vez por mês, ou sempre que quiser conferir. É assim que o saldo e o cartão ficam completos.</p>`},
   {rota: 'importar', alvo: cartaoTour('s-notificacoes-descartadas-pelo-filtro'), titulo: 'Notificações descartadas', texto: `<p>Notificações do banco que o filtro entendeu que não eram compra (aviso de fatura, propaganda, código de segurança). Se alguma era compra, <b>Resgatar</b> transforma em lançamento.</p>`},
