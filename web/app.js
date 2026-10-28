@@ -1174,7 +1174,7 @@ async function orcamento(t) {
 const opcao = (rotulo, k, valores) => `<div class="opcao"><span class="rot">${rotulo}</span><div class="segmentos">${valores.map(([v, n]) =>
   `<button data-pref="${k}" data-v="${v}" class="${String(PREF[k]) === String(v) ? 'on' : ''}">${n}</button>`).join('')}</div></div>`;
 async function ajustes(t) {
-  const [papeis, prm, cel] = await Promise.all([api('/api/papeis'), api('/api/parametros'), api('/api/celular')]);
+  const [papeis, prm, cel, ods] = await Promise.all([api('/api/papeis'), api('/api/parametros'), api('/api/celular'), api('/api/exportar.ods/estado')]);
   V = await api('/api/vocabulario');
   // Você e os colegas, mesmo quem ainda não tem parte (0%).
   const rateio = Object.fromEntries(['eu', ...V.pessoas.filter(p => p.tipo === 'colega').map(p => p.id)].map(k => [k, 0]));
@@ -1233,8 +1233,8 @@ async function ajustes(t) {
         .map(([k, v], i) => `<label class="c">${k}<span class="barra" style="margin:2px 0 8px"><input readonly value="${esc(v)}" style="flex:1" id="cel${i}"><button data-copiar="cel${i}">copiar</button></span></label>`).join('')}</section>
     <section class="painel vidro"><h3>Planilha e sessão</h3>
       <p class="sub">No modelo da planilha antiga (.ods): Budget Dashboard, Planning com o orçamento de cada mês, Tracking com renda, gasto e poupança (pendentes em âmbar), Despesas Fixas, e depois as tabelas do site em abas. A simples (.xlsx) tem só as tabelas.</p>
-      <div class="barra"><button id="baixar-ods" class="prim">Baixar no modelo antigo (.ods)</button><a href="/api/exportar.xlsx"><button>Baixar tabelas (.xlsx)</button></a><button id="sair">Sair</button></div>
-      <p class="sub" id="ods-msg"></p></section>
+      <div class="barra"><button id="baixar-ods" class="prim" ${ods.disponivel ? '' : 'disabled'}>Baixar no modelo antigo (.ods)</button><a href="/api/exportar.xlsx"><button>Baixar tabelas (.xlsx)</button></a><button id="sair">Sair</button></div>
+      <p class="sub" id="ods-msg">${ods.disponivel ? '' : 'O modelo antigo (.ods) não sai aqui: ' + esc(ods.motivo) + '. A .xlsx funciona.'}</p></section>
     </div>`;
 
   const sugeridas = ['acerto', ...V.categorias.map(c => `${c.tipo}:${c.id}`)];

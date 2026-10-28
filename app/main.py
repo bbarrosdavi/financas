@@ -578,6 +578,12 @@ def definir_param(chave: str, body: Param):
         return {"ok": True}
 
 
+@app.get("/api/exportar.ods/estado", dependencies=[api])
+def estado_modelo():
+    motivo = exportar.ods_indisponivel()
+    return {"disponivel": motivo is None, "motivo": motivo or ""}
+
+
 @app.get("/api/exportar.ods", dependencies=[api])
 def baixar_modelo():
     """A planilha antiga (Budget Dashboard, Planning, Tracking, Despesas Fixas) preenchida. Leva uns segundos."""
