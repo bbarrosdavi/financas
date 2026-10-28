@@ -24,6 +24,7 @@ const corCat = id => { const c = cat(id); return c?.cor || corGrupo(c?.grupo); }
 let V = {categorias: [], pessoas: [], contas: [], metas: []};
 // Só dentro do app Android (android/app/src/main/js/nativo.js): os ajustes do aparelho em Ajustes > Celular.
 const APP = window.FINANCAS_APP;
+let DEMO = false;          // dados de demonstração ligados (app/demo.py)
 const cat = id => V.categorias.find(c => c.id === id);
 const pessoa = id => V.pessoas.find(p => p.id === id);
 const meta = id => V.metas.find(m => m.id === id);
@@ -101,11 +102,45 @@ async function contarPendentes() {
   const b = $('#n-pend'); b.textContent = p.length; b.hidden = !p.length;
 }
 async function iniciar() {
+  const primeira = store.get('tour', '') !== 'visto';           // primeira entrada neste aparelho
+  let demo = await api('/api/demo').catch(() => ({ativo: false, vazio: false}));
+  // Num Finanças ainda vazio, a demonstração liga sozinha, para o tour ter o que mostrar.
+  if (primeira && demo.vazio && !demo.ativo) demo = await put('/api/demo', {ativo: true}).catch(() => demo);
+  DEMO = demo.ativo;
   V = await api('/api/vocabulario');
   $('#app').hidden = false;
   aplicarPapel().catch(() => {});
+  avisoDemo();
   rota();
-  if (store.get('tour', '') !== 'visto') setTimeout(iniciarTour, 900);      // primeira entrada neste aparelho
+  if (primeira) setTimeout(iniciarTour, 900);
+}
+
+// Dados de demonstração: uma faixa no topo enquanto estão ligados, com o botão de remover.
+function avisoDemo() {
+  let a = $('#demo-aviso');
+  if (!DEMO) return a?.remove();
+  if (!a) {
+    a = Object.assign(document.createElement('div'), {id: 'demo-aviso', className: 'demo-aviso'});
+    $('#tela').before(a);
+  }
+  a.innerHTML = `<span><b>Dados de demonstração.</b> Pessoas, lugares e valores inventados, para você ver tudo funcionando. O que mudar aqui some ao remover; os seus dados de verdade ficam à parte.</span>
+    <button class="prim">Remover dados de demonstração</button>`;
+  a.querySelector('button').onclick = removerDemo;
+}
+async function mudarDemo(ativo) {
+  DEMO = (await put('/api/demo', {ativo})).ativo;
+  V = await api('/api/vocabulario');
+  avisoDemo();
+  await rota();
+}
+async function removerDemo() {
+  if (confirm('Remover os dados de demonstração? O que você mexeu neles também sai, e o Finanças passa a mostrar os seus dados de verdade.'))
+    await mudarDemo(false);
+}
+async function reverTour() {
+  const d = await api('/api/demo').catch(() => ({}));
+  if (d.vazio && !d.ativo) await mudarDemo(true);              // ainda vazio: o tour volta com a demonstração
+  iniciarTour();
 }
 window.addEventListener('hashchange', rota);
 
@@ -1183,6 +1218,9 @@ async function ajustes(t) {
   const rateio = Object.fromEntries(['eu', ...V.pessoas.filter(p => p.tipo === 'colega').map(p => p.id)].map(k => [k, 0]));
   Object.assign(rateio, JSON.parse(prm.aluguel_rateio || '{}'));
   t.innerHTML = `<div class="titulo"><h2>Ajustes</h2></div>
+    ${DEMO ? `<section class="painel vidro"><h3>Dados de demonstração</h3>
+      <p class="sub">O Finanças está mostrando dados inventados. Remover apaga a demonstração e o que você mexeu nela; os seus dados de verdade ficam como estão.</p>
+      <div class="barra"><button class="prim" id="remover-demo">Remover dados de demonstração</button></div></section>` : ''}
     <section class="painel vidro"><h3>Aparência</h3>
       <div class="barra"><span class="muted">Tema</span><div class="segmentos"><button data-th="light" class="${store.get('tema', 'light') !== 'dark' ? 'on' : ''}">Claro</button><button data-th="dark" class="${store.get('tema') === 'dark' ? 'on' : ''}">Escuro</button></div>
         <button id="rever-tour">Rever o tour</button></div>
@@ -1280,7 +1318,8 @@ async function ajustes(t) {
   $('#pref-padrao').onclick = () => { PREF = JSON.parse(JSON.stringify(PREF_PADRAO)); store.set('prefs', JSON.stringify(PREF)); store.set('grupos-abertos', '{}'); aplicarVisual(); rota(); };
   // aparência
   t.querySelectorAll('[data-th]').forEach(b => b.onclick = () => { store.set('tema', b.dataset.th); aplicarTema(); rota(); });
-  $('#rever-tour').onclick = () => iniciarTour();
+  $('#rever-tour').onclick = reverTour;
+  if ($('#remover-demo')) $('#remover-demo').onclick = removerDemo;
   t.querySelectorAll('[data-papel]').forEach(d => d.onclick = async e => { if (e.target.closest('button')) return; await put('/api/papeis/atual', {nome: d.dataset.papel}); await aplicarPapel(); rota(); });
   t.querySelectorAll('[data-rm-papel]').forEach(b => b.onclick = async () => { if (confirm('Apagar este papel de parede?')) { await del('/api/papeis/' + encodeURIComponent(b.dataset.rmPapel)); rota(); } });
   $('#novo-papel').onchange = async e => {
@@ -1469,7 +1508,8 @@ function ligarAjuda(raiz, pagina) {
 // como ler e o que colocar. Fica marcado como visto neste aparelho; Ajustes > Aparência tem "Rever o tour".
 const cartaoTour = id => `#mosaico > .cartao[data-id="${id}"]`;
 const PASSOS_TOUR = [
-  {titulo: 'Bem-vindo ao Finanças', texto: `<p>Em poucos minutos este tour passa por cada tela e cada painel: o que mostra, como ler os números e o que você coloca em cada lugar.</p>
+  {titulo: 'Bem-vindo ao Finanças', texto: () => `<p>Em poucos minutos este tour passa por cada tela e cada painel: o que mostra, como ler os números e o que você coloca em cada lugar.</p>
+    ${DEMO ? `<p class="tour-dados"><b>Os dados que aparecem agora são de demonstração</b>: pessoas, lugares e valores inventados, para cada painel ter o que mostrar. Os seus dados de verdade ficam à parte. Depois de explorar, toque em <b>Remover dados de demonstração</b>, na faixa do topo ou em Ajustes.</p>` : ''}
     <p>Use <b>Próximo</b> e <b>Voltar</b> (ou as setas do teclado). Dá para sair a qualquer hora e rever depois em <b>Ajustes</b>.</p>`},
   {rota: 'painel', alvo: '#nav', titulo: 'As abas', texto: `<p><b>Painel</b>: o resumo. <b>Pendentes</b>: o que falta classificar (o número vermelho diz quantos). <b>Lançamentos</b>: tudo que entrou e saiu. <b>Orçamento</b>: quanto você planeja gastar. <b>Importar</b>: extratos e faturas. <b>Pessoas</b>: quem deve a quem. <b>Projeção</b>: os próximos meses. <b>Ajustes</b>: aparência, pessoas e celular.</p>
     <p>O botão de sol ou lua troca o tema claro e escuro.</p>`},
@@ -1526,7 +1566,8 @@ const PASSOS_TOUR = [
     : `<p>Para o celular mandar as compras na hora.</p>
       <p class="tour-dados"><b>O que fazer:</b> no app Finanças do celular, copie o <b>endereço</b> e a <b>chave</b> daqui. Quem usa o MacroDroid copia os três campos de baixo.</p>`},
   {rota: 'ajustes', alvo: cartaoTour('s-aparencia'), titulo: 'Aparência', texto: `<p>Tema claro ou escuro e papel de parede. Logo abaixo, em Visualização, o jeito como o site aparece neste aparelho. O botão <b>Rever o tour</b> fica aqui.</p>`},
-  {rota: 'painel', titulo: 'Pronto para começar', texto: `<p>Um bom começo:</p>
+  {rota: 'painel', titulo: 'Pronto para começar', texto: () => `<p>Um bom começo:</p>
+    ${DEMO ? '<p>Explore à vontade com os dados de demonstração. Para começar de verdade, toque em <b>Remover dados de demonstração</b> e então:</p>' : ''}
     <p>1. No <b>Orçamento</b>, dê um teto para as categorias que você quer controlar.<br>2. Em <b>Ajustes</b>, cadastre quem divide contas com você.<br>3. Em <b>Importar</b>, traga o extrato e a fatura do mês${APP ? ', e libere o acesso a notificações para as compras entrarem sozinhas' : ', ou deixe o celular mandar as compras'}.<br>4. Classifique o que aparecer em <b>Pendentes</b>.</p>
     <p>O <b>?</b> de cada painel explica de novo.</p>`},
 ];
@@ -1548,7 +1589,7 @@ async function mostrarPasso(i) {
   const p = PASSOS_TOUR[i], n = PASSOS_TOUR.length;
   fecharAjuda();
   if (p.rota && (location.hash.slice(1) || 'painel').split('?')[0] !== p.rota) location.hash = '#' + p.rota;
-  tourCaixa.innerHTML = `<div class="tour-topo"><b>${p.titulo}</b><span class="muted">${i + 1} de ${n}</span></div><div class="tour-texto">${p.texto}</div>
+  tourCaixa.innerHTML = `<div class="tour-topo"><b>${p.titulo}</b><span class="muted">${i + 1} de ${n}</span></div><div class="tour-texto">${typeof p.texto === 'function' ? p.texto() : p.texto}</div>
     <div class="tour-botoes"><button data-tour="sair">Sair do tour</button><span class="espaco"></span>${i ? '<button data-tour="voltar">Voltar</button>' : ''}
       <button class="prim" data-tour="proximo">${i === n - 1 ? 'Começar a usar' : 'Próximo'}</button></div>`;
   tourCaixa.hidden = tourFoco.hidden = false;

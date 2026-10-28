@@ -423,3 +423,10 @@ body.cantos-retos :is(button, input, select, .segmentos, .segmentos button, .chi
 .tour-caixa .tour-botoes { display: flex; gap: 8px; align-items: center; margin-top: 10px; }
 .tour-caixa .tour-botoes .espaco { flex: 1; }
 @media (max-width: 699px) { .tour-caixa { width: auto; max-height: 45vh; } }
+
+/* dados de demonstração: faixa acima da tela enquanto estiverem ligados */
+.demo-aviso { max-width: 1208px; margin: 12px auto 0; padding: 10px 14px; display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center;
+  justify-content: space-between; font-size: 13px; border-radius: var(--raio); background: var(--painel-forte); color: var(--texto);
+  border: 1px solid var(--atencao); box-shadow: var(--sombra); }
+body.larga .demo-aviso { max-width: none; }
+@media (max-width: 1240px) { .demo-aviso { margin-left: 16px; margin-right: 16px; } }
