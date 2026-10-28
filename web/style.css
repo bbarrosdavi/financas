@@ -409,3 +409,17 @@ body.cantos-retos :is(button, input, select, .segmentos, .segmentos button, .chi
 @media (max-width: 920px) { .cartao .heroi.lanc-heroi { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 520px) { .cartao .heroi.lanc-heroi { grid-template-columns: minmax(0, 1fr); } }
 .cartao[data-larg="2"] .heroi.lanc-heroi, .cartao[data-larg="3"] .heroi.lanc-heroi { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+/* tour do primeiro acesso: o destaque escurece o resto da tela; o balão segue o tema */
+.tour-foco { position: fixed; z-index: 60; border-radius: calc(var(--raio) + 4px); pointer-events: none;
+  box-shadow: 0 0 0 2px var(--acento), 0 0 0 200vmax rgba(8, 8, 14, .55); transition: left .18s, top .18s, width .18s, height .18s; }
+.tour-caixa { position: fixed; z-index: 61; width: min(400px, calc(100vw - 16px)); background: var(--painel-forte); color: var(--texto);
+  border: 1px solid var(--linha); border-radius: 12px; box-shadow: var(--sombra); padding: 14px 16px; font-size: 13.5px; line-height: 1.5;
+  max-height: 60vh; overflow: auto; }
+.tour-caixa .tour-topo { display: flex; align-items: baseline; gap: 10px; justify-content: space-between; margin-bottom: 6px; font-size: 15px; }
+.tour-caixa .tour-topo .muted { font-size: 12px; white-space: nowrap; }
+.tour-caixa .tour-texto p { margin: 0 0 8px; }
+.tour-caixa .tour-dados { background: var(--acento-suave); border-radius: 8px; padding: 6px 9px; }
+.tour-caixa .tour-botoes { display: flex; gap: 8px; align-items: center; margin-top: 10px; }
+.tour-caixa .tour-botoes .espaco { flex: 1; }
+@media (max-width: 699px) { .tour-caixa { width: auto; max-height: 45vh; } }

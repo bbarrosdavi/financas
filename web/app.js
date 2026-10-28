@@ -105,6 +105,7 @@ async function iniciar() {
   $('#app').hidden = false;
   aplicarPapel().catch(() => {});
   rota();
+  if (store.get('tour', '') !== 'visto') setTimeout(iniciarTour, 900);      // primeira entrada neste aparelho
 }
 window.addEventListener('hashchange', rota);
 
@@ -1183,7 +1184,8 @@ async function ajustes(t) {
   Object.assign(rateio, JSON.parse(prm.aluguel_rateio || '{}'));
   t.innerHTML = `<div class="titulo"><h2>Ajustes</h2></div>
     <section class="painel vidro"><h3>Aparência</h3>
-      <div class="barra"><span class="muted">Tema</span><div class="segmentos"><button data-th="light" class="${store.get('tema', 'light') !== 'dark' ? 'on' : ''}">Claro</button><button data-th="dark" class="${store.get('tema') === 'dark' ? 'on' : ''}">Escuro</button></div></div>
+      <div class="barra"><span class="muted">Tema</span><div class="segmentos"><button data-th="light" class="${store.get('tema', 'light') !== 'dark' ? 'on' : ''}">Claro</button><button data-th="dark" class="${store.get('tema') === 'dark' ? 'on' : ''}">Escuro</button></div>
+        <button id="rever-tour">Rever o tour</button></div>
       <div class="papeis" id="papeis">
         <div class="papel ${!papeis.atual ? 'on' : ''}" data-papel=""><span>sem papel de parede</span></div>
         ${papeis.papeis.map(p => `<div class="papel ${p === papeis.atual ? 'on' : ''}" data-papel="${esc(p)}" style="background-image:url('/papel/${encodeURIComponent(p)}')"><span>${esc(p)}</span><button data-rm-papel="${esc(p)}">apagar</button></div>`).join('')}
@@ -1229,7 +1231,7 @@ async function ajustes(t) {
     </div>
 
     <div class="grade meio">
-    ${aparelho ? cartaoAparelho(aparelho) : `<section class="painel vidro"><h3>Celular (app Finanças ou MacroDroid)</h3>
+    ${aparelho ? cartaoAparelho(aparelho) : `<section class="painel vidro"><h3>Celular <small>app Finanças ou MacroDroid</small></h3>
       <p class="sub">Abra esta tela no celular. No app Finanças, copie o endereço e a chave. No MacroDroid, copie os três campos de baixo para a ação "Requisição HTTP" da macro.</p>
       ${[['Endereço do servidor (app Finanças)', cel.base], ['Chave (app Finanças)', cel.chave], ['URL (método POST)', cel.url], ['Cabeçalho Authorization', cel.authorization], ['Corpo (application/json)', cel.corpo]]
         .map(([k, v], i) => `<label class="c">${k}<span class="barra" style="margin:2px 0 8px"><input readonly value="${esc(v)}" style="flex:1" id="cel${i}"><button data-copiar="cel${i}">copiar</button></span></label>`).join('')}</section>`}
@@ -1278,6 +1280,7 @@ async function ajustes(t) {
   $('#pref-padrao').onclick = () => { PREF = JSON.parse(JSON.stringify(PREF_PADRAO)); store.set('prefs', JSON.stringify(PREF)); store.set('grupos-abertos', '{}'); aplicarVisual(); rota(); };
   // aparência
   t.querySelectorAll('[data-th]').forEach(b => b.onclick = () => { store.set('tema', b.dataset.th); aplicarTema(); rota(); });
+  $('#rever-tour').onclick = () => iniciarTour();
   t.querySelectorAll('[data-papel]').forEach(d => d.onclick = async e => { if (e.target.closest('button')) return; await put('/api/papeis/atual', {nome: d.dataset.papel}); await aplicarPapel(); rota(); });
   t.querySelectorAll('[data-rm-papel]').forEach(b => b.onclick = async () => { if (confirm('Apagar este papel de parede?')) { await del('/api/papeis/' + encodeURIComponent(b.dataset.rmPapel)); rota(); } });
   $('#novo-papel').onchange = async e => {
@@ -1428,7 +1431,8 @@ const AJUDA = {
     <p>Cada painel se move pela alça ao lado do título e muda de tamanho pelo canto de baixo à direita.</p>`,
   'ajustes:s-pessoas': `<p>Como o nome de cada pessoa aparece no extrato (para reconhecer o Pix) e o que sugerir quando entra ou sai dinheiro dela: acerto ou uma categoria.</p>`,
   'ajustes:s-rateio-do-aluguel': `<p>Quanto de cada boleto da imobiliária é de cada morador. Vira sugestão de divisão quando o boleto aparece: sua parte como gasto e a dos outros como acerto. A soma precisa dar 100%.</p>`,
-  'ajustes:s-celular-macrodroid': `<p>Os dados para a macro do MacroDroid mandar as notificações do banco para o site: endereço, chave e corpo da requisição. Abra esta tela no celular e copie cada campo.</p>`,
+  'ajustes:s-celular': APP ? `<p>Este aparelho: o endereço e a chave do servidor (o Finanças no computador), quais apps de banco ler e o acesso a notificações. Sem servidor, tudo continua funcionando aqui; com ele ao alcance, o app manda o que mudou aqui e recebe o que mudou lá.</p>`
+    : `<p>O endereço e a chave para o app Finanças do celular, e os dados para a macro do MacroDroid mandar as notificações do banco para o site: endereço, chave e corpo da requisição. Abra esta tela no celular e copie cada campo.</p>`,
   'ajustes:s-planilha-e-sessao': `<p>Baixa tudo em planilha: no modelo antigo (.ods, preenchido pelo LibreOffice, leva alguns segundos) ou só as tabelas (.xlsx). Sair encerra a sessão neste aparelho.</p>`,
 };
 const popAjuda = Object.assign(document.createElement('div'), {className: 'ajuda-pop', hidden: true});
@@ -1459,6 +1463,134 @@ function ligarAjuda(raiz, pagina) {
     alvo?.after(b);
   });
 }
+
+// ---------------------------------------------------------------- tour do primeiro acesso
+// Na primeira entrada neste aparelho (no app, na primeira abertura), passa por cada tela e cada painel: o que mostra,
+// como ler e o que colocar. Fica marcado como visto neste aparelho; Ajustes > Aparência tem "Rever o tour".
+const cartaoTour = id => `#mosaico > .cartao[data-id="${id}"]`;
+const PASSOS_TOUR = [
+  {titulo: 'Bem-vindo ao Finanças', texto: `<p>Em poucos minutos este tour passa por cada tela e cada painel: o que mostra, como ler os números e o que você coloca em cada lugar.</p>
+    <p>Use <b>Próximo</b> e <b>Voltar</b> (ou as setas do teclado). Dá para sair a qualquer hora e rever depois em <b>Ajustes</b>.</p>`},
+  {rota: 'painel', alvo: '#nav', titulo: 'As abas', texto: `<p><b>Painel</b>: o resumo. <b>Pendentes</b>: o que falta classificar (o número vermelho diz quantos). <b>Lançamentos</b>: tudo que entrou e saiu. <b>Orçamento</b>: quanto você planeja gastar. <b>Importar</b>: extratos e faturas. <b>Pessoas</b>: quem deve a quem. <b>Projeção</b>: os próximos meses. <b>Ajustes</b>: aparência, pessoas e celular.</p>
+    <p>O botão de sol ou lua troca o tema claro e escuro.</p>`},
+  {rota: 'painel', alvo: cartaoTour('periodo'), titulo: 'Qual período ver', texto: `<p>Escolha <b>semana</b>, <b>mês</b> ou <b>ano</b>. As setas vão para o período anterior ou o próximo, e <b>Hoje</b> volta ao atual.</p>
+    <p><b>Comparar</b> mostra, em cada número, a diferença para o período anterior. Salário que cai do dia 25 em diante conta no mês seguinte.</p>`},
+  {rota: 'painel', alvo: cartaoTour('resumo'), titulo: 'Resumo do período', texto: `<p>Os números que mais importam, num painel só. Os próximos passos explicam cada parte.</p>
+    <p>Todo painel se arrasta pela alça (os seis pontinhos ao lado do título), muda de largura no botão à direita do título e tem um <b>?</b> que explica de novo.</p>`},
+  {rota: 'painel', alvo: cartaoTour('resumo') + ' .heroi > div:nth-child(1)', titulo: 'Resultado', texto: `<p>Entradas menos gastos do período. <b class="pos">Verde</b>: sobrou dinheiro. <b class="neg">Vermelho</b>: gastou mais do que entrou.</p>
+    <p>Transferência entre contas suas e acerto com pessoas não contam: não são ganho nem gasto seu. <b>Juros e taxas</b> é a parte dos gastos que foi juro, IOF ou tarifa. <b>Guardado em metas</b> aparece quando você guarda dinheiro.</p>`},
+  {rota: 'painel', alvo: cartaoTour('resumo') + ' .heroi > div:nth-child(2)', titulo: 'Ainda pode gastar', texto: `<p>Quanto ainda cabe no orçamento das categorias variáveis (mercado, delivery, transporte, lazer). A barra enche conforme você gasta; o traço vertical é o ritmo, até onde a barra deveria ir hoje.</p>
+    <p><b class="pos">Verde</b>: no ritmo. <b class="warnc">Amarelo</b>: gastando mais rápido que o ritmo. <b class="neg">Vermelho</b>: o orçamento estourou.</p>
+    <p class="tour-dados"><b>O que colocar:</b> o teto de cada categoria, no <b>Orçamento</b>. Sem teto, este número fica zerado.</p>`},
+  {rota: 'painel', alvo: cartaoTour('resumo') + ' .kpis', titulo: 'Conta, cartão, pessoas e pendentes', texto: `<p><b>Conta</b>: o saldo que o app do banco mostra; a diferença para o que os lançamentos somam é o que ainda não foi lançado. <b>Dívida do cartão</b>: a fatura em aberto e o limite livre. <b>Você deve / te devem</b>: os saldos com pessoas. <b>Pendentes</b>: quantos lançamentos esperam você.</p>
+    <p class="tour-dados"><b>O que colocar:</b> toque em <b>informar saldo do app</b> e digite o saldo que o app do banco mostra agora. Atualize de vez em quando.</p>`},
+  {rota: 'painel', alvo: cartaoTour('categorias'), titulo: 'Categorias', texto: `<p>Cada categoria contra o teto do período: quanto gastou, o teto, a porcentagem e quanto resta (<b class="pos">verde</b>) ou passou (<b class="neg">vermelho</b>). Os grupos abrem com um toque, e o ícone de barras ao lado do grupo mostra a evolução dos últimos meses.</p>
+    <p>Parcela de compra antiga (da 2ª em diante) aparece à parte, como parcelas antigas, e não conta contra o teto.</p>`},
+  {rota: 'painel', alvo: cartaoTour('grafico'), titulo: 'Entradas e gastos', texto: `<p>Entradas, gastos e poupança de cada mês (ou semana), com o orçado em tom claro atrás de cada barra. As caixinhas ligam e desligam cada série; toque numa coluna para ver os valores.</p>`},
+  {rota: 'painel', alvo: cartaoTour('composicao'), titulo: 'Para onde foi', texto: `<p>A fatia de cada grupo (moradia, alimentação, transporte...) no gasto do período, em valor e porcentagem.</p>`},
+  {rota: 'painel', alvo: cartaoTour('entradas'), titulo: 'Entradas do período', texto: `<p>O que entrou, por categoria de renda (salário, ajuda dos pais, extras), com quantos lançamentos.</p>
+    <p class="tour-dados"><b>O que colocar:</b> nada direto: vem dos lançamentos classificados como renda.</p>`},
+  {rota: 'painel', alvo: cartaoTour('metas'), titulo: 'Poupança e metas', texto: `<p>Cada meta: quanto você planejou guardar no período, quanto guardou, quanto falta e o total contra o objetivo.</p>
+    <p class="tour-dados"><b>O que colocar:</b> crie as metas no <b>Orçamento</b> (reserva de emergência, uma compra). Guardar é lançar como poupança ligada à meta, por exemplo o dinheiro que vai para a caixinha.</p>`},
+  {rota: 'painel', alvo: cartaoTour('cobrancas'), titulo: 'Próximas cobranças no cartão', texto: `<p>As parcelas que ainda vão cair no cartão, agrupadas pelo mês da fatura. Aparecem sozinhas quando uma compra parcelada entra (pela fatura ou pelo celular).</p>`},
+  {rota: 'painel', alvo: cartaoTour('destinos'), titulo: 'Maiores destinos', texto: `<p>Onde mais saiu dinheiro no período, somado por lugar ou por pessoa, com quantas vezes.</p>`},
+  {rota: 'painel', alvo: cartaoTour('plano'), titulo: 'Projeção', texto: `<p>Os próximos 4 meses: renda, custo de vida, cartão, resultado, quanto falta cobrir, quanto ainda deve a pessoas e o saldo livre. A conta completa fica na aba <b>Projeção</b>.</p>`},
+  {rota: 'pendentes', alvo: () => $('#lista')?.closest('.cartao'), titulo: 'Pendentes', texto: `<p>O que o sistema não classifica sozinho: lugar novo, Pix para uma pessoa (o mesmo Pix pode ter outra finalidade), recarga do PicPay no crédito.</p>
+    <p class="tour-dados"><b>O que fazer:</b> toque numa sugestão ou numa categoria e pronto. <b>Dividir</b> separa em partes, por exemplo a sua parte e a de um colega. Com <b>sugerir da próxima vez</b> marcado, o mesmo lugar já chega com a sugestão.</p>`},
+  {rota: 'lancamentos', alvo: '#lanc-heroi', titulo: 'Lançamentos: o resumo', texto: `<p>Entradas, gastos e resultado do que está filtrado na tabela, e quanto falta lançar na conta (a diferença para o saldo que o app do banco mostra).</p>`},
+  {rota: 'lancamentos', alvo: () => $('#f-mes')?.closest('.barra'), titulo: 'Filtros', texto: `<p>Mês, categoria, tipo (entrada, saída, transferência, acerto, poupança, pendente) ou uma busca pelo nome. O resumo acima acompanha o filtro.</p>`},
+  {rota: 'lancamentos', alvo: () => $('#n-data')?.closest('tr'), titulo: 'Lançar à mão', texto: `<p>A primeira linha da tabela lança o que não passa pelo banco: dinheiro vivo, uma conta que alguém pagou por você, um acerto.</p>
+    <p class="tour-dados"><b>O que colocar:</b> a data, o tipo (saída, entrada, guardar em meta, acerto...), a categoria ou a pessoa, o valor, o que foi e a conta. Enter lança.</p>`},
+  {rota: 'lancamentos', alvo: '#t-l', titulo: 'Tudo que entrou e saiu', texto: `<p>Do mais novo ao mais antigo. Toque num lançamento para mudar a categoria, dividir em partes ou apagar (só os lançados à mão ou pelo celular; o do extrato é a fonte). A última coluna é o saldo da conta logo depois de cada lançamento.</p>`},
+  {rota: 'orcamento', alvo: cartaoTour('orc-cats'), titulo: 'Suas categorias', texto: `<p>Grupo, nome, teto mensal e se é fixa. Categoria fixa (aluguel, academia) não entra no <b>ainda pode gastar</b>.</p>
+    <p class="tour-dados"><b>Comece por aqui:</b> dê um teto para mercado, delivery, transporte e lazer. Crie ou apague categorias do seu jeito.</p>`},
+  {rota: 'orcamento', alvo: cartaoTour('orc-grade'), titulo: 'Orçamento mês a mês', texto: `<p>Quanto você planeja receber, gastar e guardar em cada mês. Em cinza está o padrão (o teto da categoria); digite numa célula para mudar só aquele mês, e marque <b>repetir até dezembro</b> para valer nos seguintes.</p>
+    <p>Os modos <b>Realizado</b> e <b>Diferença</b> mostram o que aconteceu e o quanto ficou a favor ou contra.</p>`},
+  {rota: 'orcamento', alvo: cartaoTour('orc-fixas'), titulo: 'Despesas fixas', texto: `<p>Os itens que você paga todo mês em cada categoria (aluguel, internet, academia), com início e fim se tiverem.</p>
+    <p class="tour-dados"><b>O que colocar:</b> cada conta fixa com o valor. Marque <b>usar a soma como orçamento</b> para a categoria orçar pela soma dos itens.</p>`},
+  {rota: 'orcamento', alvo: cartaoTour('orc-metas'), titulo: 'Metas', texto: `<p class="tour-dados"><b>O que colocar:</b> o nome da meta, o objetivo em reais, o prazo, quanto guardar por mês e onde o dinheiro fica (a caixinha do banco, por exemplo).</p>`},
+  {rota: 'importar', alvo: cartaoTour('s-extrato-e-fatura-do-banco'), titulo: 'Importar extrato e fatura', texto: `<p>Solte aqui os arquivos do banco. <b>Nubank</b>: extrato e fatura em PDF ou CSV. <b>Bradesco</b>: extrato em PDF, CSV ou Excel e a fatura em aberto em PDF.</p>
+    <p>O que já existe não duplica, e a compra que veio pelo celular é casada com a linha do arquivo. Extrato que não fecha com o total do banco é recusado.</p>
+    <p class="tour-dados"><b>Quando:</b> uma vez por mês, ou sempre que quiser conferir. É assim que o saldo e o cartão ficam completos.</p>`},
+  {rota: 'importar', alvo: cartaoTour('s-notificacoes-descartadas-pelo-filtro'), titulo: 'Notificações descartadas', texto: `<p>Notificações do banco que o filtro entendeu que não eram compra (aviso de fatura, propaganda, código de segurança). Se alguma era compra, <b>Resgatar</b> transforma em lançamento.</p>`},
+  {rota: 'importar', alvo: cartaoTour('s-ultimas-importacoes'), titulo: 'Últimas importações', texto: `<p>O histórico: quantos lançamentos novos, quantos casaram com o que veio pelo celular e quantos já existiam.</p>`},
+  {rota: 'pessoas', alvo: cartaoTour('s-saldos'), titulo: 'Quem deve a quem', texto: `<p>Positivo: a pessoa te deve. Negativo: você deve a ela. Muda quando uma parte de um lançamento é um <b>acerto</b>: dividir uma conta, receber o Pix de volta, pagar o que devia.</p>`},
+  {rota: 'pessoas', alvo: cartaoTour('s-alguem-pagou-uma-conta-por-voce'), titulo: 'Alguém pagou por você', texto: `<p class="tour-dados"><b>O que colocar:</b> quando outra pessoa paga uma conta sua (a luz, o mercado da casa), lance aqui: o gasto entra na categoria e vira dívida com ela, sem mexer no saldo da sua conta.</p>`},
+  {rota: 'projecao', alvo: cartaoTour('proj-resumo'), titulo: 'Projeção', texto: `<p>Mês a mês até o horizonte: renda, custo de vida (do Orçamento), o cartão já contratado e o resultado. <b>Falta cobrir</b> soma os meses no vermelho; <b>saldo livre</b> é o que sobra depois de pagar quem você deve.</p>`},
+  {rota: 'projecao', alvo: cartaoTour('proj-eventos'), titulo: 'Eventos', texto: `<p class="tour-dados"><b>O que colocar:</b> o que muda e quando: um aumento, uma renda que acaba, uma viagem, o 13º. A projeção recalcula na hora.</p>`},
+  {rota: 'ajustes', alvo: cartaoTour('s-pessoas'), titulo: 'Pessoas', texto: `<p class="tour-dados"><b>O que colocar:</b> quem divide contas com você, com o nome como aparece no extrato do banco. Assim o Pix dessa pessoa é reconhecido e vem com sugestão.</p>`},
+  {rota: 'ajustes', alvo: cartaoTour('s-rateio-do-aluguel'), titulo: 'Rateio do aluguel', texto: `<p class="tour-dados"><b>O que colocar:</b> se você divide o aluguel, quanto é de cada um (a soma dá 100%). O boleto da imobiliária vira sua parte como gasto e a dos outros como acerto.</p>`},
+  {rota: 'ajustes', alvo: cartaoTour('s-celular'), titulo: 'Celular', texto: APP
+    ? `<p>Este aparelho. As notificações dos apps de banco marcados viram lançamentos aqui na hora, mesmo sem servidor.</p>
+      <p class="tour-dados"><b>O que colocar:</b> toque em <b>Acesso a notificações</b> e ligue o Finanças. Se tiver o Finanças no computador, coloque o endereço dele (ex.: http://192.168.0.10:8095) e a chave, que aparecem em Ajustes no computador, e toque em <b>Testar conexão</b>.</p>`
+    : `<p>Para o celular mandar as compras na hora.</p>
+      <p class="tour-dados"><b>O que fazer:</b> no app Finanças do celular, copie o <b>endereço</b> e a <b>chave</b> daqui. Quem usa o MacroDroid copia os três campos de baixo.</p>`},
+  {rota: 'ajustes', alvo: cartaoTour('s-aparencia'), titulo: 'Aparência', texto: `<p>Tema claro ou escuro e papel de parede. Logo abaixo, em Visualização, o jeito como o site aparece neste aparelho. O botão <b>Rever o tour</b> fica aqui.</p>`},
+  {rota: 'painel', titulo: 'Pronto para começar', texto: `<p>Um bom começo:</p>
+    <p>1. No <b>Orçamento</b>, dê um teto para as categorias que você quer controlar.<br>2. Em <b>Ajustes</b>, cadastre quem divide contas com você.<br>3. Em <b>Importar</b>, traga o extrato e a fatura do mês${APP ? ', e libere o acesso a notificações para as compras entrarem sozinhas' : ', ou deixe o celular mandar as compras'}.<br>4. Classifique o que aparecer em <b>Pendentes</b>.</p>
+    <p>O <b>?</b> de cada painel explica de novo.</p>`},
+];
+const tourFoco = Object.assign(document.createElement('div'), {className: 'tour-foco', hidden: true});
+const tourCaixa = Object.assign(document.createElement('div'), {className: 'tour-caixa', hidden: true});
+tourCaixa.setAttribute('role', 'dialog');
+document.body.append(tourFoco, tourCaixa);
+let tourI = -1, tourEl = null;
+const tourAberto = () => tourI >= 0;
+const alvoTour = p => { const el = !p.alvo ? null : typeof p.alvo === 'function' ? p.alvo() : $(p.alvo); return el && el.getClientRects().length ? el : null; };
+function iniciarTour() { const ja = tourAberto(); mostrarPasso(0); if (!ja) requestAnimationFrame(seguirTour); }
+function fecharTour(fim) {
+  tourI = -1; tourEl = null; tourFoco.hidden = tourCaixa.hidden = true;
+  store.set('tour', 'visto');
+  if (fim) location.hash = '#painel';
+}
+async function mostrarPasso(i) {
+  tourI = i; tourEl = null;
+  const p = PASSOS_TOUR[i], n = PASSOS_TOUR.length;
+  fecharAjuda();
+  if (p.rota && (location.hash.slice(1) || 'painel').split('?')[0] !== p.rota) location.hash = '#' + p.rota;
+  tourCaixa.innerHTML = `<div class="tour-topo"><b>${p.titulo}</b><span class="muted">${i + 1} de ${n}</span></div><div class="tour-texto">${p.texto}</div>
+    <div class="tour-botoes"><button data-tour="sair">Sair do tour</button><span class="espaco"></span>${i ? '<button data-tour="voltar">Voltar</button>' : ''}
+      <button class="prim" data-tour="proximo">${i === n - 1 ? 'Começar a usar' : 'Próximo'}</button></div>`;
+  tourCaixa.hidden = tourFoco.hidden = false;
+  tourCaixa.querySelector('[data-tour="sair"]').onclick = () => fecharTour(false);
+  tourCaixa.querySelector('[data-tour="proximo"]').onclick = () => (i === n - 1 ? fecharTour(true) : mostrarPasso(i + 1));
+  const voltar = tourCaixa.querySelector('[data-tour="voltar"]');
+  if (voltar) voltar.onclick = () => mostrarPasso(i - 1);
+  for (let t = 0; p.alvo && t < 50 && tourI === i; t++) {     // a tela da aba pode levar um instante para desenhar
+    const el = alvoTour(p);
+    if (el) { await new Promise(r => setTimeout(r, 300)); if (tourI === i) { el.scrollIntoView({block: 'center'}); tourEl = el; } break; }
+    await new Promise(r => setTimeout(r, 100));
+  }
+}
+// O destaque acompanha o alvo (rolagem, mudança de tamanho, o mosaico se arrumando) a cada quadro.
+function seguirTour() {
+  if (!tourAberto()) return;
+  const el = tourEl && document.body.contains(tourEl) ? tourEl : null, m = el ? 6 : 0;
+  const r = el ? el.getBoundingClientRect() : {left: innerWidth / 2, top: innerHeight / 2, width: 0, height: 0, right: innerWidth / 2, bottom: innerHeight / 2};
+  Object.assign(tourFoco.style, {left: r.left - m + 'px', top: r.top - m + 'px', width: r.width + 2 * m + 'px', height: r.height + 2 * m + 'px'});
+  const c = tourCaixa, w = c.offsetWidth, h = c.offsetHeight, folga = 12;
+  if (innerWidth < 700) {                       // celular: o balão fica embaixo, ou em cima se o destaque estiver embaixo
+    c.style.left = c.style.right = '8px';
+    c.style.top = (el && r.top + r.height / 2 > innerHeight / 2 ? folga : innerHeight - h - folga) + 'px';
+  } else {
+    c.style.right = 'auto';
+    let x, y;
+    if (!el) { x = (innerWidth - w) / 2; y = (innerHeight - h) / 2; }
+    else if (innerHeight - r.bottom > h + 2 * folga) { x = r.left; y = r.bottom + folga; }
+    else if (r.top > h + 2 * folga) { x = r.left; y = r.top - h - folga; }
+    else if (innerWidth - r.right > w + 2 * folga) { x = r.right + folga; y = r.top; }
+    else { x = r.left - w - folga; y = r.top; }
+    c.style.left = Math.max(folga, Math.min(x, innerWidth - w - folga)) + 'px';
+    c.style.top = Math.max(folga, Math.min(y, innerHeight - h - folga)) + 'px';
+  }
+  requestAnimationFrame(seguirTour);
+}
+document.addEventListener('keydown', e => {
+  if (!tourAberto()) return;
+  if (e.key === 'Escape') fecharTour(false);
+  else if (e.key === 'ArrowRight') tourCaixa.querySelector('[data-tour="proximo"]').click();
+  else if (e.key === 'ArrowLeft' && tourI > 0) mostrarPasso(tourI - 1);
+});
 
 // ---------------------------------------------------------------- partida
 aplicarTema();
