@@ -1558,31 +1558,65 @@ async function mostrarPasso(i) {
   if (voltar) voltar.onclick = () => mostrarPasso(i - 1);
   for (let t = 0; p.alvo && t < 50 && tourI === i; t++) {     // a tela da aba pode levar um instante para desenhar
     const el = alvoTour(p);
-    if (el) { await new Promise(r => setTimeout(r, 300)); if (tourI === i) { el.scrollIntoView({block: 'center'}); tourEl = el; } break; }
-    await new Promise(r => setTimeout(r, 100));
+    if (el) {
+      await pausaTour(300);
+      if (tourI !== i) return;
+      enquadrarTour(el);
+      await pausaTour(250);                                   // a rolagem e o mosaico assentam
+      if (tourI === i) tourEl = el;
+      break;
+    }
+    await pausaTour(100);
   }
+}
+const pausaTour = ms => new Promise(r => setTimeout(r, ms));
+const TOUR_FOLGA = 12;
+// Fundo da barra fixa do topo: o que fica atrás dela não conta como visível (a não ser que o alvo seja a própria barra).
+const topoTour = el => { const t = $('#topo'); return t && !t.contains(el) ? Math.max(0, t.getBoundingClientRect().bottom) : 0; };
+// Rola o alvo para a vista: centrado se o balão couber ao lado; senão, o começo dele logo abaixo da barra do topo.
+function enquadrarTour(el) {
+  const r = el.getBoundingClientRect(), w = tourCaixa.offsetWidth, topo = topoTour(el), f = TOUR_FOLGA;
+  const aoLado = innerWidth >= 700 && (innerWidth - r.right >= w + 2 * f || r.left >= w + 2 * f);
+  el.style.scrollMarginTop = topo + f + 'px';
+  el.scrollIntoView({block: aoLado && r.height <= innerHeight - topo - 2 * f ? 'center' : 'start'});
+  el.style.scrollMarginTop = '';
+}
+// Onde o balão cabe sem cobrir o alvo: ao lado, embaixo ou em cima. Sem espaço livre (alvo maior que a tela), ele fica
+// preso na borda e o destaque vai só até ele, cobrindo a parte do alvo que ficou visível.
+function ladoTour(r, topo) {
+  const w = tourCaixa.offsetWidth, h = tourCaixa.offsetHeight, f = TOUR_FOLGA;
+  if (innerWidth >= 700 && innerWidth - r.right >= w + 2 * f) return 'direita';
+  if (innerWidth >= 700 && r.left >= w + 2 * f) return 'esquerda';
+  if (innerHeight - r.bottom >= h + 2 * f) return 'baixo';
+  if (r.top - topo >= h + 2 * f) return 'cima';
+  return (r.top + r.bottom) / 2 < (topo + innerHeight) / 2 ? 'borda-baixo' : 'borda-cima';
 }
 // O destaque acompanha o alvo (rolagem, mudança de tamanho, o mosaico se arrumando) a cada quadro.
 function seguirTour() {
   if (!tourAberto()) return;
-  const el = tourEl?.isConnected ? tourEl : null, m = el ? 6 : 0;     // isConnected também vale dentro de shadow root
-  const r = el ? el.getBoundingClientRect() : {left: innerWidth / 2, top: innerHeight / 2, width: 0, height: 0, right: innerWidth / 2, bottom: innerHeight / 2};
-  Object.assign(tourFoco.style, {left: r.left - m + 'px', top: r.top - m + 'px', width: r.width + 2 * m + 'px', height: r.height + 2 * m + 'px'});
-  const c = tourCaixa, w = c.offsetWidth, h = c.offsetHeight, folga = 12;
-  if (innerWidth < 700) {                       // celular: o balão fica embaixo, ou em cima se o destaque estiver embaixo
-    c.style.left = c.style.right = '8px';
-    c.style.top = (el && r.top + r.height / 2 > innerHeight / 2 ? folga : innerHeight - h - folga) + 'px';
-  } else {
-    c.style.right = 'auto';
-    let x, y;
-    if (!el) { x = (innerWidth - w) / 2; y = (innerHeight - h) / 2; }
-    else if (innerHeight - r.bottom > h + 2 * folga) { x = r.left; y = r.bottom + folga; }
-    else if (r.top > h + 2 * folga) { x = r.left; y = r.top - h - folga; }
-    else if (innerWidth - r.right > w + 2 * folga) { x = r.right + folga; y = r.top; }
-    else { x = r.left - w - folga; y = r.top; }
-    c.style.left = Math.max(folga, Math.min(x, innerWidth - w - folga)) + 'px';
-    c.style.top = Math.max(folga, Math.min(y, innerHeight - h - folga)) + 'px';
+  const el = tourEl?.isConnected ? tourEl : null;     // isConnected também vale dentro de shadow root
+  const c = tourCaixa, w = c.offsetWidth, h = c.offsetHeight, f = TOUR_FOLGA, m = 6, estreito = innerWidth < 700;
+  const meio = (a, v, b) => Math.max(a, Math.min(v, b));
+  let x = (innerWidth - w) / 2, y = (innerHeight - h) / 2, foco = null;
+  if (el) {
+    const r = el.getBoundingClientRect(), topo = topoTour(el), lado = ladoTour(r, topo);
+    let t = Math.max(r.top, topo), b = Math.min(r.bottom, innerHeight);
+    const l = Math.max(r.left, 0), d = Math.min(r.right, innerWidth);
+    x = r.left;
+    if (lado === 'direita') { x = r.right + f; y = r.top; }
+    else if (lado === 'esquerda') { x = r.left - w - f; y = r.top; }
+    else if (lado === 'baixo') y = r.bottom + f;
+    else if (lado === 'cima') y = r.top - h - f;
+    else if (lado === 'borda-baixo') { y = innerHeight - h - f; b = Math.min(b, y - f); }
+    else { y = topo + f; t = Math.max(t, y + h + f); }
+    y = meio(topo + f, y, innerHeight - h - f);
+    if (b - t > 2 * m && d > l) foco = {left: l - m, top: t - m, width: d - l + 2 * m, height: b - t + 2 * m};
   }
+  Object.assign(tourFoco.style, Object.fromEntries(Object.entries(foco || {left: innerWidth / 2, top: innerHeight / 2, width: 0, height: 0})
+    .map(([k, v]) => [k, v + 'px'])));
+  if (estreito) { c.style.left = c.style.right = '8px'; }                  // celular: o balão ocupa a largura
+  else { c.style.right = 'auto'; c.style.left = meio(f, x, innerWidth - w - f) + 'px'; }
+  c.style.top = y + 'px';
   requestAnimationFrame(seguirTour);
 }
 document.addEventListener('keydown', e => {
