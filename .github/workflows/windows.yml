@@ -45,7 +45,9 @@ jobs:
           $bin = (Get-ChildItem ferramentas\poppler-zip -Recurse -Filter pdftotext.exe | Select-Object -First 1).DirectoryName
           Copy-Item "$bin\*" ferramentas\poppler -Recurse
           Invoke-WebRequest $env:TESSERACT_URL -OutFile ferramentas\tesseract-setup.exe
-          Start-Process ferramentas\tesseract-setup.exe -ArgumentList "/S", "/D=$PWD\ferramentas\tesseract-inst" -Wait
+          # O instalador do UB-Mannheim é NSIS: o 7-Zip do runner abre o pacote sem instalar nada na máquina.
+          7z x ferramentas\tesseract-setup.exe -oferramentas\tesseract-inst -y | Out-Null
+          Get-ChildItem ferramentas\tesseract-inst | Select-Object -First 40 Name
           # Só o que o OCR usa: o executável, as DLLs, as configurações (tsv) e o português.
           Copy-Item ferramentas\tesseract-inst\tesseract.exe, ferramentas\tesseract-inst\*.dll ferramentas\tesseract
           Copy-Item ferramentas\tesseract-inst\tessdata\configs, ferramentas\tesseract-inst\tessdata\tessconfigs ferramentas\tesseract\tessdata -Recurse
