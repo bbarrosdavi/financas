@@ -234,8 +234,9 @@ def iniciar(path: str | Path | None = None) -> None:
     with conectar(p) as con:
         con.executescript(SCHEMA)
         _migrar(con)
-        from app import categorias
+        from app import categorias, sync
         categorias.semear(con)
+        sync.preparar(con)          # depois de semear: o vocabulário inicial entra como o mais antigo possível
 
 
 def _migrar(con: sqlite3.Connection) -> None:

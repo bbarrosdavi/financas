@@ -22,7 +22,7 @@ from fastapi.responses import FileResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
-from app import db, exportar, push, servicos
+from app import db, exportar, push, servicos, sync
 from app.config import settings
 
 WEB = Path(__file__).resolve().parent.parent / "web"
@@ -108,6 +108,21 @@ def webhook(n: Notificacao):
         except asyncio.QueueFull:
             raise HTTPException(503, "Fila cheia, tente de novo")   # o MacroDroid repete
     return {"status": estado, "inbox_id": inbox_id}
+
+
+class Sincronia(BaseModel):
+    protocolo: int = 1
+    cursor: int = 0
+    mudancas: list[dict] = []
+
+
+@app.post("/api/v1/sync", dependencies=[Depends(bearer)])
+def sincronizar(body: Sincronia):
+    """O app do celular manda o que mudou nele e recebe o que mudou aqui (ver app/sync.py)."""
+    if body.protocolo != sync.PROTOCOLO:
+        raise HTTPException(409, "Versão do app incompatível com a do servidor: atualize os dois.")
+    with db.conectar() as con:
+        return sync.servir(con, body.cursor, body.mudancas, settings.TITULAR)
 
 
 # ---------------------------------------------------------------------------
