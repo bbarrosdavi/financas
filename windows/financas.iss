@@ -141,7 +141,10 @@ begin
   Comando := '/c netsh advfirewall firewall delete rule name="{#RegraFirewall}" >nul 2>&1 & ' +
              'netsh advfirewall firewall add rule name="{#RegraFirewall}" dir=in action=allow protocol=TCP localport=8095 ' +
              'program="' + ExpandConstant('{app}\Financas.exe') + '" profile=any enable=yes';
-  if ShellExec('runas', ExpandConstant('{cmd}'), Comando, '', SW_HIDE, ewWaitUntilTerminated, Codigo) and (Codigo = 0) then
+  { O ShellExec não devolve o código de saída: quem diz se a regra entrou é o próprio netsh, sem elevação. }
+  ShellExec('runas', ExpandConstant('{cmd}'), Comando, '', SW_HIDE, ewWaitUntilTerminated, Codigo);
+  if Exec(ExpandConstant('{sys}\netsh.exe'), 'advfirewall firewall show rule name="{#RegraFirewall}"', '', SW_HIDE,
+          ewWaitUntilTerminated, Codigo) and (Codigo = 0) then
     RegWriteDWordValue(HKCU, 'Software\Financas', 'RegraFirewall', 1)
   else if not WizardSilent then
     MsgBox('O Windows não liberou o acesso pela rede. Na primeira vez que o Finanças abrir, se o Windows ' +

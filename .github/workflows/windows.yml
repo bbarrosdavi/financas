@@ -91,6 +91,7 @@ jobs:
           $run = (Get-ItemProperty HKCU:\Software\Microsoft\Windows\CurrentVersion\Run).Financas
           if ($run -notlike "*--servidor") { throw "faltou o autostart: $run" }
           Get-NetFirewallRule -DisplayName "Financas (celular)" | Format-List DisplayName, Enabled, Direction, Action
+          if ((Get-ItemProperty HKCU:\Software\Financas -ErrorAction SilentlyContinue).RegraFirewall -ne 1) { throw "o instalador não marcou a regra do firewall" }
           Start-Process "$app\Financas.exe" -ArgumentList "--servidor"
           python windows\teste_windows.py --senha senha-do-teste-ci --env "$dados\.env"
           if ($LASTEXITCODE) { Get-Content "$dados\logs\servidor.log" -Tail 60; exit $LASTEXITCODE }
