@@ -4,9 +4,10 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 plugins {
     id("com.android.application")
     id("com.chaquo.python")
+    id("org.jetbrains.kotlin.plugin.compose")
 }
 
-// Raiz do repositório: o app/ (Python do servidor) e o web/ (o site) entram no APK direto de lá.
+// Raiz do repositório: o app/ (o Python do servidor) entra no APK direto de lá; a tela é nativa (Compose).
 val repo: File = rootDir.parentFile
 
 // Chave de assinatura: fora do repositório (nunca no git). O arquivo .properties aponta o keystore e as senhas.
@@ -53,7 +54,10 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
 
-    buildFeatures { buildConfig = true }
+    buildFeatures {
+        buildConfig = true
+        compose = true
+    }
 }
 
 kotlin {
@@ -88,45 +92,16 @@ val copiarApp by tasks.registering(Sync::class) {
     into(layout.buildDirectory.dir("python-repo/app"))
 }
 
-// O site (web/) vira assets do APK, com a ponte nativo.js carregada antes do app.js.
-abstract class CopiarSite : DefaultTask() {
-    @get:InputDirectory abstract val web: DirectoryProperty
-    @get:InputFile abstract val ponte: RegularFileProperty
-    @get:OutputDirectory abstract val saida: DirectoryProperty
-
-    @TaskAction
-    fun copiar() {
-        val destino = saida.get().asFile.resolve("web")
-        destino.deleteRecursively()
-        web.get().asFile.copyRecursively(destino)
-        File(destino, "sw.js").delete()          // a casca já vem do APK: sem service worker
-        ponte.get().asFile.copyTo(File(destino, "nativo.js"), overwrite = true)
-        val index = File(destino, "index.html")
-        val muuri = "<script src=\"vendor/muuri.min.js\"></script>"
-        check(muuri in index.readText()) { "index.html mudou: ajuste a injeção do nativo.js" }
-        index.writeText(index.readText().replace(muuri, "<script src=\"nativo.js\"></script>\n$muuri"))
-    }
-}
-
-val copiarSite by tasks.registering(CopiarSite::class) {
-    web.set(File(repo, "web"))
-    ponte.set(layout.projectDirectory.file("src/main/js/nativo.js"))
-    saida.set(layout.buildDirectory.dir("site"))
-}
-
-androidComponents {
-    onVariants { variante ->
-        variante.sources.assets?.addGeneratedSourceDirectory(copiarSite, CopiarSite::saida)
-    }
-}
-
 tasks.configureEach {
     if ("Python" in name || name == "preBuild") dependsOn(copiarApp)
 }
 
 dependencies {
-    implementation("androidx.activity:activity-ktx:1.13.0")
+    implementation(platform("androidx.compose:compose-bom:2026.09.00"))
+    implementation("androidx.compose.ui:ui")
+    implementation("androidx.compose.foundation:foundation")
+    implementation("androidx.compose.material3:material3")
+    implementation("androidx.activity:activity-compose:1.13.0")
     implementation("androidx.core:core-ktx:1.19.1")
-    implementation("androidx.webkit:webkit:1.18.0")
     implementation("androidx.work:work-runtime-ktx:2.12.0")
 }

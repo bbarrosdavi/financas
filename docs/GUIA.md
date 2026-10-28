@@ -554,17 +554,32 @@ vez por mês importar o extrato e a fatura e informar o saldo do app.
 
 ## 6. O app do celular (Android)
 
-O app Finanças é o site inteiro dentro do celular, com o banco de dados no próprio aparelho: abre, lista,
-lança e classifica sem servidor e sem internet. Ele também faz o papel do MacroDroid: lê as notificações dos
-apps de banco e lança na hora.
+O app Finanças tem telas feitas para o celular, com o banco de dados no próprio aparelho: abre, lista, lança
+e classifica sem servidor e sem internet. Ele também faz o papel do MacroDroid: lê as notificações dos apps
+de banco e lança na hora.
+
+As abas ficam embaixo: **Painel**, **Pendentes** (com o número do que falta classificar), **Lançamentos**,
+**Orçamento** e **Mais**, onde estão Importar, Pessoas, Projeção e Ajustes. Os números são os mesmos do site,
+porque as telas usam a mesma conta. Ficam só no site o papel de parede, as opções de Visualização, a
+comparação com o período anterior e a planilha no modelo antigo (.ods).
 
 ![O Painel no app](prints/guia/app-painel.png)
+
+Em **Lançamentos**, os filtros ficam numa grade de quatro campos (mês, tipo, categoria e busca) e o botão
+**Lançar** abre o formulário de baixo para cima: tipo, categoria (ou meta, ou pessoa), valor, data, o que foi
+e a conta. Tocar num lançamento abre o editor de partes, o mesmo do site. No **Orçamento**, a aba **Mês** mostra
+orçado, realizado e diferença de cada categoria no mês escolhido (toque na linha para mudar o orçado); **Ano**
+soma o ano, com o realizado comparado ao orçado dos meses que já passaram; **Fixas**, **Categorias** e
+**Metas** editam as despesas fixas, os tetos e as metas.
+
+![Lançamentos no app](prints/guia/app-lancamentos.png)
 
 ### Instalar
 
 1. Copie o arquivo `financas-<versão>.apk` para o celular e abra. O Android pergunta se permite instalar apps
    dessa origem (o navegador ou o gerenciador de arquivos): permita.
-2. Abra o **Finanças**. O tour passa por cada tela, como no computador.
+2. Abra o **Finanças**. Na primeira vez, sem dados, ele liga os dados de demonstração e o tour passa por
+   cada tela, como no computador. Depois, toque em **Remover** na faixa do topo para começar com os seus.
 
 ![O tour no app](prints/guia/app-tour.png)
 
@@ -579,8 +594,7 @@ Configurações > Apps > Finanças > Bateria > **Sem restrições**.
 
 ![Ajustes > Celular no app](prints/guia/app-ajustes.png)
 
-Os prints do app são do emulador usado no teste: o endereço `http://10.0.2.2:18095` é como o emulador enxerga o
-computador. No seu celular, use o endereço que aparece em Ajustes no computador.
+O endereço no print é um exemplo. No seu celular, use o endereço que aparece em Ajustes no computador.
 
 ### Ligar ao Finanças do computador (opcional)
 

@@ -3,10 +3,8 @@ package io.github.bbarrosdavi.financas
 import android.content.ComponentName
 import android.content.Context
 import android.provider.Settings
-import org.json.JSONArray
-import org.json.JSONObject
 
-/** Ajustes deste aparelho (SharedPreferences): servidor, chave, apps monitorados e a última sincronização. */
+/** Ajustes deste aparelho (SharedPreferences): servidor, chave, apps monitorados, tema, tour e a última sincronização. */
 class Ajustes(private val ctx: Context) {
     private val p = ctx.getSharedPreferences("ajustes", Context.MODE_PRIVATE)
 
@@ -22,6 +20,15 @@ class Ajustes(private val ctx: Context) {
         get() = p.getStringSet("apps", null) ?: APPS_PADRAO.keys
         set(v) = p.edit().putStringSet("apps", v).apply()
 
+    /** "sistema", "claro" ou "escuro". */
+    var tema: String
+        get() = p.getString("tema", "sistema") ?: "sistema"
+        set(v) = p.edit().putString("tema", v).apply()
+
+    var tourVisto: Boolean
+        get() = p.getBoolean("tour_visto", false)
+        set(v) = p.edit().putBoolean("tour_visto", v).apply()
+
     var ultimaSincronia: String
         get() = p.getString("ultima", "") ?: ""
         set(v) = p.edit().putString("ultima", v).apply()
@@ -31,14 +38,6 @@ class Ajustes(private val ctx: Context) {
         val eu = ComponentName(ctx, NotificacoesService::class.java)
         return ativos.split(':').any { ComponentName.unflattenFromString(it) == eu }
     }
-
-    fun json(): JSONObject = JSONObject()
-        .put("url", url)
-        .put("chave", chave)
-        .put("apps", JSONArray(apps.sorted()))
-        .put("apps_padrao", JSONObject(APPS_PADRAO as Map<*, *>))
-        .put("acesso", acessoNotificacoes())
-        .put("ultima", if (ultimaSincronia.isBlank()) JSONObject.NULL else JSONObject(ultimaSincronia))
 
     companion object {
         val APPS_PADRAO = linkedMapOf(

@@ -147,8 +147,13 @@ python -m pytest -q
 Um .apk (`financas-<versão>.apk`) que faz o papel do MacroDroid e do site no celular, sem depender do
 computador:
 
-- A tela é a mesma do site (tudo que tem no site tem no app, no claro e no escuro), mas o banco fica no
+- Telas próprias do Android (Kotlin e Jetpack Compose), feitas para a tela do celular: cinco abas embaixo
+  (Painel, Pendentes, Lançamentos, Orçamento e Mais, com Importar, Pessoas, Projeção e Ajustes), filtros e
+  formulários que cabem sem rolagem para o lado, claro e escuro, e o mesmo tour do site. As telas usam a mesma
+  API do site, servida pelo Python que roda no celular, então os números são os mesmos. O banco fica no
   celular e o app abre, lista, lança e classifica sem servidor nenhum.
+- Ficam só no site: papel de parede, as opções de Visualização (densidade, fonte, painéis, ordem das abas),
+  a comparação com o período anterior e a planilha no modelo antigo (.ods). A .xlsx sai no app também.
 - Lê as notificações dos apps de banco escolhidos (por padrão Nubank, PicPay, Mercado Pago e Bradesco) e lança
   na hora, na ordem em que chegam, pelo mesmo leitor do servidor (`app/push_parser.py`, rodando no celular).
 - Quando alcança o servidor (na mesma rede ou pela VPN), sincroniza em segundo plano: a cada 15 minutos, ao
@@ -175,7 +180,7 @@ compra que o celular viu depois de o extrato já estar no servidor são casadas,
 vezes. Contra um servidor antigo, sem sincronização, o app manda só as compras, pelo webhook do MacroDroid.
 
 No celular, .pdf de extrato não é lido (não há poppler nem tesseract no Android): importe o .csv ou o .xlsx, ou
-importe o .pdf no computador, que ele chega ao celular na sincronização. A .ods também não existe no app.
+importe o .pdf no computador, que ele chega ao celular na sincronização. 
 
 Para gerar o .apk (Linux, Android SDK e JDK 17+):
 
@@ -184,7 +189,8 @@ cd android
 ./gradlew --no-daemon assembleRelease      # app/build/outputs/apk/release/app-release.apk
 ```
 
-O .apk leva o `app/` e o `web/` do repositório (o Python roda no celular pelo Chaquopy). A assinatura usa um
+O .apk leva o `app/` do repositório (o Python roda no celular pelo Chaquopy); as telas ficam em
+`android/app/src/main/java/io/github/bbarrosdavi/financas/ui/`. A assinatura usa um
 keystore que nunca entra no git: o build lê `~/.local/share/financas-android/keystore.properties` (ou o
 arquivo em `FINANCAS_KEYSTORE`), com `storeFile`, `storePassword`, `keyAlias` e `keyPassword`. Sem ele, o
 .apk sai assinado com a chave de depuração, que não atualiza um .apk assinado com a chave de verdade.

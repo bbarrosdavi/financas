@@ -22,8 +22,6 @@ const corGrupo = g => (V.cores_grupos || {})[g] || COR_GRUPO[g] || '#9a99a1';
 const corCat = id => { const c = cat(id); return c?.cor || corGrupo(c?.grupo); };
 
 let V = {categorias: [], pessoas: [], contas: [], metas: []};
-// Só dentro do app Android (android/app/src/main/js/nativo.js): os ajustes do aparelho em Ajustes > Celular.
-const APP = window.FINANCAS_APP;
 let DEMO = false;          // dados de demonstração ligados (app/demo.py)
 const cat = id => V.categorias.find(c => c.id === id);
 const pessoa = id => V.pessoas.find(p => p.id === id);
@@ -1212,7 +1210,7 @@ async function orcamento(t) {
 const opcao = (rotulo, k, valores) => `<div class="opcao"><span class="rot">${rotulo}</span><div class="segmentos">${valores.map(([v, n]) =>
   `<button data-pref="${k}" data-v="${v}" class="${String(PREF[k]) === String(v) ? 'on' : ''}">${n}</button>`).join('')}</div></div>`;
 async function ajustes(t) {
-  const [papeis, prm, cel, ods, aparelho] = await Promise.all([api('/api/papeis'), api('/api/parametros'), api('/api/celular'), api('/api/exportar.ods/estado'), APP ? APP.ajustes() : null]);
+  const [papeis, prm, cel, ods] = await Promise.all([api('/api/papeis'), api('/api/parametros'), api('/api/celular'), api('/api/exportar.ods/estado')]);
   V = await api('/api/vocabulario');
   // Você e os colegas, mesmo quem ainda não tem parte (0%).
   const rateio = Object.fromEntries(['eu', ...V.pessoas.filter(p => p.tipo === 'colega').map(p => p.id)].map(k => [k, 0]));
@@ -1269,13 +1267,13 @@ async function ajustes(t) {
     </div>
 
     <div class="grade meio">
-    ${aparelho ? cartaoAparelho(aparelho) : `<section class="painel vidro"><h3>Celular <small>app Finanças ou MacroDroid</small></h3>
+    <section class="painel vidro"><h3>Celular <small>app Finanças ou MacroDroid</small></h3>
       <p class="sub">Abra esta tela no celular. No app Finanças, copie o endereço e a chave. No MacroDroid, copie os três campos de baixo para a ação "Requisição HTTP" da macro.</p>
       ${[['Endereço do servidor (app Finanças)', cel.base], ['Chave (app Finanças)', cel.chave], ['URL (método POST)', cel.url], ['Cabeçalho Authorization', cel.authorization], ['Corpo (application/json)', cel.corpo]]
-        .map(([k, v], i) => `<label class="c">${k}<span class="barra" style="margin:2px 0 8px"><input readonly value="${esc(v)}" style="flex:1" id="cel${i}"><button data-copiar="cel${i}">copiar</button></span></label>`).join('')}</section>`}
+        .map(([k, v], i) => `<label class="c">${k}<span class="barra" style="margin:2px 0 8px"><input readonly value="${esc(v)}" style="flex:1" id="cel${i}"><button data-copiar="cel${i}">copiar</button></span></label>`).join('')}</section>
     <section class="painel vidro"><h3>Planilha e sessão</h3>
       <p class="sub">No modelo da planilha antiga (.ods): Budget Dashboard, Planning com o orçamento de cada mês, Tracking com renda, gasto e poupança (pendentes em âmbar), Despesas Fixas, e depois as tabelas do site em abas. A simples (.xlsx) tem só as tabelas.</p>
-      <div class="barra"><button id="baixar-ods" class="prim" ${ods.disponivel ? '' : 'disabled'}>Baixar no modelo antigo (.ods)</button><a href="/api/exportar.xlsx"><button>Baixar tabelas (.xlsx)</button></a>${APP ? '' : '<button id="sair">Sair</button>'}</div>
+      <div class="barra"><button id="baixar-ods" class="prim" ${ods.disponivel ? '' : 'disabled'}>Baixar no modelo antigo (.ods)</button><a href="/api/exportar.xlsx"><button>Baixar tabelas (.xlsx)</button></a><button id="sair">Sair</button></div>
       <p class="sub" id="ods-msg">${ods.disponivel ? '' : 'O modelo antigo (.ods) não sai aqui: ' + esc(ods.motivo) + '. A .xlsx funciona.'}</p></section>
     </div>`;
 
@@ -1333,7 +1331,6 @@ async function ajustes(t) {
     b.textContent = 'copiado';
   });
   if ($('#sair')) $('#sair').onclick = async () => { await post('/api/logout', {}); mostrarLogin(); };
-  if (aparelho) ligarAparelho(aparelho);
   $('#baixar-ods').onclick = async e => {
     const b = e.target, msg = $('#ods-msg');
     b.disabled = true; msg.textContent = 'Gerando no LibreOffice, leva uns 15 segundos...';
@@ -1346,43 +1343,6 @@ async function ajustes(t) {
     } catch (err) { msg.textContent = 'Não deu: ' + err.message; }
     b.disabled = false;
   };
-}
-
-// Ajustes > Celular dentro do app: o servidor para sincronizar, a chave dele, os apps de banco lidos e o acesso a
-// notificações. O celular funciona sozinho; o servidor só recebe e manda o que mudou quando está ao alcance.
-function cartaoAparelho(a) {
-  const u = a.ultima;
-  const ultima = !u ? 'ainda não sincronizou' : `${new Date(u.quando).toLocaleString('pt-BR', {dateStyle: 'short', timeStyle: 'short'})}: ` +
-    (u.ok ? `ok, ${u.enviadas} enviada(s) e ${u.recebidas} recebida(s)` : `<span class="neg">${esc(u.erro)}</span>`);
-  const outros = a.apps.filter(p => !(p in a.apps_padrao));
-  return `<section class="painel vidro"><h3>Celular <small>este aparelho</small></h3>
-    <p class="sub">As notificações dos apps marcados viram lançamentos aqui na hora, sem precisar do servidor. Quando o servidor estiver ao alcance (mesma rede ou VPN), o app manda o que mudou aqui e recebe o que mudou lá.</p>
-    <label class="c">Endereço do servidor<input id="app-url" inputmode="url" placeholder="http://192.168.0.10:8095" value="${esc(a.url)}"></label>
-    <label class="c">Chave (API_KEY)<input id="app-chave" autocomplete="off" value="${esc(a.chave)}"></label>
-    <div class="subsecao">Apps monitorados</div>
-    <div class="barra">${Object.entries(a.apps_padrao).map(([p, n]) => `<label class="alternar"><input type="checkbox" data-app="${esc(p)}" ${a.apps.includes(p) ? 'checked' : ''}> ${esc(n)}</label>`).join('')}</div>
-    <label class="c">Outros apps <small class="muted">nome do pacote, separados por vírgula</small><input id="app-outros" value="${esc(outros.join(', '))}"></label>
-    <div class="barra"><button class="prim" id="app-salvar">Salvar</button><button id="app-testar">Testar conexão</button><button id="app-sync">Sincronizar agora</button><button id="app-acesso">Acesso a notificações</button></div>
-    <p class="sub">Acesso a notificações: ${a.acesso ? '<b class="pos">liberado</b>' : '<b class="warnc">falta liberar</b> (toque em "Acesso a notificações" e ligue o Finanças)'}</p>
-    <p class="sub">Última sincronização: ${ultima}</p>
-    <p class="sub" id="app-msg"></p></section>`;
-}
-function ligarAparelho(a) {
-  const msg = (texto, ok) => { $('#app-msg').innerHTML = `<span class="${ok ? 'pos' : 'neg'}">${esc(texto)}</span>`; };
-  const coletar = () => ({url: $('#app-url').value, chave: $('#app-chave').value,
-    apps: [...document.querySelectorAll('[data-app]')].filter(i => i.checked).map(i => i.dataset.app)
-      .concat($('#app-outros').value.split(',').map(p => p.trim()).filter(Boolean))});
-  $('#app-salvar').onclick = async () => { await APP.salvar(coletar()); msg('Salvo.', true); };
-  $('#app-testar').onclick = async () => { msg('Testando...', true); const r = await APP.testar($('#app-url').value, $('#app-chave').value); msg(r.mensagem, r.ok); };
-  $('#app-sync').onclick = async e => {
-    e.target.disabled = true; msg('Sincronizando...', true);
-    await APP.salvar(coletar());
-    const r = await APP.sincronizar();
-    V = await api('/api/vocabulario');
-    await rota();
-    msg(r.ok ? `Sincronizado: ${r.enviadas} enviada(s), ${r.recebidas} recebida(s).` : r.erro, r.ok);
-  };
-  $('#app-acesso').onclick = () => APP.acessoNotificacoes();
 }
 
 // Apagar categoria: se tiver lançamentos, eles vão para outra categoria do mesmo tipo antes.
@@ -1470,8 +1430,7 @@ const AJUDA = {
     <p>Cada painel se move pela alça ao lado do título e muda de tamanho pelo canto de baixo à direita.</p>`,
   'ajustes:s-pessoas': `<p>Como o nome de cada pessoa aparece no extrato (para reconhecer o Pix) e o que sugerir quando entra ou sai dinheiro dela: acerto ou uma categoria.</p>`,
   'ajustes:s-rateio-do-aluguel': `<p>Quanto de cada boleto da imobiliária é de cada morador. Vira sugestão de divisão quando o boleto aparece: sua parte como gasto e a dos outros como acerto. A soma precisa dar 100%.</p>`,
-  'ajustes:s-celular': APP ? `<p>Este aparelho: o endereço e a chave do servidor (o Finanças no computador), quais apps de banco ler e o acesso a notificações. Sem servidor, tudo continua funcionando aqui; com ele ao alcance, o app manda o que mudou aqui e recebe o que mudou lá.</p>`
-    : `<p>O endereço e a chave para o app Finanças do celular, e os dados para a macro do MacroDroid mandar as notificações do banco para o site: endereço, chave e corpo da requisição. Abra esta tela no celular e copie cada campo.</p>`,
+  'ajustes:s-celular': `<p>O endereço e a chave para o app Finanças do celular, e os dados para a macro do MacroDroid mandar as notificações do banco para o site: endereço, chave e corpo da requisição. Abra esta tela no celular e copie cada campo.</p>`,
   'ajustes:s-planilha-e-sessao': `<p>Baixa tudo em planilha: no modelo antigo (.ods, preenchido pelo LibreOffice, leva alguns segundos) ou só as tabelas (.xlsx). Sair encerra a sessão neste aparelho.</p>`,
 };
 const popAjuda = Object.assign(document.createElement('div'), {className: 'ajuda-pop', hidden: true});
@@ -1560,15 +1519,12 @@ const PASSOS_TOUR = [
   {rota: 'projecao', alvo: cartaoTour('proj-eventos'), titulo: 'Eventos', texto: `<p class="tour-dados"><b>O que colocar:</b> o que muda e quando: um aumento, uma renda que acaba, uma viagem, o 13º. A projeção recalcula na hora.</p>`},
   {rota: 'ajustes', alvo: cartaoTour('s-pessoas'), titulo: 'Pessoas', texto: `<p class="tour-dados"><b>O que colocar:</b> quem divide contas com você, com o nome como aparece no extrato do banco. Assim o Pix dessa pessoa é reconhecido e vem com sugestão.</p>`},
   {rota: 'ajustes', alvo: cartaoTour('s-rateio-do-aluguel'), titulo: 'Rateio do aluguel', texto: `<p class="tour-dados"><b>O que colocar:</b> se você divide o aluguel, quanto é de cada um (a soma dá 100%). O boleto da imobiliária vira sua parte como gasto e a dos outros como acerto.</p>`},
-  {rota: 'ajustes', alvo: cartaoTour('s-celular'), titulo: 'Celular', texto: APP
-    ? `<p>Este aparelho. As notificações dos apps de banco marcados viram lançamentos aqui na hora, mesmo sem servidor.</p>
-      <p class="tour-dados"><b>O que colocar:</b> toque em <b>Acesso a notificações</b> e ligue o Finanças. Se tiver o Finanças no computador, coloque o endereço dele (ex.: http://192.168.0.10:8095) e a chave, que aparecem em Ajustes no computador, e toque em <b>Testar conexão</b>.</p>`
-    : `<p>Para o celular mandar as compras na hora.</p>
+  {rota: 'ajustes', alvo: cartaoTour('s-celular'), titulo: 'Celular', texto: `<p>Para o celular mandar as compras na hora.</p>
       <p class="tour-dados"><b>O que fazer:</b> no app Finanças do celular, copie o <b>endereço</b> e a <b>chave</b> daqui. Quem usa o MacroDroid copia os três campos de baixo.</p>`},
   {rota: 'ajustes', alvo: cartaoTour('s-aparencia'), titulo: 'Aparência', texto: `<p>Tema claro ou escuro e papel de parede. Logo abaixo, em Visualização, o jeito como o site aparece neste aparelho. O botão <b>Rever o tour</b> fica aqui.</p>`},
   {rota: 'painel', titulo: 'Pronto para começar', texto: () => `<p>Um bom começo:</p>
     ${DEMO ? '<p>Explore à vontade com os dados de demonstração. Para começar de verdade, toque em <b>Remover dados de demonstração</b> e então:</p>' : ''}
-    <p>1. No <b>Orçamento</b>, dê um teto para as categorias que você quer controlar.<br>2. Em <b>Ajustes</b>, cadastre quem divide contas com você.<br>3. Em <b>Importar</b>, traga o extrato e a fatura do mês${APP ? ', e libere o acesso a notificações para as compras entrarem sozinhas' : ', ou deixe o celular mandar as compras'}.<br>4. Classifique o que aparecer em <b>Pendentes</b>.</p>
+    <p>1. No <b>Orçamento</b>, dê um teto para as categorias que você quer controlar.<br>2. Em <b>Ajustes</b>, cadastre quem divide contas com você.<br>3. Em <b>Importar</b>, traga o extrato e a fatura do mês, ou deixe o celular mandar as compras.<br>4. Classifique o que aparecer em <b>Pendentes</b>.</p>
     <p>O <b>?</b> de cada painel explica de novo.</p>`},
 ];
 const tourFoco = Object.assign(document.createElement('div'), {className: 'tour-foco', hidden: true});
