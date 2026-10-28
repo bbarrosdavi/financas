@@ -157,3 +157,10 @@ def test_partes_que_nao_somam_sao_recusadas(con):
         assert "somam" in str(e)
     else:
         raise AssertionError
+
+
+def test_fatura_csv_com_ponto_decimal():
+    lt = importadores.ler_fatura_csv("date,title,amount\n2026-10-03,Netflix.com,32.9\n2026-10-04,Uber *Trip,23.10\n"
+                                     "2026-10-07,Pagamento recebido,-1203.83\n", date(2026, 10, 26))
+    assert [m.valor for m in lt.movimentos] == [-32.9, -23.1, 1203.83]
+    assert importadores.numero("1.234") == 1234 and importadores.numero("R$ 1.250,90") == 1250.9

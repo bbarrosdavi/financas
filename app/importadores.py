@@ -20,6 +20,8 @@ MESES = {"JAN": 1, "FEV": 2, "MAR": 3, "ABR": 4, "MAI": 5, "JUN": 6, "JUL": 7, "
 
 def numero(s: str) -> float:
     s = s.replace("R$", "").replace("−", "-").replace(" ", "").strip()
+    if "," not in s and re.fullmatch(r"-?\d+\.\d{1,2}", s):
+        return float(s)        # CSV da fatura do Nubank: ponto decimal (32.9, -1203.83); milhar sempre tem 3 dígitos
     return float(s.replace(".", "").replace(",", "."))
 
 
