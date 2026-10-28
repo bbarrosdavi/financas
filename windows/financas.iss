@@ -53,7 +53,6 @@ Filename: "{app}\Financas.exe"; Description: "Abrir o Finanças agora"; Flags: p
 
 [UninstallRun]
 Filename: "{sys}\taskkill.exe"; Parameters: "/F /IM Financas.exe"; Flags: runhidden; RunOnceId: "parar"
-Filename: "{sys}\netsh.exe"; Parameters: "advfirewall firewall delete rule name=""{#RegraFirewall}"""; Flags: runhidden shellexec waituntilterminated; Verb: "runas"; Check: TemRegraFirewall; RunOnceId: "firewall"
 
 [Code]
 var
@@ -181,7 +180,12 @@ end;
 procedure CurUninstallStepChanged(CurUninstallStep: TUninstallStep);
 var
   Apagar: Boolean;
+  Codigo: Integer;
 begin
+  { A regra do firewall sai aqui, e não em [UninstallRun]: lá o Check é avaliado na instalação, antes de a regra existir. }
+  if (CurUninstallStep = usUninstall) and TemRegraFirewall then
+    ShellExec('runas', ExpandConstant('{sys}\netsh.exe'), 'advfirewall firewall delete rule name="{#RegraFirewall}"', '',
+              SW_HIDE, ewWaitUntilTerminated, Codigo);
   if CurUninstallStep <> usPostUninstall then
     Exit;
   if UninstallSilent then
