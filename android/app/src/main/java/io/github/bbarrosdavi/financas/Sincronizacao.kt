@@ -52,7 +52,7 @@ object Sincronizacao {
             return false to "O endereço começa com http://, por exemplo http://192.168.0.10:8095"
         return try {
             val saude = (URL("$url/health").openConnection() as HttpURLConnection).apply { connectTimeout = 5000; readTimeout = 5000 }
-            if (saude.responseCode != 200) return false to "O endereço respondeu ${saude.responseCode}: não parece o Finanças."
+            if (saude.responseCode != 200) return false to "O endereço respondeu ${saude.responseCode}: não parece o Avareza."
             val troca = (URL("$url/api/v1/sync").openConnection() as HttpURLConnection).apply {
                 connectTimeout = 5000; readTimeout = 10000; requestMethod = "POST"; doOutput = true
                 setRequestProperty("Content-Type", "application/json")

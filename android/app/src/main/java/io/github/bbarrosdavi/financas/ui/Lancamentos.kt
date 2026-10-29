@@ -74,7 +74,6 @@ private fun corTipo(t: String): Color = when (t) {
     else -> cores.s3
 }
 
-@OptIn(androidx.compose.foundation.ExperimentalFoundationApi::class)
 @Composable
 fun TelaLancamentos() {
     val base = carregar { Api.lista("/api/meses").let { a -> (0 until a.length()).map { a.getString(it) } } to Api.lista("/api/contas").objs() }
@@ -99,8 +98,8 @@ fun TelaLancamentos() {
         LazyColumn(Modifier.fillMaxSize(), contentPadding = PaddingValues(start = 10.dp, end = 10.dp, top = 8.dp, bottom = 80.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)) {
             item { Resumo(c.dado, contas, "") }
-            // Os filtros no modelo da navegação do Orçamento, fixos no alto ao rolar.
-            stickyHeader {
+            // Os filtros no modelo da navegação do Orçamento.
+            item {
                 Cartao(modifier = Modifier.alvo("lancFiltros")) {
                     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                         Seletor("Tipo", listOf("" to "todos") + TIPOS.map { it to it }, tipo, Modifier.weight(1f)) { tipo = it }
@@ -151,7 +150,9 @@ private fun Resumo(dados: List<JSONObject>?, contas: List<JSONObject>, mes: Stri
     val conta = contas.firstOrNull { it.s("id") == "nubank_conta" }
     val falta = conta?.takeIf { it.dn("saldo_real") != null }?.d("diferenca")
     var informar by remember { mutableStateOf(false) }
-    Cartao("Resumo", Modifier.alvo("lancResumo"), sub = "do que está filtrado") {
+    Cartao("Resumo", Modifier.alvo("lancResumo"), sub = "do que está filtrado", subJunto = true,
+        ajuda = "Entradas, gastos e resultado do que está filtrado; com um mês escolhido, a renda conta no mês em que entra, como no Painel, e o gasto pela data. " +
+            "**Falta lançar na conta** é a diferença entre o saldo que o app do banco mostra e o que os lançamentos somam, e não depende do filtro.") {
         Row {
             Column(Modifier.weight(1f)) { Rotulo("Entradas"); Text(brl(ent), color = cores.texto, fontWeight = FontWeight.Bold, fontSize = 17.sp) }
             Column(Modifier.weight(1f)) { Rotulo("Gastos"); Text(brl(gas), color = cores.texto, fontWeight = FontWeight.Bold, fontSize = 17.sp) }

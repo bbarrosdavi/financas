@@ -112,7 +112,9 @@ private fun AbaMes(linhas: List<LinhaOrc>, mes: String, parcelas: Double) {
     val alocarReal = soma(renda) { it.realizado(mes) } - soma(gasto) { it.realizado(mes) } - soma(poup) { it.realizado(mes) } - parcelas
     var editando by remember { mutableStateOf<LinhaOrc?>(null) }
 
-    Cartao("A alocar", sub = "entradas menos gastos e poupança") {
+    Cartao("A alocar", sub = "entradas menos gastos e poupança",
+        ajuda = "Entradas menos gastos e poupança do mês, no orçado e no realizado. Nas linhas, cinza é o padrão (teto da categoria, renda base, aporte da meta ou soma das despesas fixas) " +
+            "e escuro é o valor definido para o mês; diferença positiva é a favor.") {
         LinhaKV("Orçado", sinal(alocarOrc), if (alocarOrc < -.5) cores.ruim else cores.ok)
         if (!futuro) LinhaKV("Realizado", sinal(alocarReal), if (alocarReal < -.5) cores.ruim else cores.ok)
         Text("Toque numa linha para mudar.",
@@ -205,7 +207,8 @@ private fun AbaAno(linhas: List<LinhaOrc>, meses: List<String>, parcelas: JSONOb
     val parc = passados.sumOf { parcelas.optDouble(it, 0.0) }
     val renda = linhas.filter { it.tipo == "renda" }; val gasto = linhas.filter { it.tipo == "gasto" }
     val poup = linhas.filter { it.tipo == "poupanca" && (it.j.optInt("ativa") == 1 || orc(it) != 0.0 || real(it) != 0.0) }
-    Cartao("O ano", sub = if (passados.size in 1 until meses.size) "realizado até ${mesCurto(passados.last() + "-01")}" else null) {
+    Cartao("O ano", sub = if (passados.size in 1 until meses.size) "realizado até ${mesCurto(passados.last() + "-01")}" else null,
+        ajuda = "O orçado somado nos doze meses. Real e diferença comparam só os meses que já passaram com o orçado deles; diferença positiva é a favor.") {
         LinhaKV("Entradas orçadas", brl(renda.sumOf(::orc)))
         LinhaKV("Gastos orçados", brl(gasto.sumOf(::orc)))
         LinhaKV("Poupança orçada", brl(poup.sumOf(::orc)))
@@ -234,7 +237,9 @@ private fun AbaFixas(gasto: List<LinhaOrc>, mes: String) {
     var novo by remember { mutableStateOf(false) }
     // As categorias fixas (aluguel, contas da casa...) aparecem sempre, mesmo antes de ter item.
     val comItens = gasto.filter { it.itens.isNotEmpty() || it.fixa }
-    Cartao("Despesas fixas", sub = "o que se repete todo mês") {
+    Cartao("Despesas fixas", sub = "o que se repete todo mês",
+        ajuda = "Os itens que você planeja pagar em cada categoria, com mês de início e de fim opcionais. " +
+            "Com usar a soma como orçamento marcado, o padrão da categoria passa a ser a soma dos itens do mês.") {
         Text("Aluguel, internet, academia: cada item soma na categoria. Ligando \"usar a soma como orçamento\", o orçado da categoria passa a ser a soma.",
             color = cores.texto2, fontSize = 13.sp)
         Spacer(Modifier.height(8.dp))
@@ -311,8 +316,9 @@ private fun EditarItem(i: JSONObject?, gasto: List<LinhaOrc>, aoFechar: () -> Un
 private fun AbaCategorias() {
     var editando by remember { mutableStateOf<JSONObject?>(null) }
     var nova by remember { mutableStateOf(false) }
-    Cartao("Categorias", sub = "teto vazio = sem teto") {
-        Text("Fixa não entra no \"ainda pode gastar\". Toque numa categoria para mudar nome, grupo, teto, cor ou apagar.", color = cores.texto2, fontSize = 13.sp)
+    Cartao("Categorias", sub = "teto vazio = sem teto",
+        ajuda = "Categorias de gasto e de renda, com grupo, teto mensal (o padrão do orçamento) e se é fixa. Categoria fixa não entra no excedente ou déficit do Painel.") {
+        Text("Fixa não entra no excedente ou déficit. Toque numa categoria para mudar nome, grupo, teto, cor ou apagar.", color = cores.texto2, fontSize = 13.sp)
         Spacer(Modifier.height(8.dp))
         BotaoPrimario("Nova categoria") { nova = true }
     }
@@ -371,7 +377,7 @@ private fun EditarCategoria(cat: JSONObject?, aoFechar: () -> Unit) {
                     if (cat == null) Segmentos(listOf("gasto" to "Gasto", "renda" to "Renda"), tipo) { tipo = it }
                     if (tipo == "gasto") {
                         Campo(teto, { teto = it }, "Teto mensal", numerico = true, dica = "vazio = sem teto")
-                        Marcar("fixa (não entra no \"ainda pode gastar\")", fixa) { fixa = it }
+                        Marcar("fixa (não entra no excedente ou déficit)", fixa) { fixa = it }
                     }
                     if (cat != null) {
                         Rotulo("Cor")
@@ -414,7 +420,8 @@ private fun EditarCategoria(cat: JSONObject?, aoFechar: () -> Unit) {
 private fun AbaMetas(metas: List<JSONObject>) {
     var editando by remember { mutableStateOf<JSONObject?>(null) }
     var nova by remember { mutableStateOf(false) }
-    Cartao("Metas de poupança", sub = "objetivo, prazo e aporte") {
+    Cartao("Metas de poupança", sub = "objetivo, prazo e aporte",
+        ajuda = "Cada meta tem objetivo, prazo, aporte mensal (o padrão do orçamento dela) e onde o dinheiro fica. Toque numa meta para editar, desativar ou apagar.") {
         Text("Guarde numa conta separada (Caixinha ou CDB de liquidez diária). Aporte entra como poupança; para usar o dinheiro, o resgate desconta da meta e a compra entra como gasto.",
             color = cores.texto2, fontSize = 13.sp)
         Spacer(Modifier.height(8.dp))

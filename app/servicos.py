@@ -111,7 +111,7 @@ def _partes(con, ids: list[int]) -> dict[int, list[dict]]:
 def lancamentos(con, mes=None, busca=None, pendentes=False, categoria=None, limite=500, de=None, ate=None) -> list[dict]:
     cond, args = ["1=1"], []
     corte = dia_corte(con)
-    tem_renda = "EXISTS (SELECT 1 FROM partes p WHERE p.lancamento_id=l.id AND p.natureza='renda')"
+    tem_renda = "EXISTS (SELECT 1 FROM partes p WHERE p.lancamento_id=l.id AND p.natureza='renda' AND p.categoria='salario')"
     # Mês em que a renda do lançamento conta (a mesma regra do painel); o resto conta pela data.
     mes_renda = (f"CASE WHEN {tem_renda} AND CAST(substr(l.data,9,2) AS INTEGER) >= {int(corte)} "
                  "THEN strftime('%Y-%m', l.data, 'start of month', '+1 month') ELSE substr(l.data,1,7) END")
@@ -229,9 +229,9 @@ def dia_corte(con) -> int:
     return int(db.parametro(con, "dia_renda_mes_seguinte", "25") or 25)
 
 
-def _mes_efetivo(data: str, tipo: str, dia_corte: int) -> str:
-    """Renda que cai a partir do dia de corte conta para o mês seguinte (salário do fim do mês)."""
-    if tipo == "renda" and int(data[8:10]) >= dia_corte:
+def _mes_efetivo(data: str, tipo: str, dia_corte: int, categoria: str | None = "salario") -> str:
+    """Salário que cai a partir do dia de corte conta para o mês seguinte (o do fim do mês); o resto, pela data."""
+    if tipo == "renda" and categoria == "salario" and int(data[8:10]) >= dia_corte:
         y, m = int(data[:4]), int(data[5:7])
         return f"{y + m // 12}-{m % 12 + 1:02d}"
     return data[:7]
@@ -242,7 +242,7 @@ def serie_mensal(con, meses=12) -> list[dict]:
     tot = defaultdict(lambda: {"renda": 0.0, "gasto": 0.0, "juros": 0.0})
     for r in con.execute("SELECT l.data, pt.natureza, pt.categoria, pt.valor FROM partes pt JOIN lancamentos l ON l.id=pt.lancamento_id "
                          "WHERE pt.natureza IN ('gasto','renda')"):
-        m = _mes_efetivo(r["data"], r["natureza"], corte)
+        m = _mes_efetivo(r["data"], r["natureza"], corte, r["categoria"])
         if r["natureza"] == "renda":
             tot[m]["renda"] += r["valor"]
         else:
@@ -320,7 +320,7 @@ def entradas_por_categoria(con, inicio: str, fim: str, deslocar: bool) -> list[d
     rows = {r["id"]: {**dict(r), "valor": 0.0, "n": 0} for r in con.execute("SELECT * FROM categorias WHERE tipo='renda' ORDER BY ordem")}
     for r in con.execute("SELECT l.data, pt.categoria, pt.valor FROM partes pt JOIN lancamentos l ON l.id=pt.lancamento_id "
                          "WHERE pt.natureza='renda' AND pt.categoria IS NOT NULL"):
-        d = _data_efetiva(r["data"], corte) if deslocar else r["data"]
+        d = _data_efetiva(r["data"], corte, r["categoria"]) if deslocar else r["data"]
         if inicio <= d <= fim:
             rows[r["categoria"]]["valor"] += r["valor"]
             rows[r["categoria"]]["n"] += 1
@@ -329,9 +329,9 @@ def entradas_por_categoria(con, inicio: str, fim: str, deslocar: bool) -> list[d
     return list(rows.values())
 
 
-def _data_efetiva(data: str, corte: int) -> str:
-    """Renda que cai a partir do dia de corte conta como primeiro dia do mês seguinte."""
-    if int(data[8:10]) >= corte:
+def _data_efetiva(data: str, corte: int, categoria: str | None = "salario") -> str:
+    """Salário que cai a partir do dia de corte conta como primeiro dia do mês seguinte; o resto, pela data."""
+    if categoria == "salario" and int(data[8:10]) >= corte:
         y, m = int(data[:4]), int(data[5:7])
         return f"{y + m // 12}-{m % 12 + 1:02d}-01"
     return data
@@ -402,7 +402,7 @@ def _totais(con, inicio: str, fim: str, deslocar: bool) -> dict:
     for r in con.execute("SELECT l.data, pt.natureza, pt.categoria, pt.valor FROM partes pt JOIN lancamentos l ON l.id=pt.lancamento_id "
                          "WHERE pt.natureza IN ('gasto','renda')"):
         if r["natureza"] == "renda":
-            d = _data_efetiva(r["data"], corte) if deslocar else r["data"]
+            d = _data_efetiva(r["data"], corte, r["categoria"]) if deslocar else r["data"]
             if inicio <= d <= fim:
                 renda += r["valor"]
         elif inicio <= r["data"] <= fim:
@@ -564,7 +564,7 @@ def grade_orcamento(con, ano: int) -> dict:
                          "JOIN lancamentos l ON l.id=pt.lancamento_id WHERE pt.natureza IN ('gasto','renda','poupanca') "
                          "AND substr(l.data,1,4) IN (?, ?)", (str(ano), str(ano - 1))):
         if r["natureza"] == "renda":
-            real[r["categoria"]][_data_efetiva(r["data"], corte)[:7]] += r["valor"]
+            real[r["categoria"]][_data_efetiva(r["data"], corte, r["categoria"])[:7]] += r["valor"]
         elif r["natureza"] == "gasto":
             antiga = bool(r["parcela"]) and not r["parcela"].startswith("1/")
             real["parcelas" if antiga else r["categoria"]][r["data"][:7]] += -r["valor"]

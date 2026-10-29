@@ -438,3 +438,6 @@ body.larga .demo-aviso { max-width: none; }
 .titulo-cartao.alterna-todos { cursor: pointer; }
 .titulo-cartao .todos-ind { margin-left: 5px; color: var(--mudo); opacity: .75; vertical-align: middle; }
 [data-segurar-cat], [data-segurar-grupo] { -webkit-touch-callout: none; }
+
+/* Subtítulo junto do título (Resumo de Lançamentos). */
+.painel > h3 small.junto { margin-left: 8px; }

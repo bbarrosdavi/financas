@@ -92,7 +92,7 @@ fun AppFinancas(ajustes: Ajustes, tema: String, aoTrocarTema: (String) -> Unit, 
                 Column(Modifier.statusBarsPadding()) {
                     Row(Modifier.fillMaxWidth().height(46.dp).padding(start = 14.dp, end = 2.dp), verticalAlignment = Alignment.CenterVertically) {
                         val nome = (ABAS + NO_ALTO).firstOrNull { it.chave == tela }?.nome ?: ""
-                        Text(if (tela == "painel") "Finanças" else nome, color = cores.texto, fontSize = 17.sp, fontWeight = FontWeight.Bold,
+                        Text(if (tela == "painel") "Avareza" else nome, color = cores.texto, fontSize = 17.sp, fontWeight = FontWeight.Bold,
                             modifier = Modifier.weight(1f))
                         NO_ALTO.forEach { a ->
                             val on = tela == a.chave
@@ -133,7 +133,7 @@ fun AppFinancas(ajustes: Ajustes, tema: String, aoTrocarTema: (String) -> Unit, 
     }
     Estado.grafico?.let { (q, nome) -> Evolucao(q, nome, "mes") { Estado.grafico = null } }
     if (removendo) Confirmar("Remover dados de demonstração",
-        "O que você mexeu neles também sai, e o Finanças passa a mostrar os seus dados de verdade.", "Remover", { removendo = false }) {
+        "O que você mexeu neles também sai, e o Avareza passa a mostrar os seus dados de verdade.", "Remover", { removendo = false }) {
         escopo.launch { removerDemo() }
     }
 }

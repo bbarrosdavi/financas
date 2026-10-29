@@ -76,7 +76,8 @@ fun TelaPendentes() {
     LazyColumn(Modifier.fillMaxWidth(), contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 10.dp, vertical = 8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)) {
         item {
-            Cartao(modifier = Modifier.alvo("pendentes")) {
+            Cartao(modifier = Modifier.alvo("pendentes"), ajuda = "Lançamentos que ainda não têm classificação completa: toque na sugestão ou numa categoria para classificar, ou em Dividir para separar em partes. " +
+                "Nada com pessoa é classificado sozinho, e com a opção de sugerir marcada a mesma escolha vira sugestão quando o mesmo lugar aparecer de novo.") {
                 Text(if (ls.isEmpty()) "Tudo classificado." else "${ls.size} esperando você", color = cores.texto, fontWeight = FontWeight.SemiBold, fontSize = 16.sp)
                 Text("Toque na sugestão ou numa categoria.", color = cores.texto2, fontSize = 13.sp)
                 Marcar("sugerir a mesma classificação da próxima vez para o mesmo lugar", lembrar) { lembrar = it }

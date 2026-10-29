@@ -72,7 +72,9 @@ fun TelaImportar() {
     }
     val listas = carregar { Api.lista("/api/ignorados").objs() to Api.lista("/api/importacoes").objs() }
     Column(Modifier.verticalScroll(rememberScrollState()).padding(horizontal = 10.dp, vertical = 8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        Cartao("Extrato e fatura do banco", Modifier.alvo("importarArquivos"), sub = "Nubank ou Bradesco") {
+        Cartao("Extrato e fatura do banco", Modifier.alvo("importarArquivos"), sub = "Nubank ou Bradesco",
+            ajuda = "Traz o extrato da conta e a fatura do cartão: o que já existe não duplica e o que veio pelo celular é casado com a linha do arquivo. " +
+                "Extrato que não fecha com o total ou com os saldos do banco é recusado.") {
             Text("Quantos quiser de uma vez: .csv ou .xlsx (o .pdf só no computador). O que já existe não duplica, e a compra que veio pelo celular é casada com a linha do arquivo. " +
                 "Extrato que não fecha com o total do banco é recusado.", color = cores.texto2, fontSize = 13.sp)
             Spacer(Modifier.height(10.dp))
@@ -97,7 +99,8 @@ fun TelaImportar() {
             }
         }
         val (ign, imp) = listas.dado ?: return@Column EstadoCarga(listas)
-        Cartao("Notificações descartadas", Modifier.alvo("importarDescartadas"), sub = "se alguma era compra, resgate") {
+        Cartao("Notificações descartadas", Modifier.alvo("importarDescartadas"), sub = "se alguma era compra, resgate",
+            ajuda = "Notificações do celular que o filtro entendeu que não eram compra. Se alguma era, resgatar a transforma em lançamento, que vai para Pendentes.") {
             if (ign.isEmpty()) Vazio("Nenhuma.")
             ign.forEach { i ->
                 Row(Modifier.padding(vertical = 6.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -111,7 +114,8 @@ fun TelaImportar() {
                 }
             }
         }
-        Cartao("Últimas importações") {
+        Cartao("Últimas importações",
+            ajuda = "Histórico das importações: quantos lançamentos novos, quantos casaram com o que veio pelo celular e quantos já existiam.") {
             if (imp.isEmpty()) Vazio("Nenhuma ainda.")
             Recentes(imp) { i ->
                 Column(Modifier.padding(vertical = 5.dp)) {
@@ -133,7 +137,9 @@ fun TelaPessoas() {
     Column(Modifier.verticalScroll(rememberScrollState()).padding(horizontal = 10.dp, vertical = 8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
         val (p, ls) = c.dado ?: return@Column EstadoCarga(c)
         val pessoas = p.lista("pessoas").filter { it.d("saldo") != 0.0 || it.d("a_vencer") != 0.0 }
-        Cartao("Saldos", Modifier.alvo("pessoasSaldos"), sub = "positivo: te deve") {
+        Cartao("Saldos", Modifier.alvo("pessoasSaldos"), sub = "positivo: te deve",
+            ajuda = "Saldo com cada pessoa, somando acertos, contas divididas e parcelas que alguém te deve: positivo, a pessoa te deve; negativo, você deve a ela. " +
+                "Parcelas a vencer são as que ainda vão cair.") {
             if (pessoas.isEmpty()) Vazio("Ninguém te deve e você não deve a ninguém.")
             pessoas.forEach { x ->
                 Row(Modifier.padding(vertical = 6.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -146,7 +152,8 @@ fun TelaPessoas() {
                 }
             }
         }
-        Cartao("Alguém pagou por você", Modifier.alvo("pessoasPagou")) {
+        Cartao("Alguém pagou por você", Modifier.alvo("pessoasPagou"),
+            ajuda = "Quando outra pessoa paga uma conta sua (condomínio, luz, mercado da casa), o gasto entra na categoria e vira dívida com ela, sem mexer no saldo da sua conta.") {
             Text("Uma conta sua que outra pessoa pagou.",
                 color = cores.texto2, fontSize = 13.sp)
             Spacer(Modifier.height(8.dp))
@@ -154,7 +161,8 @@ fun TelaPessoas() {
         }
         CadastroPessoas()
         val acertos = ls.flatMap { l -> l.lista("partes").filter { it.s("natureza") == "acerto" }.map { l to it } }
-        Cartao("Acertos recentes") {
+        Cartao("Acertos recentes",
+            ajuda = "Os últimos acertos com pessoas: Pix que você mandou ou recebeu para quitar o que devia ou o que te deviam.") {
             if (acertos.isEmpty()) Vazio("Nenhum acerto ainda.")
             Recentes(acertos) { (l, pt) ->
                 Row(Modifier.padding(vertical = 5.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -227,7 +235,9 @@ fun TelaProjecao() {
         val linhas = pl.lista("linhas")
         val fim = linhas.lastOrNull()
         val quitado = linhas.firstOrNull { it.d("deve_pessoas") == 0.0 }
-        Cartao("Até ${mesCurto(pl.s("horizonte") + "-01")}", Modifier.alvo("projResumo")) {
+        Cartao("Até ${mesCurto(pl.s("horizonte") + "-01")}", Modifier.alvo("projResumo"),
+            ajuda = "**Falta cobrir** soma os meses que fecham no vermelho, **quitado em** é o mês em que a dívida com pessoas zera com as sobras e **saldo livre** é o que sobra no fim depois de pagar pessoas. " +
+                "No gráfico, as barras são o resultado de cada mês e a linha é o saldo livre acumulado.") {
             Row {
                 Column(Modifier.weight(1f)) { Rotulo("Falta cobrir"); Text(brl(pl.d("falta_total")), color = if (pl.d("falta_total") > 0) cores.atencao else cores.ok,
                     fontWeight = FontWeight.Bold, fontSize = 17.sp); Text("soma dos meses no vermelho", color = cores.mudo, fontSize = 11.sp) }
@@ -239,7 +249,9 @@ fun TelaProjecao() {
             GraficoProjecao(linhas)
             Text("Cartão: só as parcelas que ainda vão cair.", color = cores.mudo, fontSize = 12.sp)
         }
-        Cartao("Mês a mês") {
+        Cartao("Mês a mês",
+            ajuda = "Renda, custo de vida e aportes vêm do Orçamento de cada mês, os eventos somam ou tiram a partir do mês marcado e o cartão entra só com as parcelas que ainda vão cair. " +
+                "A sobra de cada mês paga primeiro quem você deve, e o resto vira saldo livre.") {
             linhas.forEach { l ->
                 Column(Modifier.padding(vertical = 6.dp)) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
@@ -254,14 +266,18 @@ fun TelaProjecao() {
                 }
             }
         }
-        Cartao("Premissas") {
+        Cartao("Premissas",
+            ajuda = "Renda mensal base é o padrão do salário no Orçamento, e horizonte é até quando projetar. " +
+                "Taxa de aporte no crédito é a taxa de pôr dinheiro numa carteira com o cartão, e carteiras de aporte são os nomes delas como aparecem na fatura (PICPAY, 99PAY...).") {
             LinhaKV("Renda mensal base", brl(prm.optString("salario_mensal").toDoubleOrNull() ?: 0.0))
             LinhaKV("Horizonte", mesLongo(pl.s("horizonte")))
-            LinhaKV("Taxa da ponte do PicPay", prm.optString("taxa_ponte_picpay"))
+            LinhaKV("Taxa de aporte no crédito", prm.optString("taxa_ponte_picpay"))
+            LinhaKV("Carteiras de aporte", prm.optString("carteiras_aporte"))
             TextButton(onClick = { premissas = true }) { Text("Mudar", color = cores.acento) }
             if (premissas) Premissas(prm, pl.s("horizonte")) { premissas = false }
         }
-        Cartao("Eventos", Modifier.alvo("projEventos"), sub = "o que muda e quando") {
+        Cartao("Eventos", Modifier.alvo("projEventos"), sub = "o que muda e quando",
+            ajuda = "Renda ou gasto mensal que muda a partir de um mês (e, se quiser, até outro), ou uma entrada ou saída única. Valor positivo aumenta, negativo diminui; evento desligado fica fora da projeção.") {
             if (evs.isEmpty()) Vazio("Nenhum evento. Um aumento, uma renda que acaba, uma viagem, o 13º...")
             evs.forEach { e ->
                 Row(Modifier.fillMaxWidth().clickable { evento = e }.padding(vertical = 6.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -310,12 +326,14 @@ private fun Premissas(prm: JSONObject, horizonte: String, aoFechar: () -> Unit) 
     var salario by remember { mutableStateOf(prm.optString("salario_mensal")) }
     var hz by remember { mutableStateOf(horizonte) }
     var taxa by remember { mutableStateOf(prm.optString("taxa_ponte_picpay")) }
+    var carteiras by remember { mutableStateOf(prm.optString("carteiras_aporte")) }
     AlertDialog(onDismissRequest = aoFechar, containerColor = cores.painelForte, title = { Text("Premissas") },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 Campo(salario, { salario = it }, "Renda mensal base", numerico = true)
                 Campo(hz, { hz = it }, "Horizonte (AAAA-MM)")
-                Campo(taxa, { taxa = it }, "Taxa da ponte do PicPay", numerico = true)
+                Campo(taxa, { taxa = it }, "Taxa de aporte no crédito", numerico = true)
+                Campo(carteiras, { carteiras = it }, "Carteiras de aporte (como na fatura)", dica = "PICPAY, 99PAY")
                 Text("A renda base é o padrão do salário no Orçamento.", color = cores.mudo, fontSize = 12.sp)
             }
         },
@@ -325,6 +343,7 @@ private fun Premissas(prm: JSONObject, horizonte: String, aoFechar: () -> Unit) 
                     Api.put("/api/parametros/salario_mensal", jsonDe("valor" to (numero(salario)?.toString() ?: salario)))
                     Api.put("/api/parametros/horizonte", jsonDe("valor" to hz.trim()))
                     Api.put("/api/parametros/taxa_ponte_picpay", jsonDe("valor" to (numero(taxa)?.toString() ?: taxa)))
+                    Api.put("/api/parametros/carteiras_aporte", jsonDe("valor" to carteiras.trim()))
                 }
                 aoFechar()
             }

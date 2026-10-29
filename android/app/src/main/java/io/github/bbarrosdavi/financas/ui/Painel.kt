@@ -88,7 +88,7 @@ private fun Periodo(p: JSONObject, comparar: Boolean, aoComparar: (Boolean) -> U
             IconButton(onClick = { ir(p.s("proximo")) }) { Icon(Icones.seta, "Período seguinte", tint = cores.texto) }
             TextButton(onClick = { ir(periodoDo(tipo, hoje)) }) { Text("Hoje", color = cores.acento) }
         }
-        Marcar("Comparar com ${rotuloAnterior(p)}", comparar, aoComparar)
+        MarcarPequeno("comparar com ${rotuloAnterior(p)}", comparar, aoComparar)
     }
 }
 
@@ -98,7 +98,8 @@ private fun Resultado(p: JSONObject, comparar: Boolean) {
     val ta = p.optJSONObject("totais_anterior")
     val tipo = p.s("tipo")
     val guardado = p.lista("metas").sumOf { it.d("guardado_periodo") }
-    Cartao("Resultado " + when (tipo) { "semana" -> "da semana"; "ano" -> "do ano"; else -> "do mês" }, Modifier.alvo("resultado")) {
+    Cartao("Balanço " + when (tipo) { "semana" -> "da semana"; "ano" -> "do ano"; else -> "do mês" }, Modifier.alvo("resultado"),
+        ajuda = "Entradas menos gastos do período. Transferências entre suas contas e acertos com pessoas não entram.") {
         Grande(sinal(t.d("resultado")), if (t.d("resultado") < 0) cores.ruim else cores.ok)
         Spacer(Modifier.height(6.dp))
         LinhaKV("Entradas", brl(t.d("renda")))
@@ -115,7 +116,8 @@ private fun PodeGastar(p: JSONObject) {
     val teto = p.d("teto_variavel"); val gasto = p.d("gasto_variavel"); val ritmo = p.d("ritmo"); val pode = p.d("pode_gastar")
     val uso = if (teto > 0) gasto / teto else 0.0
     val cor = when { pode < 0 || uso > 1 -> cores.ruim; uso > ritmo + .1 -> cores.atencao; else -> cores.ok }
-    Cartao("Ainda pode gastar", Modifier.alvo("podeGastar"), sub = "categorias variáveis") {
+    Cartao(if (pode >= 0) "Excedente" else "Déficit", Modifier.alvo("podeGastar"), sub = "categorias variáveis",
+        ajuda = "Teto das categorias variáveis do período menos o que já foi gasto nelas. Positivo é o que ainda cabe no orçamento; negativo é quanto passou. Não inclui renda nem categorias fixas.") {
         Grande(brl(pode), if (pode < 0) cores.ruim else if (uso > ritmo + .1) cores.atencao else cores.ok)
         Spacer(Modifier.height(8.dp))
         Barra(uso, cor, ritmo, 10.dp)
@@ -134,7 +136,8 @@ private fun Kpis(p: JSONObject, irPara: (String) -> Unit) {
     val devo = pessoas.filter { it.d("saldo") < 0 }.sumOf { -it.d("saldo") }
     val devem = pessoas.filter { it.d("saldo") > 0 }.sumOf { it.d("saldo") }
     var informar by remember { mutableStateOf(false) }
-    Cartao(modifier = Modifier.alvo("kpis")) {
+    Cartao(modifier = Modifier.alvo("kpis"), ajuda = "**Conta**: o saldo que você informou do app do banco; a diferença para os lançamentos é o que falta lançar. " +
+        "**Dívida do cartão** é a fatura em aberto com o limite livre, **você deve / te devem** são os saldos com pessoas e **pendentes** são lançamentos esperando classificação.") {
         Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             Kpi("Conta", Modifier.weight(1f).clickable { informar = true }) {
                 if (conta == null) Vazio("-")
@@ -146,8 +149,11 @@ private fun Kpis(p: JSONObject, irPara: (String) -> Unit) {
                     val dif = conta.d("diferenca")
                     // O saldo de hoje: o que o app do banco mostrou naquele dia mais o que foi lançado depois.
                     Text(brl(conta.d("saldo_atual")), color = cores.texto, fontWeight = FontWeight.Bold, fontSize = 17.sp)
-                    Text(if (kotlin.math.abs(dif) < .005) "bate com os lançamentos" else "${brl(dif)} não lançados",
-                        color = if (kotlin.math.abs(dif) < .005) cores.mudo else cores.atencao, fontSize = 11.sp)
+                    Row {
+                        Text((if (kotlin.math.abs(dif) < .005) "bate com os lançamentos" else "${brl(dif)} não lançados") + " · ",
+                            color = if (kotlin.math.abs(dif) < .005) cores.mudo else cores.atencao, fontSize = 11.sp)
+                        Text("atualizar", color = cores.acento, fontSize = 11.sp, fontWeight = FontWeight.SemiBold)
+                    }
                 }
             }
             Kpi("Dívida do cartão", Modifier.weight(1f)) {
@@ -204,7 +210,9 @@ private fun Categorias(p: JSONObject, comparar: Boolean) {
     // Abertos ou recolhidos; tocar no título abre ou recolhe todos de uma vez.
     val abertos = remember(p) { mutableStateMapOf<String, Boolean>().apply { grupos.forEach { (g, _, tot) -> put(g, tot[3] > 0) } } }
     Cartao("Categorias", Modifier.alvo("categorias"), sub = when (p.s("tipo")) { "ano" -> "teto acumulado no ano"; "semana" -> "teto do mês ÷ 4"; else -> "teto do mês" },
-        aoTocarTitulo = { val abrir = abertos.values.any { !it }; abertos.keys.toList().forEach { abertos[it] = abrir } }) {
+        aoTocarTitulo = { val abrir = abertos.values.any { !it }; abertos.keys.toList().forEach { abertos[it] = abrir } },
+        ajuda = "Gasto de cada categoria contra o teto do período: o orçado do mês; na semana, o do mês dividido por 4; no ano, a soma dos meses até agora. " +
+            "Parcelas de compras antigas aparecem à parte e não contam contra o teto; toque numa categoria para ver a evolução dela.") {
         if (acimaTot > 0) Text("${brl(acimaTot)} acima do teto em ${cats.count { it.d("acima") > 0 }} categoria(s)", color = cores.ruim,
             fontWeight = FontWeight.SemiBold, fontSize = 13.sp, modifier = Modifier.padding(bottom = 6.dp))
         if (grupos.isEmpty()) Vazio("Nenhum gasto no período.")
@@ -305,7 +313,8 @@ private fun Grafico(p: JSONObject) {
     val tipo = p.s("tipo")
     var sel by remember(p) { mutableStateOf(serie.lastIndex) }
     val s1 = cores.s1; val s2 = cores.s2; val s3 = cores.s3; val linha = cores.linha
-    Cartao("Entradas e gastos", Modifier.alvo("grafico"), sub = when (tipo) { "semana" -> "últimas 12 semanas"; "ano" -> "jan a dez"; else -> "últimos 12 meses" }) {
+    Cartao("Entradas e gastos", Modifier.alvo("grafico"), sub = when (tipo) { "semana" -> "últimas 12 semanas"; "ano" -> "jan a dez"; else -> "últimos 12 meses" },
+        ajuda = "Entradas, gastos e poupança de cada mês (ou semana), com o orçado em tom claro atrás de cada barra. Toque numa coluna para ver os valores dela.") {
         Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             listOf("Entradas" to s1, "Gastos" to s2, "Poupança" to s3).forEach { (n, c) ->
                 Row(verticalAlignment = Alignment.CenterVertically) { Bolinha(c); Text(" $n", color = cores.texto2, fontSize = 12.sp) }
@@ -348,7 +357,8 @@ private fun Composicao(p: JSONObject) {
     val g = p.optJSONObject("grupos") ?: JSONObject()
     val grupos = g.keys().asSequence().map { it to g.getDouble(it) }.sortedByDescending { it.second }.toList()
     val total = grupos.sumOf { it.second }.takeIf { it > 0 } ?: 1.0
-    Cartao("Para onde foi", Modifier.alvo("composicao"), sub = "gasto por grupo") {
+    Cartao("Para onde foi", Modifier.alvo("composicao"), sub = "gasto por grupo",
+        ajuda = "Quanto do gasto do período foi para cada grupo de categorias, em valor e porcentagem, contando as parcelas de compras antigas.") {
         if (grupos.isEmpty()) return@Cartao Vazio("Nenhum gasto no período.")
         Row(Modifier.fillMaxWidth().height(12.dp).clip(RoundedCornerShape(6.dp))) {
             grupos.forEach { (n, v) -> Box(Modifier.weight((v / total).toFloat().coerceAtLeast(0.001f)).fillMaxHeight().background(corGrupo(n))) }
@@ -367,7 +377,8 @@ private fun Composicao(p: JSONObject) {
 @Composable
 private fun Entradas(p: JSONObject, comparar: Boolean) {
     val ents = p.lista("entradas").filter { it.d("valor") != 0.0 }
-    Cartao("Entradas do período", Modifier.alvo("entradas")) {
+    Cartao("Entradas do período", Modifier.alvo("entradas"),
+        ajuda = "Renda do período por categoria, com o número de lançamentos entre parênteses. Com comparar ligado, mostra também o valor do período anterior.") {
         if (ents.isEmpty()) Vazio("Nenhuma entrada no período.")
         ents.forEach { e ->
             Column(Modifier.fillMaxWidth().tocarOuSegurar(categoria = e.s("id"), nome = e.s("nome"))) {
@@ -382,7 +393,9 @@ private fun Entradas(p: JSONObject, comparar: Boolean) {
 @Composable
 private fun Metas(p: JSONObject, irPara: (String) -> Unit) {
     val ms = p.lista("metas").filter { it.optInt("ativa", 1) == 1 }
-    Cartao("Poupança e metas", Modifier.alvo("metas")) {
+    Cartao("Poupança e metas", Modifier.alvo("metas"),
+        ajuda = "Quanto foi guardado em cada meta no período contra o planejado, e o total guardado contra o objetivo. " +
+            "Guardar é um lançamento de poupança ligado à meta; o resgate ligado à meta desconta dela.") {
         if (ms.isEmpty()) Text("Nenhuma meta ainda. Crie em Orçamento > Metas.", color = cores.acento, fontSize = 13.sp, modifier = Modifier.clickable { irPara("orcamento") })
         ms.forEach { m ->
             Column(Modifier.padding(vertical = 6.dp)) {
@@ -404,7 +417,8 @@ private fun Metas(p: JSONObject, irPara: (String) -> Unit) {
 @Composable
 private fun Cobrancas(p: JSONObject) {
     val porMes = p.lista("compromissos").groupBy { it.s("mes") }.toList().take(6)
-    Cartao("Próximas cobranças no cartão", Modifier.alvo("cobrancas")) {
+    Cartao("Próximas cobranças no cartão", Modifier.alvo("cobrancas"),
+        ajuda = "Parcelas já contratadas que ainda vão cair no cartão, agrupadas pelo mês da fatura.") {
         if (porMes.isEmpty()) Vazio("Nenhuma parcela futura.")
         porMes.forEach { (mes, cs) ->
             Row(Modifier.padding(top = 6.dp)) { Text(mesCurto("$mes-01"), color = cores.texto, fontWeight = FontWeight.Bold, modifier = Modifier.weight(1f))
@@ -417,7 +431,8 @@ private fun Cobrancas(p: JSONObject) {
 @Composable
 private fun Destinos(p: JSONObject) {
     val top = p.lista("top")
-    Cartao("Maiores destinos", Modifier.alvo("destinos")) {
+    Cartao("Maiores destinos", Modifier.alvo("destinos"),
+        ajuda = "Onde mais saiu dinheiro em gastos no período, somado por estabelecimento ou pessoa, com quantas vezes.") {
         if (top.isEmpty()) Vazio("Nenhum gasto no período.")
         top.forEach { t -> LinhaKV("${t.s("nome")} (${t.optInt("n")}x)", brl(t.d("total")), negrito = false) }
     }
@@ -427,7 +442,9 @@ private fun Destinos(p: JSONObject) {
 private fun ProjecaoResumo(p: JSONObject, irPara: (String) -> Unit) {
     val plano = p.getJSONObject("plano")
     val linhas = plano.lista("linhas").take(4)
-    Cartao("Projeção até ${mesCurto(plano.s("horizonte") + "-01")}", Modifier.alvo("projecaoPainel")) {
+    Cartao("Projeção até ${mesCurto(plano.s("horizonte") + "-01")}", Modifier.alvo("projecaoPainel"),
+        ajuda = "Os próximos 4 meses da projeção: resultado, quanto falta cobrir e o saldo livre, com renda, custo de vida e cartão embaixo. " +
+            "A projeção completa, com premissas e eventos, fica em Projeção.") {
         if (linhas.isEmpty()) Vazio("Defina o horizonte em Projeção, no alto.")
         linhas.forEach { l ->
             Column(Modifier.padding(vertical = 5.dp)) {

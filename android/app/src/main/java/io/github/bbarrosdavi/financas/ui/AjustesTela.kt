@@ -50,7 +50,7 @@ fun TelaAjustes(ajustes: Ajustes, tema: String, aoTrocarTema: (String) -> Unit) 
     var removendo by remember { mutableStateOf(false) }
     Column(Modifier.verticalScroll(rememberScrollState()).padding(horizontal = 10.dp, vertical = 8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
         if (Estado.demo) Cartao("Dados de demonstração") {
-            Text("O Finanças está mostrando dados inventados. Remover apaga a demonstração e o que você mexeu nela; os seus dados de verdade ficam como estão.",
+            Text("O Avareza está mostrando dados inventados. Remover apaga a demonstração e o que você mexeu nela; os seus dados de verdade ficam como estão.",
                 color = cores.texto2, fontSize = 13.sp)
             Spacer(Modifier.height(8.dp))
             BotaoPrimario("Remover dados de demonstração") { removendo = true }
@@ -68,7 +68,7 @@ fun TelaAjustes(ajustes: Ajustes, tema: String, aoTrocarTema: (String) -> Unit) 
         Planilha()
     }
     if (removendo) Confirmar("Remover dados de demonstração",
-        "O que você mexeu neles também sai, e o Finanças passa a mostrar os seus dados de verdade.", "Remover", { removendo = false }) {
+        "O que você mexeu neles também sai, e o Avareza passa a mostrar os seus dados de verdade.", "Remover", { removendo = false }) {
         escopo.launch { removerDemo() }
     }
 }
@@ -144,7 +144,8 @@ private fun Celular(ajustes: Ajustes) {
 fun CadastroPessoas() {
     var editando by remember { mutableStateOf<JSONObject?>(null) }
     var nova by remember { mutableStateOf(false) }
-    Cartao("Cadastro", Modifier.alvo("pessoasCadastro"), sub = "nome no extrato e o que sugerir") {
+    Cartao("Cadastro", Modifier.alvo("pessoasCadastro"), sub = "nome no extrato e o que sugerir",
+        ajuda = "Como o nome de cada pessoa aparece no extrato, para reconhecer o Pix, e o que sugerir quando entra ou sai dinheiro dela: acerto ou uma categoria.") {
         if (Vocab.pessoas.isEmpty()) Vazio("Ninguém cadastrado.")
         Vocab.pessoas.forEach { p ->
             Row(Modifier.fillMaxWidth().clickable { editando = p }.padding(vertical = 7.dp), verticalAlignment = Alignment.CenterVertically) {

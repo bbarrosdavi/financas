@@ -383,7 +383,7 @@ async function painel(t) {
   <div class="mosaico" id="mosaico">
   ${cartao('resumo', 'Resumo do período', '', `<div class="heroi">
     <div>
-      <div class="rot">Resultado ${P.tipo === 'semana' ? 'da semana' : P.tipo === 'ano' ? 'do ano' : 'do mês'}</div>
+      <div class="rot">Balanço ${P.tipo === 'semana' ? 'da semana' : P.tipo === 'ano' ? 'do ano' : 'do mês'}</div>
       <div class="grande ${T.resultado < 0 ? 'neg' : 'pos'}">${sinal(T.resultado)}</div>
       ${comparar ? dlt(T.resultado, TA.resultado, true) : ''}
       <div class="linha-kv"><span>Entradas</span><b>${brl(T.renda)}</b></div>
@@ -393,7 +393,7 @@ async function painel(t) {
       ${comparar ? `<div class="linha-kv muted"><span>${ant}: entradas / gastos</span><span>${brl(TA.renda)} / ${brl(TA.gasto)}</span></div>` : ''}
     </div>
     <div>
-      <div class="rot">Ainda pode gastar (categorias variáveis)</div>
+      <div class="rot">${P.pode_gastar < 0 ? 'Déficit' : 'Excedente'} (categorias variáveis)</div>
       <div class="grande ${P.pode_gastar < 0 ? 'neg' : usoVar > P.ritmo + .1 ? 'warnc' : 'pos'}">${brl(P.pode_gastar)}</div>
       <div class="barra-grande"><div class="fill" style="width:${Math.min(usoVar, 1) * 100}%;background:${usoVar > 1 ? 'var(--ruim)' : usoVar > P.ritmo + .1 ? 'var(--atencao)' : 'var(--ok)'}"></div>
         ${P.ritmo > 0 && P.ritmo < 1 ? `<div class="ritmo" style="left:${P.ritmo * 100}%"></div>` : ''}</div>
@@ -609,7 +609,7 @@ function kpiConta(c) {
     return `<div class="kpi"><div class="rot">Conta</div><div class="v warnc">${brl(c.saldo)}</div><div class="d">pelo extrato até ${dataBR(c.cobertura)} · <a href="#" data-saldo>informar saldo do app</a></div></div>`;
   const dif = c.diferenca, ok = Math.abs(dif) < .005;
   return `<div class="kpi"><div class="rot">Conta</div><div class="v ${c.saldo_atual < 100 ? 'neg' : ''}">${brl(c.saldo_atual)}</div>
-    <div class="d"><a href="#" data-saldo title="Atualizar o saldo do app">${ok ? 'bate com os lançamentos' : `<b class="warnc">${brl(dif)}</b> não lançados`}</a></div></div>`;
+    <div class="d">${ok ? 'bate com os lançamentos' : `<b class="warnc">${brl(dif)}</b> não lançados`} · <a href="#" data-saldo>atualizar</a></div></div>`;
 }
 document.addEventListener('click', async e => {
   const a = e.target.closest('[data-saldo]'); if (!a) return;
@@ -783,7 +783,7 @@ function tipoLanc(l) {
 async function lancamentos(t) {
   const [meses, contas] = await Promise.all([api('/api/meses'), api('/api/contas')]);
   t.innerHTML = `<div class="titulo"><h2>Lançamentos</h2></div>
-    <section class="painel vidro"><h3>Resumo <small>do que está filtrado abaixo</small></h3><div class="heroi lanc-heroi" id="lanc-heroi"></div></section>
+    <section class="painel vidro"><h3>Resumo <small class="junto">do que está filtrado abaixo</small></h3><div class="heroi lanc-heroi" id="lanc-heroi"></div></section>
     <section class="painel vidro">
     <div class="barra"><select id="f-mes"><option value="">todos os meses</option>${meses.map(m => `<option value="${m}">${MESES[+m.slice(5) - 1]} de ${m.slice(0, 4)}</option>`).join('')}</select>
       <label class="nw muted">de <input type="date" id="f-de"></label><label class="nw muted">até <input type="date" id="f-ate"></label>
@@ -791,7 +791,7 @@ async function lancamentos(t) {
       <select id="f-tipo"><option value="">todos os tipos</option><option>Entrada</option><option>Saída</option><option>Transferência</option><option>Acerto</option><option>Dividido</option><option>Estorno</option><option>Poupança</option><option>Pendente</option></select>
       <input id="f-busca" placeholder="buscar" style="flex:1;min-width:140px"><button id="f-limpar">Limpar filtros</button></div>
     <div class="scroll"><table id="t-l"></table></div></section>`;
-  $('#f-mes').value = params().get('cat') ? '' : (params().get('mes') ?? meses[0] ?? '');
+  $('#f-mes').value = params().get('cat') ? '' : (params().get('mes') ?? hojeISO().slice(0, 7));
   if (params().get('cat')) $('#f-cat').value = params().get('cat');
   let dados = [];
   async function carregar() {
@@ -815,7 +815,7 @@ async function lancamentos(t) {
     $('#lanc-heroi').innerHTML = `
       <div><div class="rot">Entradas</div><div class="grande">${brl(ent)}</div><div class="muted">${nEnt} lançamento(s)</div></div>
       <div><div class="rot">Gastos</div><div class="grande">${brl(gas)}</div><div class="muted">${nGas} lançamento(s)</div></div>
-      <div><div class="rot">Resultado</div><div class="grande ${ent - gas < 0 ? 'neg' : 'pos'}">${sinal(ent - gas)}</div>
+      <div><div class="rot">Balanço</div><div class="grande ${ent - gas < 0 ? 'neg' : 'pos'}">${sinal(ent - gas)}</div>
         <div class="muted">${dados.length} lançamento(s) · ${dados.filter(l => l.pendente).length} pendente(s)</div></div>
       <div><div class="rot">Falta lançar na conta</div><div class="grande ${falta == null ? 'muted' : bate ? 'pos' : 'warnc'}">${falta == null ? '?' : brl(Math.abs(falta))}</div>
         <div class="muted">${falta == null ? '<a href="#" data-saldo>informe o saldo do app</a>' : bate ? 'o saldo do app bate com os lançamentos'
@@ -1001,7 +1001,8 @@ async function plano(t) {
     ${cartao('proj-premissas', 'Premissas', '', `<form class="linha" id="f-prm">
         <label class="c">Renda mensal base<input type="number" step="0.01" name="salario_mensal" value="${prm.salario_mensal}"></label>
         <label class="c">Horizonte (AAAA-MM)<input name="horizonte" value="${pl.horizonte}"></label>
-        <label class="c">Taxa da ponte do PicPay<input type="number" step="0.001" name="taxa_ponte_picpay" value="${prm.taxa_ponte_picpay}"></label>
+        <label class="c">Taxa de aporte no crédito<input type="number" step="0.001" name="taxa_ponte_picpay" value="${prm.taxa_ponte_picpay}"></label>
+        <label class="c">Carteiras de aporte<input name="carteiras_aporte" value="${esc(prm.carteiras_aporte || '')}" placeholder="PICPAY, 99PAY"></label>
         <button class="prim">Recalcular</button></form>
       <p class="sub" style="margin-top:8px">Renda base = padrão do salário no <a href="#orcamento">Orçamento</a>. Custo de vida e aportes = orçado de cada mês. Reembolsos = parcelas que alguém te deve.</p>`)}
     ${cartao('proj-tabela', 'Mês a mês', '', '<div class="scroll"><table id="t-pl"></table></div>')}
@@ -1160,7 +1161,7 @@ async function orcamento(t) {
     <div class="mosaico" id="mosaico">
     ${cartao('orc-grade', 'Planejamento mensal', '', `<div class="scroll grade-orc-wrap">${grade}</div>`)}
     ${cartao('orc-fixas', 'Despesas fixas', 'o que você planeja gastar em cada categoria', fixas)}
-    ${cartao('orc-cats', 'Categorias', 'teto vazio = sem teto · fixa = não entra no "ainda pode gastar"', `
+    ${cartao('orc-cats', 'Categorias', 'teto vazio = sem teto · fixa = não entra no excedente ou déficit', `
       <div class="subsecao">Cores dos grupos</div>
       <div class="cores-grupos">${todosGrupos.map(g => `<span class="chip-cor">${pontoCor(corGrupo(g), 'data-cor-grupo', g)}${esc(g)}</span>`).join('')}</div>
       <div class="subsecao">Gastos</div><div class="scroll"><table id="t-cats" class="compacta"></table></div>
@@ -1432,8 +1433,8 @@ const AJUDA = {
   'painel:periodo': `<p>O Painel mostra uma semana, um mês ou um ano. As setas vão para o período anterior ou o próximo, e <b>Hoje</b> volta para o atual.</p>
     <p><b>Comparar</b> mostra, nos números e nas categorias, a diferença para o período anterior.</p>
     <p>Renda que cai a partir do dia 25 conta no mês seguinte (o salário do dia 25 é do mês que vem). Na visão de semana isso não se aplica.</p>`,
-  'painel:resumo': `<p><b>Resultado</b>: entradas menos gastos do período. Transferências entre suas contas e acertos com pessoas não entram. <b>Juros e taxas</b> é a parte dos gastos que foi juro, IOF ou tarifa.</p>
-    <p><b>Ainda pode gastar</b>: o orçado das categorias variáveis (as que não são fixas e têm valor orçado) menos o que já foi gasto nelas. A marca na barra é o ritmo: quanto do período já passou.</p>
+  'painel:resumo': `<p><b>Balanço</b>: entradas menos gastos do período. Transferências entre suas contas e acertos com pessoas não entram. <b>Juros e taxas</b> é a parte dos gastos que foi juro, IOF ou tarifa.</p>
+    <p><b>Excedente ou déficit</b>: o orçado das categorias variáveis (as que não são fixas e têm valor orçado) menos o que já foi gasto nelas. A marca na barra é o ritmo: quanto do período já passou.</p>
     <p><b>Conta</b>: o saldo que você informou do app; a diferença para o calculado é o que falta lançar. <b>Dívida do cartão</b>: fatura em aberto e limite livre. <b>Você deve / te devem</b>: saldos com pessoas. <b>Pendentes</b>: lançamentos esperando classificação.</p>`,
   'painel:categorias': `<p>Gasto de cada categoria no período contra o orçado (o teto). No mês vale o orçado do mês; na semana, o do mês dividido por 4; no ano, a soma dos meses até agora.</p>
     <p>Parcela de compra antiga (da 2ª em diante) não conta contra o teto: aparece à parte como parcelas antigas.</p>
@@ -1452,7 +1453,7 @@ const AJUDA = {
     <p>O cartão fica congelado: entram a fatura atual, com o juro do rotativo, e as parcelas já contratadas. A sobra de cada mês paga primeiro quem você deve, e o resto vira saldo livre.</p>`,
   'projecao:proj-resumo': `<p><b>Falta cobrir</b>: soma dos meses que fecham no vermelho. <b>Quitado em</b>: mês em que a dívida com pessoas zera com as sobras. <b>Saldo livre</b>: o que sobra no fim do horizonte depois de pagar pessoas, com o total guardado nas metas embaixo.</p>`,
   'projecao:proj-grafico': `<p>Barras: resultado de cada mês (verde sobra, vermelho falta), com o valor na ponta. Linha azul: saldo livre acumulado.</p>`,
-  'projecao:proj-premissas': `<p><b>Renda mensal base</b>: o padrão do salário no Orçamento. <b>Horizonte</b>: até quando projetar (AAAA-MM). <b>Taxa da ponte do PicPay</b>: a taxa de passar dinheiro do crédito pelo PicPay, usada para separar a taxa do valor principal.</p>`,
+  'projecao:proj-premissas': `<p><b>Renda mensal base</b>: o padrão do salário no Orçamento. <b>Horizonte</b>: até quando projetar (AAAA-MM). <b>Taxa de aporte no crédito</b>: a taxa de pôr dinheiro numa carteira com o cartão; ela vai para <b>Taxas de aporte</b> e o resto fica como principal, para você dizer o que foi. <b>Carteiras de aporte</b>: os nomes como aparecem na fatura (PICPAY, 99PAY...), separados por vírgula.</p>`,
   'projecao:proj-tabela': `<p>Os números de cada mês: renda, reembolsos de parcelas que alguém te deve, entradas e saídas únicas, custo de vida, cartão, metas, resultado, falta, quanto ainda deve a pessoas e o saldo livre acumulado.</p>`,
   'projecao:proj-eventos': `<p>O que muda e quando: renda ou gasto mensal que muda a partir de um mês (e, se quiser, até outro), ou uma entrada ou saída única. Valor positivo aumenta, negativo diminui. Desmarque <b>Ativo</b> para ver a projeção sem o evento.</p>`,
 
@@ -1463,7 +1464,7 @@ const AJUDA = {
     <p>Enter desce para a linha de baixo na mesma coluna. <b>A alocar</b> é entradas menos gastos menos poupança. O ponto colorido ao lado do nome muda a cor da categoria ou do grupo.</p>`,
   'orcamento:orc-fixas': `<p>A aba Despesas Fixas da planilha: os itens que você planeja pagar em cada categoria (aluguel, internet, academia), com mês de início e de fim opcionais.</p>
     <p>Cada categoria mostra a soma dos itens no mês, quanto foi orçado e o que sobra para o resto. Marque <b>usar a soma como orçamento</b> para o padrão da categoria passar a ser a soma dos itens.</p>`,
-  'orcamento:orc-cats': `<p>Categorias de gasto e de renda: grupo, nome, teto mensal (o padrão do orçamento) e se é fixa (fixa não entra no ainda pode gastar). Ao apagar uma categoria com lançamentos, você escolhe para qual eles vão. As cores valem para o site inteiro.</p>`,
+  'orcamento:orc-cats': `<p>Categorias de gasto e de renda: grupo, nome, teto mensal (o padrão do orçamento) e se é fixa (fixa não entra no excedente ou déficit). Ao apagar uma categoria com lançamentos, você escolhe para qual eles vão. As cores valem para o site inteiro.</p>`,
   'orcamento:orc-metas': `<p>Metas de poupança: objetivo, prazo, aporte mensal (o padrão do orçamento da meta) e onde o dinheiro fica. Meta com aportes não se apaga, só se desativa.</p>`,
 
   'pendentes:titulo': `<p>Lançamentos que ainda não têm classificação completa. Um toque numa sugestão classifica; <b>Dividir</b> separa em partes (a sua e a de outra pessoa, por exemplo). Nada com pessoa é classificado sozinho: o site só sugere.</p>
@@ -1532,9 +1533,9 @@ const PASSOS_TOUR = [
     <p><b>Comparar</b> mostra, em cada número, a diferença para o período anterior. Salário que cai do dia 25 em diante conta no mês seguinte.</p>`},
   {rota: 'painel', alvo: cartaoTour('resumo'), titulo: 'Resumo do período', texto: `<p>Os números que mais importam, num painel só. Os próximos passos explicam cada parte.</p>
     <p>Todo painel se arrasta pela alça (os seis pontinhos ao lado do título), muda de largura no botão à direita do título e tem um <b>?</b> que explica de novo.</p>`},
-  {rota: 'painel', alvo: cartaoTour('resumo') + ' .heroi > div:nth-child(1)', titulo: 'Resultado', texto: `<p>Entradas menos gastos do período. <b class="pos">Verde</b>: sobrou dinheiro. <b class="neg">Vermelho</b>: gastou mais do que entrou.</p>
+  {rota: 'painel', alvo: cartaoTour('resumo') + ' .heroi > div:nth-child(1)', titulo: 'Balanço', texto: `<p>Entradas menos gastos do período. <b class="pos">Verde</b>: sobrou dinheiro. <b class="neg">Vermelho</b>: gastou mais do que entrou.</p>
     <p>Transferência entre contas suas e acerto com pessoas não contam: não são ganho nem gasto seu. <b>Juros e taxas</b> é a parte dos gastos que foi juro, IOF ou tarifa. <b>Guardado em metas</b> aparece quando você guarda dinheiro.</p>`},
-  {rota: 'painel', alvo: cartaoTour('resumo') + ' .heroi > div:nth-child(2)', titulo: 'Ainda pode gastar', texto: `<p>Quanto ainda cabe no orçamento das categorias variáveis (mercado, delivery, transporte, lazer). A barra enche conforme você gasta; o traço vertical é o ritmo, até onde a barra deveria ir hoje.</p>
+  {rota: 'painel', alvo: cartaoTour('resumo') + ' .heroi > div:nth-child(2)', titulo: 'Excedente ou déficit', texto: `<p><b>Excedente</b> (positivo) é quanto ainda cabe no orçamento das categorias variáveis; <b>déficit</b> (negativo) é quanto passou dele. Não inclui renda nem categorias fixas. Categorias variáveis (mercado, delivery, transporte, lazer). A barra enche conforme você gasta; o traço vertical é o ritmo, até onde a barra deveria ir hoje.</p>
     <p><b class="pos">Verde</b>: no ritmo. <b class="warnc">Amarelo</b>: gastando mais rápido que o ritmo. <b class="neg">Vermelho</b>: o orçamento estourou.</p>
     <p class="tour-dados"><b>O que colocar:</b> o teto de cada categoria, no <b>Orçamento</b>. Sem teto, este número fica zerado.</p>`},
   {rota: 'painel', alvo: cartaoTour('resumo') + ' .kpis', titulo: 'Conta, cartão, pessoas e pendentes', texto: `<p><b>Conta</b>: o saldo que o app do banco mostra; a diferença para o que os lançamentos somam é o que ainda não foi lançado. <b>Dívida do cartão</b>: a fatura em aberto e o limite livre. <b>Você deve / te devem</b>: os saldos com pessoas. <b>Pendentes</b>: quantos lançamentos esperam você.</p>
@@ -1550,14 +1551,14 @@ const PASSOS_TOUR = [
   {rota: 'painel', alvo: cartaoTour('cobrancas'), titulo: 'Próximas cobranças no cartão', texto: `<p>As parcelas que ainda vão cair no cartão, agrupadas pelo mês da fatura. Aparecem sozinhas quando uma compra parcelada entra (pela fatura ou pelo celular).</p>`},
   {rota: 'painel', alvo: cartaoTour('destinos'), titulo: 'Maiores destinos', texto: `<p>Onde mais saiu dinheiro no período, somado por lugar ou por pessoa, com quantas vezes.</p>`},
   {rota: 'painel', alvo: cartaoTour('plano'), titulo: 'Projeção', texto: `<p>Os próximos 4 meses: renda, custo de vida, cartão, resultado, quanto falta cobrir, quanto ainda deve a pessoas e o saldo livre. A conta completa fica na aba <b>Projeção</b>.</p>`},
-  {rota: 'pendentes', alvo: () => $('#lista')?.closest('.cartao'), titulo: 'Pendentes', texto: `<p>O que o sistema não classifica sozinho: lugar novo, Pix para uma pessoa (o mesmo Pix pode ter outra finalidade), recarga do PicPay no crédito.</p>
+  {rota: 'pendentes', alvo: () => $('#lista')?.closest('.cartao'), titulo: 'Pendentes', texto: `<p>O que o sistema não classifica sozinho: lugar novo, Pix para uma pessoa (o mesmo Pix pode ter outra finalidade), aporte numa carteira (PicPay, 99Pay...) com o cartão.</p>
     <p class="tour-dados"><b>O que fazer:</b> toque numa sugestão ou numa categoria e pronto. <b>Dividir</b> separa em partes, por exemplo a sua parte e a de um colega. Com <b>sugerir da próxima vez</b> marcado, o mesmo lugar já chega com a sugestão.</p>`},
   {rota: 'lancamentos', alvo: '#lanc-heroi', titulo: 'Lançamentos: o resumo', texto: `<p>Entradas, gastos e resultado do que está filtrado na tabela, e quanto falta lançar na conta (a diferença para o saldo que o app do banco mostra).</p>`},
   {rota: 'lancamentos', alvo: () => $('#f-mes')?.closest('.barra'), titulo: 'Filtros', texto: `<p>Mês, categoria, tipo (entrada, saída, transferência, acerto, poupança, pendente) ou uma busca pelo nome. O resumo acima acompanha o filtro.</p>`},
   {rota: 'lancamentos', alvo: () => $('#n-data')?.closest('tr'), titulo: 'Lançar à mão', texto: `<p>A primeira linha da tabela lança o que não passa pelo banco: dinheiro vivo, uma conta que alguém pagou por você, um acerto.</p>
     <p class="tour-dados"><b>O que colocar:</b> a data, o tipo (saída, entrada, guardar em meta, acerto...), a categoria ou a pessoa, o valor, o que foi e a conta. Enter lança.</p>`},
   {rota: 'lancamentos', alvo: '#t-l', titulo: 'Tudo que entrou e saiu', texto: `<p>Do mais novo ao mais antigo. Toque num lançamento para mudar a categoria, dividir em partes ou apagar (só os lançados à mão ou pelo celular; o do extrato é a fonte). A última coluna é o saldo da conta logo depois de cada lançamento.</p>`},
-  {rota: 'orcamento', alvo: cartaoTour('orc-cats'), titulo: 'Suas categorias', texto: `<p>Grupo, nome, teto mensal e se é fixa. Categoria fixa (aluguel, academia) não entra no <b>ainda pode gastar</b>.</p>
+  {rota: 'orcamento', alvo: cartaoTour('orc-cats'), titulo: 'Suas categorias', texto: `<p>Grupo, nome, teto mensal e se é fixa. Categoria fixa (aluguel, academia) não entra no excedente ou déficit.</p>
     <p class="tour-dados"><b>Comece por aqui:</b> dê um teto para mercado, delivery, transporte e lazer. Crie ou apague categorias do seu jeito.</p>`},
   {rota: 'orcamento', alvo: cartaoTour('orc-grade'), titulo: 'Orçamento mês a mês', texto: `<p>Quanto você planeja receber, gastar e guardar em cada mês. Em cinza está o padrão (o teto da categoria); digite numa célula para mudar só aquele mês, e marque <b>repetir até dezembro</b> para valer nos seguintes.</p>
     <p>Os modos <b>Realizado</b> e <b>Diferença</b> mostram o que aconteceu e o quanto ficou a favor ou contra.</p>`},

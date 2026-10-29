@@ -260,8 +260,34 @@ def iniciar(path: str | Path | None = None) -> None:
         _migrar(con)
         from app import categorias, sync
         categorias.semear(con)
+        _vocabulario_29_10(con)
         sync.preparar(con)          # depois de semear: o vocabulário inicial entra como o mais antigo possível
 
+
+
+def _vocabulario_29_10(con: sqlite3.Connection) -> None:
+    """Uma vez, em banco que já existia: só Academia e Celular são fixas; Celular sai de Assinaturas (a TIM vai
+    junto); Juros e taxas vira grupo próprio; a taxa de aporte numa carteira vai para Taxas de aporte."""
+    if parametro(con, "vocabulario_29_10"):
+        return
+    import re
+    con.execute("UPDATE categorias SET fixa = CASE WHEN id IN ('academia', 'celular') THEN 1 ELSE 0 END")
+    con.execute("UPDATE categorias SET nome = 'Assinaturas' WHERE id = 'assinaturas' AND nome = 'Assinaturas e celular'")
+    con.execute("UPDATE categorias SET grupo = 'Juros e taxas' WHERE id = 'juros' AND grupo = 'Financeiro'")
+    for r in con.execute(r"SELECT id, padrao FROM regras WHERE origem = 'sistema' AND categoria = 'assinaturas' AND padrao LIKE '%|TIM\*|\bTIM\b%'").fetchall():
+        novo = r["padrao"].replace(r"|TIM\*|\bTIM\b", "")
+        if con.execute("SELECT 1 FROM regras WHERE origem = 'sistema' AND padrao = ?", (novo,)).fetchone():
+            con.execute("DELETE FROM regras WHERE id = ?", (r["id"],))     # a semente nova já entrou
+        else:
+            con.execute("UPDATE regras SET padrao = ? WHERE id = ?", (novo, r["id"]))
+    tim = re.compile(r"TIM\*|\bTIM\b")
+    for r in con.execute("SELECT p.id, l.descricao, l.contraparte FROM partes p JOIN lancamentos l ON l.id = p.lancamento_id "
+                         "WHERE p.categoria = 'assinaturas'").fetchall():
+        if tim.search(f"{r['descricao']} {r['contraparte']}".upper()):
+            con.execute("UPDATE partes SET categoria = 'celular' WHERE id = ?", (r["id"],))
+    con.execute("UPDATE partes SET categoria = 'taxa-aporte', motivo = replace(motivo, 'taxa PicPay no crédito', 'taxa de aporte no crédito') "
+                "WHERE categoria = 'juros' AND motivo LIKE 'taxa PicPay no crédito%'")
+    definir_parametro(con, "vocabulario_29_10", "1")
 
 def _migrar(con: sqlite3.Connection) -> None:
     """Colunas acrescentadas depois da primeira versão do banco."""

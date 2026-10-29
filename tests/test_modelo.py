@@ -63,7 +63,7 @@ def test_boleto_do_aluguel_fica_pendente_sem_divisao(con):
 def test_recarga_picpay_separa_taxa_e_pede_o_principal(con):
     servicos.inserir(con, "nubank_cartao", "2026-10-06", -104.90, "Picpay*Fulano", origem="fatura_pdf")
     l = lancs(con)[0]
-    taxa = next(p for p in l["partes"] if p["categoria"] == "juros")
+    taxa = next(p for p in l["partes"] if p["categoria"] == "taxa-aporte")
     assert abs(taxa["valor"] + 4.90) < 0.01
     assert l["pendente"]
 
@@ -187,7 +187,7 @@ def test_mes_da_entrada_igual_no_painel_e_nos_lancamentos(con):
         gasto = -sum(p["valor"] for l in ls if l["data"].startswith("2026-10") for p in l["partes"] if p["natureza"] == "gasto")
         return painel["renda"], renda, painel["gasto"], gasto
 
-    assert nas_duas_telas() == (3200.0, 3200.0, 50.0, 50.0)       # 30/09 entra; 26/10 fica para novembro
+    assert nas_duas_telas() == (3300.0, 3300.0, 50.0, 50.0)       # o salário de 30/09 entra; o Pix de 26/10 (não é salário) fica
     db.definir_parametro(con, "renda_mes_seguinte", "0")
     assert nas_duas_telas() == (300.0, 300.0, 50.0, 50.0)         # pela data
     db.definir_parametro(con, "renda_mes_seguinte", "1")
@@ -210,3 +210,14 @@ def test_saldo_atual_parte_do_saldo_do_app_e_soma_o_que_veio_depois(con):
         servicos.inserir(con, "nubank_conta", "2026-10-29", v, "Compra", "LOJA", "manual")
     c = next(x for x in servicos.saldo_contas(con) if x["id"] == "nubank_conta")
     assert c["saldo_real"] == 109.40 and c["saldo_atual"] == 81.44
+
+
+def test_aporte_em_outra_carteira_e_vocabulario(con):
+    """99Pay também é carteira de aporte; a taxa vai para Taxas de aporte. Fixas: só Academia e Celular; a TIM é Celular."""
+    servicos.inserir(con, "nubank_cartao", "2026-10-06", -104.90, "99Pay *Recarga", origem="fatura_pdf")
+    taxa = next(p for p in lancs(con)[0]["partes"] if p["categoria"] == "taxa-aporte")
+    assert abs(taxa["valor"] + 4.90) < 0.01 and taxa["motivo"].startswith("taxa de aporte no crédito")
+    assert {r["id"] for r in con.execute("SELECT id FROM categorias WHERE fixa = 1")} == {"academia", "celular"}
+    assert con.execute("SELECT grupo FROM categorias WHERE id = 'juros'").fetchone()[0] == "Juros e taxas"
+    servicos.inserir(con, "nubank_cartao", "2026-10-11", -36.55, "Tim*63984021557", origem="fatura_csv")
+    assert lancs(con)[0]["partes"][0]["categoria"] == "celular"

@@ -5,7 +5,7 @@ Dois níveis de confiança:
 - **automático** (vira partes): só o que é verdade por definição, não por hábito.
   Pagamento de fatura que sai da sua conta; pagamento no cartão que tem esse par
   saindo da conta; Pix no crédito caindo na conta; dinheiro vindo de conta sua;
-  taxa da recarga do PicPay no crédito; parcela seguinte de um parcelamento que
+  taxa de aporte numa carteira (PicPay, 99Pay...) com o cartão; parcela seguinte de um parcelamento que
   você já classificou; compra em estabelecimento conhecido (regras do sistema).
 - **sugestão** (fica pendente, o site oferece num toque): tudo que envolve
   pessoa ou intenção. Pix para ou de alguém, o que você ensinou com "sugerir da próxima vez". O mesmo Pix para a
@@ -58,7 +58,7 @@ MOTIVOS_EXATOS = {"pagamento da fatura do cartão", "pagamento da fatura", "apor
                   "principal: ponte para a fatura, pagamento a alguém ou compra?", "Pix no crédito: principal",
                   "IOF e juro do Pix no crédito", "como da última vez", "sua parte do aluguel", "sugestão pela pessoa (confira)",
                   "pela regra (confira)", "Pix pequeno (confira)"}
-MOTIVOS_PADRAO = re.compile(r"^(taxa PicPay no crédito \(.*\)|parte de .+ no boleto|acerto com .+ \(confira\)|[a-z0-9-]+ pagou)$")
+MOTIVOS_PADRAO = re.compile(r"^(taxa (?:PicPay|de aporte) no crédito \(.*\)|parte de .+ no boleto|acerto com .+ \(confira\)|[a-z0-9-]+ pagou)$")
 
 
 def e_motivo(texto: str) -> bool:
@@ -115,11 +115,13 @@ def definicao(con: sqlite3.Connection, lc: dict) -> list[dict] | None:
                 return out
             break
 
-    # Recarga ou pagamento via PicPay com o cartão: a taxa é custo; o principal fica para você dizer.
-    if conta == "nubank_cartao" and "PICPAY" in f"{d} {c}".upper():
+    # Aporte numa carteira (PicPay, 99Pay... em Projeção > Premissas) com o cartão: a taxa vai para Taxas de aporte;
+    # o principal fica para você dizer.
+    carteiras = [re.sub(r"\s+", "", x).upper() for x in _param(con, "carteiras_aporte", "PICPAY").split(",") if x.strip()]
+    if conta == "nubank_cartao" and any(k in re.sub(r"\s+", "", f"{d} {c}").upper() for k in carteiras):
         taxa = float(_param(con, "taxa_ponte_picpay", "0.049"))
         principal = round(v / (1 + taxa), 2)
-        return [_p(v - principal, "gasto", "juros", motivo=f"taxa PicPay no crédito ({taxa:.2%})".replace(".", ",")),
+        return [_p(v - principal, "gasto", "taxa-aporte", motivo=f"taxa de aporte no crédito ({taxa:.2%})".replace(".", ",")),
                 _p(principal, "gasto", None, motivo="principal: ponte para a fatura, pagamento a alguém ou compra?")]
 
     # Pix no crédito avulso: na fatura sem cartão, casado com o "valor adicionado" na conta.

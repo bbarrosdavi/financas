@@ -65,25 +65,59 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-/** O painel do site: fundo do tema, cantos de 14 dp, título em versalete pequeno e, se houver, um subtítulo. */
+/** O painel do site: fundo do tema, cantos de 14 dp, título em versalete pequeno e, se houver, um subtítulo.
+ *  Com `ajuda`, um "?" discreto ao lado do título (no canto, se não houver título) abre a explicação do painel. */
 @Composable
 fun Cartao(titulo: String? = null, modifier: Modifier = Modifier, sub: String? = null, acao: (@Composable RowScope.() -> Unit)? = null,
-           aoTocarTitulo: (() -> Unit)? = null, conteudo: @Composable ColumnScope.() -> Unit) {
+           aoTocarTitulo: (() -> Unit)? = null, subJunto: Boolean = false, ajuda: String? = null, conteudo: @Composable ColumnScope.() -> Unit) {
     Surface(modifier = modifier.fillMaxWidth(), shape = RoundedCornerShape(12.dp), color = cores.painel,
         shadowElevation = 0.dp, border = BorderStroke(1.dp, cores.linha)) {
+      Box {
         Column(Modifier.padding(horizontal = 12.dp, vertical = 10.dp)) {
             if (titulo != null) {
                 Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(bottom = 6.dp)
                     .then(if (aoTocarTitulo != null) Modifier.clickable(onClick = aoTocarTitulo) else Modifier)) {
-                    Text(titulo.uppercase() + if (aoTocarTitulo != null) "  ⌄" else "", color = cores.texto2, fontSize = 11.sp, fontWeight = FontWeight.Bold, letterSpacing = 0.8.sp,
-                        modifier = Modifier.weight(1f))
-                    if (sub != null) Text(sub, color = cores.mudo, fontSize = 11.sp)
+                    val texto = titulo.uppercase() + if (aoTocarTitulo != null) "  ⌄" else ""
+                    if (subJunto) {
+                        TituloCartao(texto)
+                        if (ajuda != null) BotaoAjuda(titulo, ajuda)
+                        if (sub != null) Text(sub, color = cores.mudo, fontSize = 11.sp, modifier = Modifier.padding(start = 8.dp))
+                        Spacer(Modifier.weight(1f))
+                    } else {
+                        Row(Modifier.weight(1f), verticalAlignment = Alignment.CenterVertically) {
+                            TituloCartao(texto, Modifier.weight(1f, fill = false))
+                            if (ajuda != null) BotaoAjuda(titulo, ajuda)
+                        }
+                        if (sub != null) Text(sub, color = cores.mudo, fontSize = 11.sp)
+                    }
                     acao?.invoke(this)
                 }
             }
             conteudo()
         }
+        if (titulo == null && ajuda != null) Box(Modifier.align(Alignment.TopEnd).padding(top = 10.dp, end = 6.dp)) { BotaoAjuda(null, ajuda) }
+      }
     }
+}
+
+@Composable
+private fun TituloCartao(texto: String, modifier: Modifier = Modifier) =
+    Text(texto, color = cores.texto2, fontSize = 11.sp, fontWeight = FontWeight.Bold, letterSpacing = 0.8.sp, modifier = modifier)
+
+/** O "?" do cartão: um círculo pequeno, na cor do texto mudo; o toque abre a explicação curta daquele painel. */
+@Composable
+private fun BotaoAjuda(titulo: String?, texto: String) {
+    var aberto by remember { mutableStateOf(false) }
+    // A área de toque passa um pouco do círculo, sem mudar a altura da linha do título.
+    Box(Modifier.clip(RoundedCornerShape(9.dp)).clickable { aberto = true }.padding(horizontal = 6.dp, vertical = 2.dp)) {
+        Box(Modifier.size(14.dp).border(1.dp, cores.mudo, CircleShape), contentAlignment = Alignment.Center) {
+            Text("?", color = cores.mudo, fontSize = 10.sp, lineHeight = 10.sp)
+        }
+    }
+    if (aberto) AlertDialog(onDismissRequest = { aberto = false }, containerColor = cores.painelForte,
+        title = { Text(titulo ?: "Como funciona") },
+        text = { Text(negrito(texto), color = cores.texto, fontSize = 14.sp, lineHeight = 20.sp) },
+        confirmButton = { TextButton(onClick = { aberto = false }) { Text("Fechar", color = cores.acento) } })
 }
 
 @Composable
@@ -284,4 +318,16 @@ fun Modifier.tocarOuSegurar(categoria: String? = null, grupo: String? = null, no
     return combinedClickable(onClick = aoTocar, onLongClick = consulta?.let { q ->
         { Estado.grafico = q to nome.ifEmpty { grupo ?: Vocab.categoria(categoria)?.s("nome") ?: "" } }
     })
+}
+
+/** Marcação discreta (quadradinho de 14 dp e texto pequeno), para opções de visualização. */
+@Composable
+fun MarcarPequeno(texto: String, marcado: Boolean, aoMudar: (Boolean) -> Unit) {
+    Row(Modifier.clickable { aoMudar(!marcado) }.padding(vertical = 4.dp), verticalAlignment = Alignment.CenterVertically) {
+        Box(Modifier.size(14.dp).clip(RoundedCornerShape(3.dp)).background(if (marcado) cores.acento else Color.Transparent)
+            .border(1.dp, if (marcado) cores.acento else cores.mudo, RoundedCornerShape(3.dp)), contentAlignment = Alignment.Center) {
+            if (marcado) Text("✓", color = Color.White, fontSize = 10.sp, lineHeight = 10.sp)
+        }
+        Text("  $texto", color = cores.mudo, fontSize = 12.sp)
+    }
 }

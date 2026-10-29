@@ -73,7 +73,7 @@ object Tour {
     fun fechar() { ativo = false; aoTerminar() }
 
     val passos = listOf(
-        PassoTour("painel", null, "Bem-vindo ao Finanças") {
+        PassoTour("painel", null, "Bem-vindo ao Avareza") {
             "Em poucos minutos este tour passa por cada tela: o que mostra, como ler os números e o que você coloca em cada lugar." +
                 (if (Estado.demo) "\n\n**Os dados que aparecem agora são de demonstração**: pessoas, lugares e valores inventados, para cada painel ter o que mostrar. " +
                     "Os seus dados de verdade ficam à parte. Depois de explorar, toque em **Remover** na faixa do topo (ou em Ajustes)." else "") +
@@ -90,7 +90,7 @@ object Tour {
             "Entradas menos gastos do período: verde sobrou, vermelho faltou. Transferência entre contas suas e acerto com pessoas não contam. " +
                 "**Juros e taxas** é a parte dos gastos que foi juro, IOF ou tarifa."
         },
-        PassoTour("painel", "podeGastar", "Ainda pode gastar") {
+        PassoTour("painel", "podeGastar", "Excedente ou déficit") {
             "Quanto ainda cabe no orçamento das categorias variáveis (mercado, delivery, transporte, lazer). O traço na barra é o ritmo: até onde ela deveria ir hoje. " +
                 "Verde no ritmo, amarelo acima, vermelho estourou.\n\n**O que colocar:** o teto de cada categoria, no **Orçamento**."
         },
@@ -112,7 +112,7 @@ object Tour {
         PassoTour("painel", "destinos", "Maiores destinos") { "Onde mais saiu dinheiro no período, por lugar ou pessoa." },
         PassoTour("painel", "projecaoPainel", "Projeção") { "Os próximos meses: resultado, quanto falta cobrir e o saldo livre. A conta completa fica em **Projeção**, no alto." },
         PassoTour("pendentes", "pendentes", "Pendentes") {
-            "O que o sistema não classifica sozinho: lugar novo, Pix para uma pessoa, recarga do PicPay no crédito.\n\n" +
+            "O que o sistema não classifica sozinho: lugar novo, Pix para uma pessoa, aporte numa carteira (PicPay, 99Pay...) com o cartão.\n\n" +
                 "**O que fazer:** toque na sugestão (azul) ou numa categoria. **Dividir** separa em partes, como a sua e a de um colega. " +
                 "Com **sugerir da próxima vez**, o mesmo lugar já chega com a sugestão."
         },
@@ -139,8 +139,8 @@ object Tour {
         PassoTour("projecao", "projResumo", "Projeção") { "Mês a mês até o horizonte. **Renda** e **custo de vida** vêm do Orçamento de cada mês. A coluna **Cartão** soma só as parcelas de compras já feitas que ainda vão cair: o que você comprar depois entra no custo de vida, não ali, para não contar duas vezes. **Resultado** é o que sobra ou falta em cada mês." },
         PassoTour("projecao", "projEventos", "Eventos") { "**O que colocar:** o que muda e quando (um aumento, uma renda que acaba, uma viagem, o 13º). A projeção recalcula na hora." },
         PassoTour("ajustes", "ajCelular", "Celular") {
-            "As notificações dos apps de banco marcados viram lançamentos aqui na hora, mesmo sem servidor.\n\n**O que fazer:** toque em **Acesso a notificações** e ligue o Finanças. " +
-                "Se tiver o Finanças no computador, coloque o endereço e a chave que aparecem em Ajustes no computador e toque em **Testar conexão**."
+            "As notificações dos apps de banco marcados viram lançamentos aqui na hora, mesmo sem servidor.\n\n**O que fazer:** toque em **Acesso a notificações** e ligue o Avareza. " +
+                "Se tiver o Avareza no computador, coloque o endereço e a chave que aparecem em Ajustes no computador e toque em **Testar conexão**."
         },
         PassoTour("pessoas", "pessoasCadastro", "Cadastro de pessoas") { "**O que colocar:** quem divide contas com você, com o nome como aparece no extrato. Assim o Pix dessa pessoa vem com sugestão." },
         PassoTour("painel", null, "Pronto para começar") {

@@ -19,28 +19,30 @@ PESSOAS: list[tuple] = []
 
 # id, grupo, nome, tipo, teto mensal (None = sem teto), fixa
 CATEGORIAS = [
-    ("aluguel-condominio", "Moradia", "Aluguel e condomínio", "gasto", None, 1),
-    ("contas-casa", "Moradia", "Contas da casa (luz, água, gás, internet)", "gasto", None, 1),
+    ("aluguel-condominio", "Moradia", "Aluguel e condomínio", "gasto", None, 0),
+    ("contas-casa", "Moradia", "Contas da casa (luz, água, gás, internet)", "gasto", None, 0),
     ("casa-moveis", "Moradia", "Casa e manutenção", "gasto", None, 0),
     ("mercado", "Alimentação", "Mercado", "gasto", None, 0),
     ("delivery", "Alimentação", "Restaurantes e delivery", "gasto", None, 0),
     ("conveniencia", "Alimentação", "Lanches e café", "gasto", None, 0),
-    ("remedios", "Saúde", "Remédios", "gasto", None, 1),
+    ("remedios", "Saúde", "Remédios", "gasto", None, 0),
     ("consultas", "Saúde", "Consultas e exames", "gasto", None, 0),
     ("academia", "Saúde", "Academia e esportes", "gasto", None, 1),
     ("app-transporte", "Transporte", "Transporte por app", "gasto", None, 0),
     ("onibus", "Transporte", "Transporte público e combustível", "gasto", None, 0),
     ("educacao", "Educação", "Cursos e material", "gasto", None, 0),
-    ("assinaturas", "Assinaturas", "Assinaturas e celular", "gasto", None, 1),
+    ("assinaturas", "Assinaturas", "Assinaturas", "gasto", None, 0),
+    ("celular", "Celular", "Celular", "gasto", None, 1),
     ("vestuario", "Compras", "Roupas e calçados", "gasto", None, 0),
     ("eletronicos", "Compras", "Eletrônicos", "gasto", None, 0),
     ("lazer", "Lazer", "Lazer e passeios", "gasto", None, 0),
     ("viagem", "Lazer", "Viagens", "gasto", None, 0),
     ("pets", "Pets", "Pets", "gasto", None, 0),
     ("familia", "Família", "Presentes e família", "gasto", None, 0),
-    ("juros", "Financeiro", "Juros e taxas", "gasto", None, 0),
+    ("juros", "Juros e taxas", "Juros e taxas", "gasto", None, 0),
+    ("taxa-aporte", "Juros e taxas", "Taxas de aporte", "gasto", None, 0),
     ("outros", "Outros", "Outros", "gasto", None, 0),
-    ("salario", "Renda", "Salário", "renda", None, 1),
+    ("salario", "Renda", "Salário", "renda", None, 0),
     ("pais", "Renda", "Ajuda da família", "renda", None, 0),
     ("extras", "Renda", "Renda extra", "renda", None, 0),
     ("outras-entradas", "Renda", "Outras entradas", "renda", None, 0),
@@ -49,7 +51,8 @@ CATEGORIAS = [
 # Regras do sistema: regex sobre "DESCRICAO | CONTRAPARTE" em maiúsculas.
 # A primeira que casa vence; casos que dividem o valor ficam em app/classificar.py.
 REGRAS = [
-    (r"DL\*GOOGLE|GOOGLE ONE|GOOGLE GOOGLE|TIM\*|\bTIM\b", "gasto", "assinaturas", None),
+    (r"DL\*GOOGLE|GOOGLE ONE|GOOGLE GOOGLE", "gasto", "assinaturas", None),
+    (r"TIM\*|\bTIM\b", "gasto", "celular", None),
     (r"SMART FIT", "gasto", "academia", None),
     (r"RAIA|DROGASIL|PANVEL|NISSEI|FARMAIS|DRUGSTORE|FARMACIA", "gasto", "remedios", None),
     (r"CONVENIENCIA", "gasto", "conveniencia", None),
@@ -68,6 +71,8 @@ PARAMETROS = {
     "dia_renda_mes_seguinte": "25",
     "renda_mes_seguinte": "1",
     "taxa_ponte_picpay": "0.049",
+    # Carteiras em que você põe dinheiro com o cartão (nome como aparece na fatura): a taxa vai para Taxas de aporte.
+    "carteiras_aporte": "PICPAY, 99PAY",
 }
 
 # Eventos do plano (renda que acaba, compra grande): você cadastra no site.

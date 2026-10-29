@@ -215,8 +215,12 @@ def evolucao(tipo: str = "mes", categoria: str | None = None, grupo: str | None 
 
 @app.get("/api/meses", dependencies=[api])
 def meses():
+    """Os meses com lançamento e os 12 seguintes ao atual (dá para lançar no futuro)."""
+    hoje = date.today()
+    futuros = {f"{hoje.year + (hoje.month - 1 + k) // 12}-{(hoje.month - 1 + k) % 12 + 1:02d}" for k in range(13)}
     with db.conectar() as con:
-        return [r[0] for r in con.execute("SELECT DISTINCT substr(data,1,7) FROM lancamentos ORDER BY 1 DESC")]
+        com_dado = {r[0] for r in con.execute("SELECT DISTINCT substr(data,1,7) FROM lancamentos")}
+    return sorted(com_dado | futuros, reverse=True)
 
 
 @app.get("/api/lancamentos", dependencies=[api])
@@ -640,7 +644,7 @@ class Param(BaseModel):
 
 @app.put("/api/parametros/{chave}", dependencies=[api])
 def definir_param(chave: str, body: Param):
-    if chave not in ("salario_mensal", "horizonte", "dia_renda_mes_seguinte", "renda_mes_seguinte", "taxa_ponte_picpay", "cores_grupos"):
+    if chave not in ("salario_mensal", "horizonte", "dia_renda_mes_seguinte", "renda_mes_seguinte", "taxa_ponte_picpay", "carteiras_aporte", "cores_grupos"):
         raise HTTPException(400, "Parâmetro não editável pelo site.")
     with db.conectar() as con:
         db.definir_parametro(con, chave, body.valor)
