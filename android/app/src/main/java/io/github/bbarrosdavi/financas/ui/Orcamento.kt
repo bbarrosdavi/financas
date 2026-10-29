@@ -52,6 +52,7 @@ private class LinhaOrc(val j: JSONObject) {
     fun realizado(m: String): Double = j.optJSONObject("realizado")?.optDouble(m, 0.0) ?: 0.0
     fun definido(m: String) = j.optJSONArray("definido")?.let { a -> (0 until a.length()).any { a.getString(it) == m } } ?: false
     val porItens = j.optBoolean("por_itens")
+    val fixa = j.optInt("fixa") == 1
     val itens = j.lista("itens")
     fun somaItens(m: String) = j.optJSONObject("soma_itens")?.optDouble(m, 0.0) ?: 0.0
     val cor: Color @Composable get() = if (tipo == "poupanca") cores.s3 else corCategoria(chave)
@@ -224,7 +225,8 @@ private fun AbaFixas(gasto: List<LinhaOrc>, mes: String) {
     val escopo = rememberCoroutineScope()
     var item by remember { mutableStateOf<JSONObject?>(null) }
     var novo by remember { mutableStateOf(false) }
-    val comItens = gasto.filter { it.itens.isNotEmpty() }
+    // As categorias fixas (aluguel, contas da casa...) aparecem sempre, mesmo antes de ter item.
+    val comItens = gasto.filter { it.itens.isNotEmpty() || it.fixa }
     Cartao("Despesas fixas", sub = "o que se repete todo mês") {
         Text("Aluguel, internet, academia: cada item soma na categoria. Ligando \"usar a soma como orçamento\", o orçado da categoria passa a ser a soma.",
             color = cores.texto2, fontSize = 13.sp)

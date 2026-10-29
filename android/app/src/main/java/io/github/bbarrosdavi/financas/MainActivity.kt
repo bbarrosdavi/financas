@@ -40,7 +40,7 @@ class MainActivity : ComponentActivity() {
         Api.ctx = applicationContext
         ajustes = Ajustes(this)
         tema = ajustes.tema
-        aparencia = Aparencia(modo = tema)
+        aparencia = Aparencia(tema = "lavanda", modo = tema)
         setContent {
             FinancasTema(aparencia) {
                 val escuro = cores.escuro
@@ -86,14 +86,18 @@ class MainActivity : ComponentActivity() {
         val nomePapel = conta.optString("papel").ifEmpty { Api.obj("/api/papeis").optString("atual") }
         val papel = nomePapel.takeIf { it.isNotEmpty() }?.let { nome ->
             runCatching {
-                val b = Api.bytes("/papel/" + Api.q(nome).replace("+", "%20"))
-                withContext(Dispatchers.Default) { BitmapFactory.decodeByteArray(b, 0, b.size)?.asImageBitmap() }
+                withContext(Dispatchers.Default) {
+                    // O papel padrão vem no APK; os outros, da pasta de papéis (os do servidor chegam pela sincronização).
+                    if (nome == "papel-padrao.jpg" && runCatching { Api.bytes("/papel/$nome") }.isFailure)
+                        BitmapFactory.decodeResource(resources, R.drawable.papel_padrao)?.asImageBitmap()
+                    else Api.bytes("/papel/" + Api.q(nome).replace("+", "%20")).let { BitmapFactory.decodeByteArray(it, 0, it.size)?.asImageBitmap() }
+                }
             }.getOrNull()
         }
-        if (v.length() == 0) return Aparencia(modo = tema, papel = papel)
+        if (v.length() == 0) return Aparencia(tema = "lavanda", modo = tema, papel = papel)
         // Os padrões são os do site: escuro, Goth Neotribal, sem desfoque.
         val prefs = runCatching { JSONObject(v.optString("prefs", "{}")) }.getOrDefault(JSONObject())
-        return Aparencia(tema = v.optString("ape-em-dia-theme", "neotribal"), modo = if (v.optString("tema") == "light") "claro" else "escuro",
+        return Aparencia(tema = v.optString("ape-em-dia-theme", "lavanda"), modo = if (v.optString("tema") == "light") "claro" else "escuro",
             desfoque = v.optString("desfoque") == "com", estilo = prefs.optString("estilo", "vidro"), papel = papel, daConta = true)
     }
 

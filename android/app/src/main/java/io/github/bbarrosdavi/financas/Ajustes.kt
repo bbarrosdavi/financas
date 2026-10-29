@@ -22,7 +22,7 @@ class Ajustes(private val ctx: Context) {
 
     /** "sistema", "claro" ou "escuro". */
     var tema: String
-        get() = p.getString("tema", "sistema") ?: "sistema"
+        get() = p.getString("tema", "escuro") ?: "escuro"
         set(v) = p.edit().putString("tema", v).apply()
 
     var tourVisto: Boolean

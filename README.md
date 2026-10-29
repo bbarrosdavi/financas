@@ -74,7 +74,7 @@ pessoa) é **pendente** e o site pergunta.
   recarga do PicPay no crédito, a parcela seguinte de um parcelamento já classificado e estabelecimento
   conhecido (regras do sistema em `app/categorias.py`).
 - **Sugestão**, que fica pendente até você confirmar: Pix de ou para uma pessoa (o mesmo Pix pode ter outra
-  finalidade), o boleto da imobiliária dividido pelo rateio de Ajustes, e o que você marcou para sugerir da
+  finalidade) e o que você marcou para sugerir da
   próxima vez no mesmo lugar.
 
 Pendente novo pode gerar um aviso (ver [Avisos](#avisos)).

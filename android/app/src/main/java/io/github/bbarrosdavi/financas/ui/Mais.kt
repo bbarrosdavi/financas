@@ -237,7 +237,7 @@ fun TelaProjecao() {
             LinhaKV("Quem você deve, quitado em", quitado?.let { mesLongo(it.s("mes")) } ?: "não quita no período")
             Spacer(Modifier.height(10.dp))
             GraficoProjecao(linhas)
-            Text("Renda, custo de vida e aportes vêm do Orçamento, mais os eventos. O cartão é o já contratado.", color = cores.mudo, fontSize = 12.sp)
+            Text("Cartão: só as parcelas que ainda vão cair.", color = cores.mudo, fontSize = 12.sp)
         }
         Cartao("Mês a mês") {
             linhas.forEach { l ->

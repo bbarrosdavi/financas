@@ -39,6 +39,8 @@ class Settings(BaseSettings):
 
     # Papéis de parede do site (enviados pela tela Ajustes).
     PAPEIS_DIR: str = "/data/papeis"
+    # Papel de parede de quem nunca escolheu um (vem no app, em web/; quem quiser troca em Ajustes).
+    PAPEL_PADRAO: str = "papel-padrao.jpg"
 
     DEDUP_WINDOW_MINUTES: int = 10
     QUEUE_MAXSIZE: int = 500

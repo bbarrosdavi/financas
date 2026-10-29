@@ -8,8 +8,7 @@ Dois níveis de confiança:
   taxa da recarga do PicPay no crédito; parcela seguinte de um parcelamento que
   você já classificou; compra em estabelecimento conhecido (regras do sistema).
 - **sugestão** (fica pendente, o site oferece num toque): tudo que envolve
-  pessoa ou intenção. Pix para ou de alguém, boleto do aluguel (o rateio pode
-  mudar), o que você ensinou com "sugerir da próxima vez". O mesmo Pix para a
+  pessoa ou intenção. Pix para ou de alguém, o que você ensinou com "sugerir da próxima vez". O mesmo Pix para a
   mesma pessoa pode ter finalidade diferente; quem confirma é você.
 
 Nada aqui conhece valores ou casos do passado: o que valeu para um lançamento
@@ -152,12 +151,6 @@ def sugerir(con: sqlite3.Connection, lc: dict) -> list[dict] | None:
     if r:
         return [_p(v, r["natureza"], r["categoria"], r["pessoa"], motivo="como da última vez")]
     alvo = f"{lc['descricao']} | {lc['contraparte']}".upper()
-    if "IMOBILIARIA" in alvo and v < 0:
-        rateio = json.loads(_param(con, "aluguel_rateio", "{}"))
-        if rateio:
-            partes = [_p(v * frac, "acerto", pessoa=pid, motivo=f"parte de {pid} no boleto")
-                      for pid, frac in rateio.items() if pid != "eu" and frac]
-            return [_p(v - sum(p["valor"] for p in partes), "gasto", "aluguel-condominio", motivo="sua parte do aluguel")] + partes
     pessoa = con.execute("SELECT * FROM pessoas WHERE apelido_extrato != '' AND ? LIKE '%' || UPPER(apelido_extrato) || '%'",
                          (alvo,)).fetchone()
     if pessoa:

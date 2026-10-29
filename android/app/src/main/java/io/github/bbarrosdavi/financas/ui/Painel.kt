@@ -140,9 +140,7 @@ private fun Kpis(p: JSONObject, irPara: (String) -> Unit) {
                     val dif = conta.d("diferenca")
                     // O saldo de hoje: o que o app do banco mostrou naquele dia mais o que foi lançado depois.
                     Text(brl(conta.d("saldo_atual")), color = cores.texto, fontWeight = FontWeight.Bold, fontSize = 17.sp)
-                    Text("saldo do app em ${dataBR(conta.s("data_real"))} (${brl(conta.d("saldo_real"))})" +
-                        (if (conta.s("data_real") < hojeISO()) " + lançamentos depois" else "") + " · " +
-                        if (kotlin.math.abs(dif) < .005) "bate com os lançamentos" else "${brl(dif)} não lançados",
+                    Text(if (kotlin.math.abs(dif) < .005) "bate com os lançamentos" else "${brl(dif)} não lançados",
                         color = if (kotlin.math.abs(dif) < .005) cores.mudo else cores.atencao, fontSize = 11.sp)
                 }
             }

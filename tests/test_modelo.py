@@ -47,17 +47,13 @@ def test_contraparte_sem_cpf_nem_banco():
     assert lt.movimentos[0].contraparte == "ANA EXEMPLO DA SILVA"
 
 
-def test_boleto_do_aluguel_vira_parte_sua_mais_acertos(con):
+def test_boleto_do_aluguel_fica_pendente_sem_divisao(con):
     lt = importadores.ler_extrato_pdf(EXTRATO)
     for m in lt.movimentos:
         servicos.inserir(con, m.conta, m.data, m.valor, m.descricao, m.contraparte, "extrato_pdf")
     boleto = next(l for l in lancs(con) if "boleto" in l["descricao"])
-    assert boleto["pendente"] and not boleto["partes"]        # o rateio pode mudar: só sugere
-    por = {(p["natureza"], p["categoria"] or p["pessoa"]): p["valor"] for p in boleto["sugestao"]}
-    assert por[("gasto", "aluguel-condominio")] == -629.0
-    assert por[("acerto", "ana")] == -555.0
-    assert por[("acerto", "bruno")] == -666.0
-    assert round(sum(por.values()), 2) == -1850.0
+    assert boleto["pendente"] and not boleto["partes"]
+    assert boleto["sugestao"] is None                   # sem rateio: você lança a sua parte
     ana = next(l for l in lancs(con) if "ANA" in l["contraparte"])
     assert ana["pendente"] and ana["sugestao"][0]["natureza"] == "acerto"   # Pix com pessoa: só sugestão
     salario = next(l for l in lancs(con) if "EMPRESA" in l["contraparte"])

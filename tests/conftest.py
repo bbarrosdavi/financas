@@ -30,7 +30,6 @@ def _vocabulario_de_teste(c) -> None:
     c.execute("UPDATE categorias SET teto=900 WHERE id='aluguel-condominio'")
     c.execute("INSERT INTO regras (padrao, natureza, categoria, pessoa, origem) VALUES ('EMPRESA EXEMPLO', 'renda', 'salario', NULL, 'sistema')")
     db.definir_parametro(c, "salario_mensal", "3000")
-    db.definir_parametro(c, "aluguel_rateio", '{"eu": 0.34, "bruno": 0.36, "ana": 0.30}')
 
 
 @pytest.fixture

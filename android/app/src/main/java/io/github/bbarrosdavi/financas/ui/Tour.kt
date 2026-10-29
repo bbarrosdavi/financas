@@ -136,7 +136,7 @@ object Tour {
         PassoTour("importar", "importarDescartadas", "Notificações descartadas") { "O que o filtro entendeu que não era compra. Se alguma era, **Resgatar** transforma em lançamento." },
         PassoTour("pessoas", "pessoasSaldos", "Quem deve a quem") { "Positivo: a pessoa te deve. Negativo: você deve a ela. Muda quando uma parte é um **acerto**." },
         PassoTour("pessoas", "pessoasPagou", "Alguém pagou por você") { "Quando outra pessoa paga uma conta sua: o gasto entra na categoria e vira dívida com ela, sem mexer no saldo da conta." },
-        PassoTour("projecao", "projResumo", "Projeção") { "Mês a mês até o horizonte: renda, custo de vida (do Orçamento), o cartão já contratado e o resultado." },
+        PassoTour("projecao", "projResumo", "Projeção") { "Mês a mês até o horizonte. **Renda** e **custo de vida** vêm do Orçamento de cada mês. A coluna **Cartão** soma só as parcelas de compras já feitas que ainda vão cair: o que você comprar depois entra no custo de vida, não ali, para não contar duas vezes. **Resultado** é o que sobra ou falta em cada mês." },
         PassoTour("projecao", "projEventos", "Eventos") { "**O que colocar:** o que muda e quando (um aumento, uma renda que acaba, uma viagem, o 13º). A projeção recalcula na hora." },
         PassoTour("ajustes", "ajCelular", "Celular") {
             "As notificações dos apps de banco marcados viram lançamentos aqui na hora, mesmo sem servidor.\n\n**O que fazer:** toque em **Acesso a notificações** e ligue o Finanças. " +

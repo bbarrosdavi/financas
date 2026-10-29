@@ -312,7 +312,6 @@ O painel mais importante. Na demonstração, em outubro até o dia 20:
 - **Pessoas**: nome, como o nome aparece no extrato (para o Pix ser reconhecido) e o que sugerir quando
   entra ou sai dinheiro da pessoa. Na demonstração, "MARINA EXEMPLO", "TEO FICTICIO" e "ROSA EXEMPLO" (a mãe,
   que sugere renda).
-- **Rateio do aluguel**: quanto do boleto da imobiliária é de cada um (aqui, 50% e 50%).
 - **Celular**: no computador, o endereço do servidor e a chave para copiar no app (e os campos do MacroDroid);
   no app, os ajustes do celular ([parte 6](#6-o-app-do-celular-android)).
 - **Planilha e sessão**: **Baixar tabelas (.xlsx)**, com uma aba por tabela. O modelo antigo (.ods) precisa do

@@ -65,7 +65,6 @@ fun TelaAjustes(ajustes: Ajustes, tema: String, aoTrocarTema: (String) -> Unit) 
         }
         Celular(ajustes)
         MesDaEntrada()
-        Rateio()
         Planilha()
     }
     if (removendo) Confirmar("Remover dados de demonstração",
@@ -198,34 +197,6 @@ private fun EditarPessoa(p: JSONObject?, aoFechar: () -> Unit) {
             }
         }) { Text("Salvar", color = cores.acento) } },
         dismissButton = { TextButton(onClick = aoFechar) { Text("Cancelar", color = cores.texto2) } })
-}
-
-@Composable
-private fun Rateio() {
-    val escopo = rememberCoroutineScope()
-    val c = carregar { Api.obj("/api/parametros") }
-    val prm = c.dado ?: return
-    val base = remember(prm, Vocab.pessoas) {
-        val r = linkedMapOf("eu" to 0.0)
-        Vocab.pessoas.filter { it.s("tipo") == "colega" }.forEach { r[it.s("id")] = 0.0 }
-        runCatching { JSONObject(prm.optString("aluguel_rateio", "{}")) }.getOrNull()?.let { j -> j.keys().forEach { r[it] = j.optDouble(it, 0.0) } }
-        r
-    }
-    val textos = remember(base) { mutableStateOf(base.mapValues { (_, v) -> valorTexto(v * 100) }) }
-    var msg by remember { mutableStateOf<String?>(null) }
-    Cartao("Rateio do aluguel", sub = "sugestão para o boleto") {
-        base.keys.forEach { k ->
-            Campo(textos.value[k] ?: "", { textos.value = textos.value + (k to it) }, (if (k == "eu") "Você" else Vocab.pessoa(k)?.s("nome") ?: k) + " (%)", numerico = true)
-        }
-        Spacer(Modifier.height(6.dp))
-        BotaoPrimario("Salvar") {
-            val r = textos.value.mapValues { (_, t) -> ((numero(t) ?: 0.0) * 10).roundToInt() / 1000.0 }
-            val soma = r.values.sum()
-            if (abs(soma - 1) > .001) { msg = "A soma dá ${"%.1f".format(soma * 100)}%; precisa dar 100%."; return@BotaoPrimario }
-            escopo.launch { if (gravar { Api.put("/api/parametros/aluguel_rateio", jsonDe("valor" to JSONObject(r as Map<*, *>).toString())) }) msg = "Salvo." }
-        }
-        msg?.let { Text(it, color = cores.texto2, fontSize = 13.sp, modifier = Modifier.padding(top = 4.dp)) }
-    }
 }
 
 /** Renda que cai a partir do dia X conta como entrada do mês seguinte (Painel, Lançamentos, Orçamento, Projeção). */

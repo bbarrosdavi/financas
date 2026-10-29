@@ -47,7 +47,7 @@ def semear(c, hoje: date) -> None:
     c.execute("UPDATE contas SET saldo_inicial = 300, data_saldo_inicial = ? WHERE id = 'nubank_conta'", (inicio.isoformat(),))
     c.execute("UPDATE contas SET saldo_inicial = 0, data_saldo_inicial = ?, limite = 3000 WHERE id = 'nubank_cartao'", (inicio.isoformat(),))
     c.execute("UPDATE contas SET data_saldo_inicial = ? WHERE id = 'picpay'", (inicio.isoformat(),))
-    for k, v in {"salario_mensal": "2600", "horizonte": aaaamm(5), "aluguel_rateio": '{"eu": 0.5, "marina": 0.5}'}.items():
+    for k, v in {"salario_mensal": "2600", "horizonte": aaaamm(5)}.items():
         db.definir_parametro(c, k, v)
     reserva = c.execute("INSERT INTO metas (nome, descricao, alvo, aporte_mensal, onde, ordem) VALUES "
                         "('Reserva de emergência', 'Seis meses de custo fixo', 6000, 300, 'Caixinha do Nubank', 1)").lastrowid

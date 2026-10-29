@@ -430,3 +430,11 @@ body.cantos-retos :is(button, input, select, .segmentos, .segmentos button, .chi
   border: 1px solid var(--atencao); box-shadow: var(--sombra); }
 body.larga .demo-aviso { max-width: none; }
 @media (max-width: 1240px) { .demo-aviso { margin-left: 16px; margin-right: 16px; } }
+
+/* Grupo: o nome encolhe com reticências e o botão do gráfico continua à vista (largura reduzida). */
+.grupo-cab .nome .g-nome { overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.grupo-cab .nome > small, .grupo-cab .nome > .botao-icone, .grupo-cab .nome > svg, .grupo-cab .nome > i { flex: none; }
+/* Título de Categorias: recolhe ou abre todos os grupos. */
+.titulo-cartao.alterna-todos { cursor: pointer; }
+.titulo-cartao .todos-ind { margin-left: 5px; color: var(--mudo); opacity: .75; vertical-align: middle; }
+[data-segurar-cat], [data-segurar-grupo] { -webkit-touch-callout: none; }

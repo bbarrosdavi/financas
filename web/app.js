@@ -59,14 +59,14 @@ const SOL = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke=
 const ICONE_BARRAS = '<svg viewBox="0 0 16 16" width="13" height="13" fill="currentColor"><rect x="1.5" y="8" width="3" height="6.5" rx="1"/><rect x="6.5" y="4.5" width="3" height="10" rx="1"/><rect x="11.5" y="1.5" width="3" height="13" rx="1"/></svg>';
 const LUA = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>';
 function aplicarTema() {
-  const t = store.get('tema', 'light');
+  const t = store.get('tema', 'dark');
   if (t === 'dark') document.documentElement.dataset.theme = 'dark'; else delete document.documentElement.dataset.theme;
   $('meta[name=theme-color]').content = t === 'dark' ? '#101014' : '#e9ebef';
   const b = $('#tema');
   if (b) { b.innerHTML = t === 'dark' ? SOL : LUA; b.title = t === 'dark' ? 'Mudar para claro' : 'Mudar para escuro'; }
 }
 $('#tema').addEventListener('click', () => {
-  store.set('tema', store.get('tema', 'light') === 'dark' ? 'light' : 'dark');
+  store.set('tema', store.get('tema', 'dark') === 'dark' ? 'light' : 'dark');
   aplicarTema();
   if ((location.hash.slice(1) || '').startsWith('ajustes')) rota();
 });
@@ -444,7 +444,7 @@ async function painel(t) {
         : `<span>${ant}: dentro do teto</span>`);
     if (comparar) infos.push(`<span>${ant}: ${brl(c.anterior)} <span class="vs ${varTot > 0 ? 'neg' : varTot < 0 ? 'pos' : ''}">(${sinal(varTot)}${c.anterior ? `, ${varTot > 0 ? '+' : ''}${Math.round(varTot / c.anterior * 100)}%` : ''})</span></span>`);
     if (c.parcelas) infos.push(`<span>+ ${brl(c.parcelas)} parcelas antigas</span>`);
-    return `<div class="cat" data-evol-cat="${c.id}" data-tip="<b>${esc(c.nome)}</b><br>${brl(c.gasto)} de ${c.teto != null ? brl(c.teto) : 'sem teto'} · ${c.n} lançamento(s)<br>toque para ver a evolução">
+    return `<div class="cat" data-evol-cat="${c.id}" data-segurar-cat="${c.id}" data-tip="<b>${esc(c.nome)}</b><br>${brl(c.gasto)} de ${c.teto != null ? brl(c.teto) : 'sem teto'} · ${c.n} lançamento(s)<br>toque para ver a evolução">
       <div class="nome"><i style="background:${corCat(c.id)}"></i><span>${esc(c.nome)}</span></div>
       <div class="track"><div class="fill ${cls}" style="width:${Math.min(pct, 1) * 100}%"></div>${!c.fixa && P.ritmo > 0 && P.ritmo < 1 ? `<div class="ritmo" style="left:${P.ritmo * 100}%"></div>` : ''}</div>
       ${colunas(c.gasto, c.teto, c.acima)}
@@ -466,7 +466,7 @@ async function painel(t) {
       const aberto = b.g in ab ? ab[b.g] : PREF.grupos === 'abertos' || (PREF.grupos === 'auto' && b.acima > 0);
       const pct = b.teto ? b.gasto / b.teto : 0;
       return `<div class="grupo-cat ${aberto ? 'aberto' : ''}" data-grupo="${esc(b.g)}">
-      <div class="grupo-cab"><span class="nome"><svg class="seta-g" viewBox="0 0 10 10" width="10" height="10"><path d="M3 2l4 3-4 3" fill="none" stroke="currentColor" stroke-width="1.6"/></svg><i style="background:${corGrupo(b.g)}"></i>${esc(b.g)} <small class="muted">${b.cs.length}</small><button class="botao-icone" data-evol-grupo="${esc(b.g)}" title="Evolução de ${esc(b.g)}" aria-label="Evolução de ${esc(b.g)}">${ICONE_BARRAS}</button></span>
+      <div class="grupo-cab" data-segurar-grupo="${esc(b.g)}"><span class="nome"><svg class="seta-g" viewBox="0 0 10 10" width="10" height="10"><path d="M3 2l4 3-4 3" fill="none" stroke="currentColor" stroke-width="1.6"/></svg><i style="background:${corGrupo(b.g)}"></i><span class="g-nome">${esc(b.g)}</span> <small class="muted">${b.cs.length}</small><button class="botao-icone" data-evol-grupo="${esc(b.g)}" title="Evolução de ${esc(b.g)}" aria-label="Evolução de ${esc(b.g)}">${ICONE_BARRAS}</button></span>
         <div class="track mini"><div class="fill ${b.acima > 0 ? 'bad' : ''}" style="width:${Math.min(pct, 1) * 100}%"></div></div>
         ${colunas(b.gasto, b.teto, b.teto != null ? Math.max(0, b.gasto - b.teto) : 0)}
         <span class="g-extra">${b.parcelas ? `<small class="muted">+ ${brl(b.parcelas)} de parcelas antigas</small>` : ''}${comparar ? `<small class="muted">${ant}: ${brl(b.anterior)}</small>` : ''}</span></div>
@@ -477,6 +477,19 @@ async function painel(t) {
       const el = h.parentElement, g = el.dataset.grupo, a = abertos();
       el.classList.toggle('aberto'); a[g] = el.classList.contains('aberto'); store.set('grupos-abertos', JSON.stringify(a));
     });
+    // O título do cartão recolhe ou abre todos os grupos de uma vez.
+    const tit = $('#cats').closest('.cartao')?.querySelector('.titulo-cartao');
+    if (tit && !tit.dataset.todos) {
+      tit.dataset.todos = '1';
+      tit.classList.add('alterna-todos');
+      tit.title = 'Recolher ou abrir todos os grupos';
+      tit.insertAdjacentHTML('beforeend', '<svg class="todos-ind" viewBox="0 0 10 10" width="9" height="9" aria-hidden="true"><path d="M2 3l3 2 3-2M2 6l3 2 3-2" fill="none" stroke="currentColor" stroke-width="1.3"/></svg>');
+      tit.onclick = () => {
+        const gs = [...$('#cats').querySelectorAll('.grupo-cat')], abrir = gs.some(g => !g.classList.contains('aberto')), a = abertos();
+        gs.forEach(g => { g.classList.toggle('aberto', abrir); a[g.dataset.grupo] = abrir; });
+        store.set('grupos-abertos', JSON.stringify(a));
+      };
+    }
   }
 
   if ($('#ch')) {
@@ -488,12 +501,12 @@ async function painel(t) {
   // composição por grupo
   const grupos = Object.entries(P.grupos).sort((a, b) => b[1] - a[1]);
   const totG = grupos.reduce((a, [, v]) => a + v, 0) || 1;
-  if ($('#comp')) $('#comp').innerHTML = `<div class="composicao">${grupos.map(([g, v]) => `<span style="width:${v / totG * 100}%;background:${corGrupo(g)}" data-tip="<b>${esc(g)}</b><br>${brl(v)} (${Math.round(v / totG * 100)}%)"></span>`).join('')}</div>
-    <table>${grupos.map(([g, v]) => `<tr><td><i style="display:inline-block;width:9px;height:9px;border-radius:50%;background:${corGrupo(g)};margin-right:7px"></i>${esc(g)}</td><td class="n">${brl(v)}</td><td class="n muted">${Math.round(v / totG * 100)}%</td></tr>`).join('')}</table>`;
+  if ($('#comp')) $('#comp').innerHTML = `<div class="composicao">${grupos.map(([g, v]) => `<span data-segurar-grupo="${esc(g)}" style="width:${v / totG * 100}%;background:${corGrupo(g)}" data-tip="<b>${esc(g)}</b><br>${brl(v)} (${Math.round(v / totG * 100)}%)"></span>`).join('')}</div>
+    <table>${grupos.map(([g, v]) => `<tr data-segurar-grupo="${esc(g)}"><td><i style="display:inline-block;width:9px;height:9px;border-radius:50%;background:${corGrupo(g)};margin-right:7px"></i>${esc(g)}</td><td class="n">${brl(v)}</td><td class="n muted">${Math.round(v / totG * 100)}%</td></tr>`).join('')}</table>`;
   // entradas
   const ents = P.entradas.filter(e => e.valor || (comparar && e.anterior));
   if ($('#t-ent')) tabela($('#t-ent'), comparar ? ['Entrada', 'Valor', ant, 'Diferença'] : ['Entrada', 'Valor', 'Lançamentos'],
-    ents.map(e => comparar ? [esc(e.nome), brl(e.valor), brl(e.anterior), `<span class="${e.valor - e.anterior < 0 ? 'neg' : 'pos'}">${sinal(e.valor - e.anterior)}</span>`] : [esc(e.nome), brl(e.valor), e.n])
+    ents.map(e => comparar ? [`<span data-segurar-cat="${e.id}">${esc(e.nome)}</span>`, brl(e.valor), brl(e.anterior), `<span class="${e.valor - e.anterior < 0 ? 'neg' : 'pos'}">${sinal(e.valor - e.anterior)}</span>`] : [`<span data-segurar-cat="${e.id}">${esc(e.nome)}</span>`, brl(e.valor), e.n])
       .concat([comparar ? ['Total', brl(T.renda), brl(TA.renda), sinal(T.renda - TA.renda)] : ['Total', brl(T.renda), '']]),
     comparar ? [1, 2, 3] : [1, 2], l => l[0] === 'Total' ? 'tot' : '');
   // cobranças
@@ -519,6 +532,23 @@ async function painel(t) {
 }
 
 // Evolução de uma categoria ou grupo: barras de gasto, linha do teto e média.
+// Tocar e segurar (ou manter o clique) numa categoria ou num grupo, em qualquer tela, abre o gráfico dele.
+let segurando = null;
+RAIZ.addEventListener('pointerdown', e => {
+  const el = e.target.closest('[data-segurar-cat], [data-segurar-grupo]');
+  if (!el) return;
+  const g = el.dataset.segurarGrupo, c = el.dataset.segurarCat;
+  segurando = {x: e.clientX, y: e.clientY, feito: false, t: setTimeout(() => {
+    segurando.feito = true;
+    abrirEvolucao(g ? {grupo: g} : {categoria: c}, g || cat(c)?.nome || c, 'mes');
+  }, 550)};
+});
+const soltar = () => { if (segurando) clearTimeout(segurando.t); };
+['pointerup', 'pointercancel'].forEach(ev => RAIZ.addEventListener(ev, soltar));
+RAIZ.addEventListener('pointermove', e => { if (segurando && Math.hypot(e.clientX - segurando.x, e.clientY - segurando.y) > 10) soltar(); });
+RAIZ.addEventListener('click', e => { if (segurando?.feito) { e.preventDefault(); e.stopPropagation(); segurando = null; } }, true);
+RAIZ.addEventListener('contextmenu', e => { if (e.target.closest('[data-segurar-cat], [data-segurar-grupo]')) e.preventDefault(); });
+
 async function abrirEvolucao(alvo, nome, tipo) {
   const q = new URLSearchParams({tipo, ...alvo});
   const S = await api('/api/evolucao?' + q);
@@ -579,7 +609,7 @@ function kpiConta(c) {
     return `<div class="kpi"><div class="rot">Conta</div><div class="v warnc">${brl(c.saldo)}</div><div class="d">pelo extrato até ${dataBR(c.cobertura)} · <a href="#" data-saldo>informar saldo do app</a></div></div>`;
   const dif = c.diferenca, ok = Math.abs(dif) < .005;
   return `<div class="kpi"><div class="rot">Conta</div><div class="v ${c.saldo_atual < 100 ? 'neg' : ''}">${brl(c.saldo_atual)}</div>
-    <div class="d">saldo do app em ${dataBR(c.data_real)} (${brl(c.saldo_real)})${c.data_real < hojeISO() ? ' + lançamentos depois' : ''} · ${ok ? 'bate com os lançamentos' : `<b class="warnc">${brl(dif)}</b> não lançados`} · <a href="#" data-saldo>atualizar</a></div></div>`;
+    <div class="d"><a href="#" data-saldo title="Atualizar o saldo do app">${ok ? 'bate com os lançamentos' : `<b class="warnc">${brl(dif)}</b> não lançados`}</a></div></div>`;
 }
 document.addEventListener('click', async e => {
   const a = e.target.closest('[data-saldo]'); if (!a) return;
@@ -637,7 +667,7 @@ async function pendentes(t) {
   const L = await api('/api/lancamentos?pendentes=true');
   t.innerHTML = `<div class="titulo"><h2>Pendentes</h2><span class="muted">${L.length ? `${L.length} esperando você` : 'tudo classificado'}</span></div>
     <section class="painel vidro">
-    <p class="sub">Um toque classifica. Nada com pessoa é classificado sozinho: o sistema só sugere, e você confirma.</p>
+    <p class="sub">Toque na sugestão ou numa categoria.</p>
     <label class="alternar"><input type="checkbox" id="lembrar" checked> sugerir a mesma classificação da próxima vez para o mesmo lugar</label>
     <div id="lista"></div></section>`;
   const lista = $('#lista');
@@ -793,7 +823,7 @@ async function lancamentos(t) {
     tabela($('#t-l'), ['Data', 'Tipo', 'Categoria', 'Valor', 'Detalhes', 'Conta', 'Saldo da conta'], dados.map(l => {
       const [cls, nome] = tipoLanc(l);
       return [`<span class="nw">${dataCurta(l.data)}</span>`, `<span class="tipo ${cls}">${nome}</span>`,
-        l.pendente ? '<span class="muted">a classificar</span>' : l.partes.map(p => `<span class="chip">${esc(p.categoria ? cat(p.categoria)?.nome : p.pessoa ? pessoa(p.pessoa)?.nome : p.meta ? 'meta ' + meta(p.meta)?.nome : NAT[p.natureza])}${l.partes.length > 1 ? ' ' + brl(p.valor) : ''}</span>`).join(''),
+        l.pendente ? '<span class="muted">a classificar</span>' : l.partes.map(p => `<span class="chip" ${p.categoria ? `data-segurar-cat="${p.categoria}"` : ''}>${esc(p.categoria ? cat(p.categoria)?.nome : p.pessoa ? pessoa(p.pessoa)?.nome : p.meta ? 'meta ' + meta(p.meta)?.nome : NAT[p.natureza])}${l.partes.length > 1 ? ' ' + brl(p.valor) : ''}</span>`).join(''),
         `<b class="${l.valor > 0 ? 'pos' : ''}">${brl(l.valor)}</b>`,
         `${esc(l.contraparte || l.descricao)}<div class="muted">${[l.contraparte ? esc(l.descricao) : '', l.parcela ? 'parcela ' + l.parcela : '', l.mes_renda && !l.data.startsWith(l.mes_renda) ? 'entra em ' + mesBR(l.mes_renda + '-01') : '', ORIGEM[l.origem] || '', l.nota ? `<span class="obs-lanc">${esc(l.nota)}</span>` : ''].filter(Boolean).join(' · ')}</div>`,
         `<span class="nw">${CONTA[l.conta] || l.conta}</span>`, `<span class="nw ${l.saldo_conta < 0 ? 'neg' : ''}">${brl(l.saldo_conta)}</span>`];
@@ -913,7 +943,7 @@ async function pessoas(t) {
     <div class="grade">
     <section class="painel vidro"><h3>Saldos</h3><div class="scroll"><table id="t-p"></table></div></section>
     <section class="painel vidro"><h3>Alguém pagou uma conta por você</h3>
-      <p class="sub">Condomínio, Copel, gás, mercado da casa: o gasto é seu, o dinheiro saiu de outra pessoa. Vira gasto na categoria e dívida com ela, sem mexer no saldo da conta.</p>
+      <p class="sub">Uma conta sua que outra pessoa pagou.</p>
       <form class="linha" id="f-pago">
         <label class="c">Data<input type="date" name="data" required></label>
         <label class="c">Quem pagou<select name="pessoa">${V.pessoas.map(p => `<option value="${p.id}">${esc(p.nome)}</option>`).join('')}</select></label>
@@ -967,7 +997,7 @@ async function plano(t) {
       <div><div class="rot">Falta cobrir no período</div><div class="grande ${pl.falta_total ? 'warnc' : 'pos'}">${brl(pl.falta_total)}</div><div class="muted">soma dos meses no vermelho</div></div>
       <div><div class="rot">Quem você deve, quitado em</div><div class="grande">${quitado ? mesBR(quitado.mes + '-01') : 'não quita'}</div></div>
       <div><div class="rot">Saldo livre em ${mesBR(pl.horizonte + '-01')}</div><div class="grande ${(fim.livre || 0) > 0 ? 'pos' : 'warnc'}">${brl(fim.livre)}</div><div class="muted">${brl(fim.metas)} nas metas</div></div></div>`)}
-    ${cartao('proj-grafico', 'Resultado mês a mês', 'cartão congelado', `<div class="legend"><span><i style="background:var(--ok)"></i>Sobra</span><span><i style="background:var(--ruim)"></i>Falta</span><span><i style="background:var(--acento);height:3px"></i>Saldo livre acumulado</span></div><div class="chart grafico" id="ch-proj"></div>`)}
+    ${cartao('proj-grafico', 'Resultado mês a mês', 'cartão: só parcelas a cair', `<div class="legend"><span><i style="background:var(--ok)"></i>Sobra</span><span><i style="background:var(--ruim)"></i>Falta</span><span><i style="background:var(--acento);height:3px"></i>Saldo livre acumulado</span></div><div class="chart grafico" id="ch-proj"></div>`)}
     ${cartao('proj-premissas', 'Premissas', '', `<form class="linha" id="f-prm">
         <label class="c">Renda mensal base<input type="number" step="0.01" name="salario_mensal" value="${prm.salario_mensal}"></label>
         <label class="c">Horizonte (AAAA-MM)<input name="horizonte" value="${pl.horizonte}"></label>
@@ -1071,7 +1101,7 @@ async function orcamento(t) {
   const dicaPadrao = l => l.tipo === 'poupanca' ? 'padrão: aporte mensal da meta' : l.tipo === 'renda' ? (l.chave === 'salario' ? 'padrão: renda base' : 'sem padrão')
     : l.por_itens ? 'padrão: soma das despesas fixas' : 'padrão: teto da categoria';
   const linhaCat = l => {
-    const nome = `<span class="nome-orc">${l.tipo === 'poupanca' ? '<i class="ponto" style="background:var(--s-poup)"></i>' : pontoCor(corCat(l.chave), 'data-cor-cat', l.chave)}
+    const nome = `<span class="nome-orc" ${l.tipo === 'poupanca' ? '' : `data-segurar-cat="${esc(l.chave)}"`}>${l.tipo === 'poupanca' ? '<i class="ponto" style="background:var(--s-poup)"></i>' : pontoCor(corCat(l.chave), 'data-cor-cat', l.chave)}
       <span>${esc(l.nome)}</span>${l.por_itens ? '<small class="etiqueta" title="orçada pela soma das despesas fixas">itens</small>' : ''}</span>`;
     if (modo !== 'orcado') return `<tr class="cat-orc"><td>${nome}</td>${celulas(m => val(l, m))}</tr>`;
     return `<tr class="cat-orc"><td>${nome}</td>${M.map(m => {
@@ -1080,7 +1110,7 @@ async function orcamento(t) {
         value="${numEd(l.orcado[m])}" placeholder="–" title="${def ? 'valor deste mês; apague para voltar ao padrão' : dicaPadrao(l)}"></td>`;
     }).join('')}<td class="n ano">${numVer(anual(m => l.orcado[m]))}</td></tr>`;
   };
-  const linhaGrupo = g => `<tr class="grp-orc"><td><span class="nome-orc">${pontoCor(corGrupo(g), 'data-cor-grupo', g)}<span>${esc(g)}</span></span></td>${celulas(total(gasto.filter(l => l.grupo === g)))}</tr>`;
+  const linhaGrupo = g => `<tr class="grp-orc"><td><span class="nome-orc" data-segurar-grupo="${esc(g)}">${pontoCor(corGrupo(g), 'data-cor-grupo', g)}<span>${esc(g)}</span></span></td>${celulas(total(gasto.filter(l => l.grupo === g)))}</tr>`;
   const sec = (cls, nome) => `<tr class="sec-orc ${cls}"><td colspan="${M.length + 2}">${nome}</td></tr>`;
   const parcelas = modo === 'realizado' && M.some(m => G.parcelas[m])
     ? `<tr class="cat-orc"><td><span class="nome-orc"><i class="ponto" style="background:var(--mudo)"></i><span>Parcelas de compras antigas</span></span></td>${celulas(m => futuro(m) ? null : G.parcelas[m])}</tr>` : '';
@@ -1093,7 +1123,8 @@ async function orcamento(t) {
     <tr class="tot-orc poup"><td>Total poupado</td>${celulas(total(poup))}</tr></tbody></table>`;
 
   // despesas fixas: itens por categoria; a soma do mês pode ser o orçamento da categoria
-  const comItens = gasto.filter(l => l.itens.length), mr = MES3[+mesRef.slice(5) - 1];
+  // As categorias fixas (aluguel, contas da casa...) aparecem sempre, mesmo antes de ter item.
+  const comItens = gasto.filter(l => l.itens.length || l.fixa), mr = MES3[+mesRef.slice(5) - 1];
   const fixas = `<div class="scroll"><table class="compacta fixas"><thead><tr><th>Item</th><th class="n">Valor mensal</th><th>De</th><th>Até</th><th></th></tr></thead><tbody>
     ${comItens.length ? comItens.map(l => {
       const s = l.soma_itens[mesRef], o = l.orcado[mesRef], pelaSoma = l.por_itens && !l.definido.includes(mesRef);
@@ -1256,9 +1287,6 @@ const opcao = (rotulo, k, valores) => `<div class="opcao"><span class="rot">${ro
 async function ajustes(t) {
   const [papeis, prm, cel, ods] = await Promise.all([api('/api/papeis'), api('/api/parametros'), api('/api/celular'), api('/api/exportar.ods/estado')]);
   V = await api('/api/vocabulario');
-  // Você e os colegas, mesmo quem ainda não tem parte (0%).
-  const rateio = Object.fromEntries(['eu', ...V.pessoas.filter(p => p.tipo === 'colega').map(p => p.id)].map(k => [k, 0]));
-  Object.assign(rateio, JSON.parse(prm.aluguel_rateio || '{}'));
   t.innerHTML = `<div class="titulo"><h2>Ajustes</h2></div>
     ${DEMO ? `<section class="painel vidro"><h3>Dados de demonstração</h3>
       <p class="sub">O Finanças está mostrando dados inventados. Remover apaga a demonstração e o que você mexeu nela; os seus dados de verdade ficam como estão.</p>
@@ -1298,9 +1326,6 @@ async function ajustes(t) {
         <span class="muted">Arraste cada painel pela alça ao lado do título; o canto de baixo à direita muda largura e altura (duplo clique volta à altura automática).</span></div></section>
 
     <div class="grade meio">
-    <section class="painel vidro"><h3>Rateio do aluguel <small>sugestão para o boleto da imobiliária</small></h3>
-      <form class="linha" id="f-rateio">${Object.entries(rateio).map(([k, v]) => `<label class="c">${esc(k === 'eu' ? 'Você' : pessoa(k)?.nome || k)} (%)<input type="number" step="0.1" name="${esc(k)}" value="${(v * 100).toFixed(1)}"></label>`).join('')}
-        <button class="prim">Salvar</button></form><p class="sub" id="rateio-msg"></p></section>
     <section class="painel vidro"><h3>Mês da entrada <small>Painel, Lançamentos, Orçamento e Projeção</small></h3>
       <form class="linha" id="f-corte"><label class="alternar"><input type="checkbox" name="ligado" ${prm.renda_mes_seguinte !== '0' ? 'checked' : ''}> Renda que cai a partir do dia</label>
         <label class="c">Dia<input type="number" min="1" max="31" name="dia" value="${esc(prm.dia_renda_mes_seguinte || '25')}" style="width:70px"></label>
@@ -1318,13 +1343,6 @@ async function ajustes(t) {
       <p class="sub" id="ods-msg">${ods.disponivel ? '' : 'O modelo antigo (.ods) não sai aqui: ' + esc(ods.motivo) + '. A .xlsx funciona.'}</p></section>
     </div>`;
 
-  $('#f-rateio').onsubmit = async e => {
-    e.preventDefault();
-    const r = Object.fromEntries([...new FormData(e.target)].map(([k, v]) => [k, Math.round(+v * 10) / 1000]));
-    const soma = Object.values(r).reduce((a, b) => a + b, 0);
-    if (Math.abs(soma - 1) > .001) return ($('#rateio-msg').textContent = `A soma dá ${(soma * 100).toFixed(1)}%; precisa dar 100%.`);
-    await put('/api/parametros/aluguel_rateio', {valor: JSON.stringify(r)}); $('#rateio-msg').textContent = 'Salvo.';
-  };
   $('#f-corte').onsubmit = async e => {
     e.preventDefault();
     const f = new FormData(e.target), dia = Math.round(+f.get('dia'));
@@ -1462,12 +1480,11 @@ const AJUDA = {
   'pessoas:s-saldos': `<p>Saldo com cada pessoa, somando acertos, contas divididas e parcelas que alguém te deve. Parcelas a vencer são as que ainda vão cair.</p>`,
   'pessoas:s-alguem-pagou-uma-conta-por-voce': `<p>Quando outra pessoa paga uma conta sua (condomínio, luz, mercado da casa): o gasto entra na categoria e vira dívida com ela, sem mexer no saldo da sua conta.</p>`,
   'pessoas:s-acertos-recentes': `<p>Os últimos acertos com pessoas: Pix que você mandou ou recebeu para quitar o que devia ou te deviam.</p>`,
-  'ajustes:titulo': `<p>Aparência, visualização, pessoas, rateio do aluguel, celular e planilha. Categorias e metas ficam no Orçamento.</p>`,
+  'ajustes:titulo': `<p>Aparência, visualização, pessoas, celular e planilha. Categorias e metas ficam no Orçamento.</p>`,
   'ajustes:s-aparencia': `<p>Tema claro ou escuro e papel de parede. Envie uma imagem para usar como fundo.</p>`,
   'ajustes:s-visualizacao': `<p>Vale só para este aparelho: largura, densidade, fonte, estilo dos painéis e dos gráficos, como as categorias aparecem no Painel, quais painéis mostrar e a ordem das abas.</p>
     <p>Cada painel se move pela alça ao lado do título e muda de tamanho pelo canto de baixo à direita.</p>`,
   'pessoas:s-cadastro': `<p>Como o nome de cada pessoa aparece no extrato (para reconhecer o Pix) e o que sugerir quando entra ou sai dinheiro dela: acerto ou uma categoria.</p>`,
-  'ajustes:s-rateio-do-aluguel': `<p>Quanto de cada boleto da imobiliária é de cada morador. Vira sugestão de divisão quando o boleto aparece: sua parte como gasto e a dos outros como acerto. A soma precisa dar 100%.</p>`,
   'ajustes:s-mes-da-entrada': `<p>Salário que cai no fim do mês paga o mês seguinte. <b>Ligado</b>: a renda que entra a partir do dia escolhido conta como entrada do mês seguinte, no Painel, em Lançamentos, no Orçamento e na Projeção (em Lançamentos ela aparece no mês em que conta, com "entra em"). <b>Desligado</b>: cada entrada conta no mês da data.</p>`,
   'ajustes:s-celular': `<p>O endereço e a chave para o app Finanças do celular, e os dados para a macro do MacroDroid mandar as notificações do banco para o site: endereço, chave e corpo da requisição. Abra esta tela no celular e copie cada campo.</p>`,
   'ajustes:s-planilha-e-sessao': `<p>Baixa tudo em planilha: no modelo antigo (.ods, preenchido pelo LibreOffice, leva alguns segundos) ou só as tabelas (.xlsx). Sair encerra a sessão neste aparelho.</p>`,
@@ -1522,7 +1539,7 @@ const PASSOS_TOUR = [
     <p class="tour-dados"><b>O que colocar:</b> o teto de cada categoria, no <b>Orçamento</b>. Sem teto, este número fica zerado.</p>`},
   {rota: 'painel', alvo: cartaoTour('resumo') + ' .kpis', titulo: 'Conta, cartão, pessoas e pendentes', texto: `<p><b>Conta</b>: o saldo que o app do banco mostra; a diferença para o que os lançamentos somam é o que ainda não foi lançado. <b>Dívida do cartão</b>: a fatura em aberto e o limite livre. <b>Você deve / te devem</b>: os saldos com pessoas. <b>Pendentes</b>: quantos lançamentos esperam você.</p>
     <p class="tour-dados"><b>O que colocar:</b> toque em <b>informar saldo do app</b> e digite o saldo que o app do banco mostra agora. Atualize de vez em quando.</p>`},
-  {rota: 'painel', alvo: cartaoTour('categorias'), titulo: 'Categorias', texto: `<p>Cada categoria contra o teto do período: quanto gastou, o teto, a porcentagem e quanto resta (<b class="pos">verde</b>) ou passou (<b class="neg">vermelho</b>). Os grupos abrem com um toque, e o ícone de barras ao lado do grupo mostra a evolução dos últimos meses.</p>
+  {rota: 'painel', alvo: cartaoTour('categorias'), titulo: 'Categorias', texto: `<p>Cada categoria contra o teto do período: quanto gastou, o teto, a porcentagem e quanto resta (<b class="pos">verde</b>) ou passou (<b class="neg">vermelho</b>). Toque num grupo para abrir; toque no título <b>Categorias</b> para abrir ou recolher todos. Segure um grupo ou uma categoria (ou use o ícone de barras) para ver a evolução.</p>
     <p>Parcela de compra antiga (da 2ª em diante) aparece à parte, como parcelas antigas, e não conta contra o teto.</p>`},
   {rota: 'painel', alvo: cartaoTour('grafico'), titulo: 'Entradas e gastos', texto: `<p>Entradas, gastos e poupança de cada mês (ou semana), com o orçado em tom claro atrás de cada barra. As caixinhas ligam e desligam cada série; toque numa coluna para ver os valores.</p>`},
   {rota: 'painel', alvo: cartaoTour('composicao'), titulo: 'Para onde foi', texto: `<p>A fatia de cada grupo (moradia, alimentação, transporte...) no gasto do período, em valor e porcentagem.</p>`},
@@ -1554,10 +1571,9 @@ const PASSOS_TOUR = [
   {rota: 'importar', alvo: cartaoTour('s-ultimas-importacoes'), titulo: 'Últimas importações', texto: `<p>O histórico: quantos lançamentos novos, quantos casaram com o que veio pelo celular e quantos já existiam.</p>`},
   {rota: 'pessoas', alvo: cartaoTour('s-saldos'), titulo: 'Quem deve a quem', texto: `<p>Positivo: a pessoa te deve. Negativo: você deve a ela. Muda quando uma parte de um lançamento é um <b>acerto</b>: dividir uma conta, receber o Pix de volta, pagar o que devia.</p>`},
   {rota: 'pessoas', alvo: cartaoTour('s-alguem-pagou-uma-conta-por-voce'), titulo: 'Alguém pagou por você', texto: `<p class="tour-dados"><b>O que colocar:</b> quando outra pessoa paga uma conta sua (a luz, o mercado da casa), lance aqui: o gasto entra na categoria e vira dívida com ela, sem mexer no saldo da sua conta.</p>`},
-  {rota: 'projecao', alvo: cartaoTour('proj-resumo'), titulo: 'Projeção', texto: `<p>Mês a mês até o horizonte: renda, custo de vida (do Orçamento), o cartão já contratado e o resultado. <b>Falta cobrir</b> soma os meses no vermelho; <b>saldo livre</b> é o que sobra depois de pagar quem você deve.</p>`},
+  {rota: 'projecao', alvo: cartaoTour('proj-resumo'), titulo: 'Projeção', texto: `<p>Mês a mês até o horizonte. <b>Renda</b> e <b>custo de vida</b> vêm do Orçamento de cada mês. A coluna <b>Cartão</b> soma só as parcelas de compras já feitas que ainda vão cair: o que você comprar depois entra no custo de vida, não ali, para não contar duas vezes. <b>Resultado</b> é o que sobra (verde) ou falta (vermelho) em cada mês. <b>Falta cobrir</b> soma os meses no vermelho; <b>saldo livre</b> é o que sobra depois de pagar quem você deve.</p>`},
   {rota: 'projecao', alvo: cartaoTour('proj-eventos'), titulo: 'Eventos', texto: `<p class="tour-dados"><b>O que colocar:</b> o que muda e quando: um aumento, uma renda que acaba, uma viagem, o 13º. A projeção recalcula na hora.</p>`},
   {rota: 'pessoas', alvo: cartaoTour('s-cadastro'), titulo: 'Cadastro de pessoas', texto: `<p class="tour-dados"><b>O que colocar:</b> quem divide contas com você, com o nome como aparece no extrato do banco. Assim o Pix dessa pessoa é reconhecido e vem com sugestão.</p>`},
-  {rota: 'ajustes', alvo: cartaoTour('s-rateio-do-aluguel'), titulo: 'Rateio do aluguel', texto: `<p class="tour-dados"><b>O que colocar:</b> se você divide o aluguel, quanto é de cada um (a soma dá 100%). O boleto da imobiliária vira sua parte como gasto e a dos outros como acerto.</p>`},
   {rota: 'ajustes', alvo: cartaoTour('s-celular'), titulo: 'Celular', texto: `<p>Para o celular mandar as compras na hora.</p>
       <p class="tour-dados"><b>O que fazer:</b> no app Finanças do celular, copie o <b>endereço</b> e a <b>chave</b> daqui. Quem usa o MacroDroid copia os três campos de baixo.</p>`},
   {rota: 'ajustes', alvo: cartaoTour('s-aparencia'), titulo: 'Aparência', texto: `<p>Tema claro ou escuro e papel de parede. Logo abaixo, em Visualização, o jeito como o site aparece neste aparelho. O botão <b>Rever o tour</b> fica aqui.</p>`},

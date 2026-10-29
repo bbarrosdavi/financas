@@ -265,6 +265,7 @@ def iniciar(path: str | Path | None = None) -> None:
 
 def _migrar(con: sqlite3.Connection) -> None:
     """Colunas acrescentadas depois da primeira versão do banco."""
+    con.execute("DELETE FROM parametros WHERE chave = \'aluguel_rateio\'")   # o rateio do aluguel saiu
     def tem(tabela, coluna):
         return any(r["name"] == coluna for r in con.execute(f"PRAGMA table_info({tabela})"))
     if not tem("categorias", "cor"):

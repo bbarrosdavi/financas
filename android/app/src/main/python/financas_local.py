@@ -46,6 +46,7 @@ class Configuracao:
         self.TITULAR = ""                             # vem do servidor na sincronização
         self.GEMINI_API_KEY, self.LLM_MODEL, self.LLM_TIMEOUT, self.LLM_MIN_CONFIDENCE = "", "", 8.0, 0.8
         self.PAPEIS_DIR = str(pasta / "papeis")
+        self.PAPEL_PADRAO = "papel-padrao.jpg"         # vem no APK como recurso (a tela desenha)
         self.DEDUP_WINDOW_MINUTES, self.QUEUE_MAXSIZE, self.MAX_ATTEMPTS = 10, 500, 3
         self.tz = ZoneInfo(fuso)
         self.llm_configured = False

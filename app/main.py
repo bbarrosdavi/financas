@@ -133,8 +133,11 @@ def sincronizar(body: Sincronia):
 
 def _papel_do_dono() -> Path | None:
     with db.conectar_real() as con:
-        nome = db.parametro(con, "papel_de_parede", "") or ""
+        nome = db.parametro(con, "papel_de_parede", None)
+    nome = settings.PAPEL_PADRAO if nome is None else nome
     f = Path(settings.PAPEIS_DIR) / Path(nome).name if nome else None
+    if f and not f.is_file() and f.name == settings.PAPEL_PADRAO:
+        f = WEB / settings.PAPEL_PADRAO
     return f if f and f.is_file() else None
 
 
@@ -637,7 +640,7 @@ class Param(BaseModel):
 
 @app.put("/api/parametros/{chave}", dependencies=[api])
 def definir_param(chave: str, body: Param):
-    if chave not in ("salario_mensal", "horizonte", "dia_renda_mes_seguinte", "renda_mes_seguinte", "taxa_ponte_picpay", "aluguel_rateio", "cores_grupos"):
+    if chave not in ("salario_mensal", "horizonte", "dia_renda_mes_seguinte", "renda_mes_seguinte", "taxa_ponte_picpay", "cores_grupos"):
         raise HTTPException(400, "Parâmetro não editável pelo site.")
     with db.conectar() as con:
         db.definir_parametro(con, chave, body.valor)
@@ -705,8 +708,10 @@ def aparencia_conta():
 @app.get("/api/papeis", dependencies=[api])
 def listar_papeis():
     with db.conectar() as con:
-        atual = db.parametro(con, "papel_de_parede", "")
-    return {"atual": atual, "papeis": sorted(f.name for f in _papeis().iterdir() if f.suffix.lower() in MIDIA)}
+        atual = db.parametro(con, "papel_de_parede", None)
+    # Quem nunca escolheu fica com o papel padrão; quem escolheu "sem papel de parede" fica sem.
+    nomes = {f.name for f in _papeis().iterdir() if f.suffix.lower() in MIDIA} | {settings.PAPEL_PADRAO}
+    return {"atual": settings.PAPEL_PADRAO if atual is None else atual, "papeis": sorted(nomes)}
 
 
 @app.post("/api/papeis", dependencies=[api])
@@ -743,6 +748,8 @@ def apagar_papel(nome: str):
 @app.get("/papel/{nome}", dependencies=[api])
 def papel(nome: str):
     f = _papeis() / Path(nome).name
+    if not f.exists() and f.name == settings.PAPEL_PADRAO:
+        f = WEB / settings.PAPEL_PADRAO          # o padrão vem com o app
     if not f.exists() or f.suffix.lower() not in MIDIA:
         raise HTTPException(404)
     return FileResponse(f, media_type=MIDIA[f.suffix.lower()], headers={"Cache-Control": "private, max-age=604800"})

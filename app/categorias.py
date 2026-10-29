@@ -67,8 +67,6 @@ PARAMETROS = {
     "salario_mensal": "0",
     "dia_renda_mes_seguinte": "25",
     "renda_mes_seguinte": "1",
-    # Rateio do boleto da imobiliária entre os moradores: {"eu": 0.5, "<id da pessoa>": 0.5}. Vazio = não sugere.
-    "aluguel_rateio": "{}",
     "taxa_ponte_picpay": "0.049",
 }
 
