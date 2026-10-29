@@ -3,7 +3,9 @@ package io.github.bbarrosdavi.financas.ui
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -66,13 +68,14 @@ import androidx.compose.ui.unit.sp
 /** O painel do site: fundo do tema, cantos de 14 dp, título em versalete pequeno e, se houver, um subtítulo. */
 @Composable
 fun Cartao(titulo: String? = null, modifier: Modifier = Modifier, sub: String? = null, acao: (@Composable RowScope.() -> Unit)? = null,
-           conteudo: @Composable ColumnScope.() -> Unit) {
+           aoTocarTitulo: (() -> Unit)? = null, conteudo: @Composable ColumnScope.() -> Unit) {
     Surface(modifier = modifier.fillMaxWidth(), shape = RoundedCornerShape(12.dp), color = cores.painel,
         shadowElevation = 0.dp, border = BorderStroke(1.dp, cores.linha)) {
         Column(Modifier.padding(horizontal = 12.dp, vertical = 10.dp)) {
             if (titulo != null) {
-                Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(bottom = 6.dp)) {
-                    Text(titulo.uppercase(), color = cores.texto2, fontSize = 11.sp, fontWeight = FontWeight.Bold, letterSpacing = 0.8.sp,
+                Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(bottom = 6.dp)
+                    .then(if (aoTocarTitulo != null) Modifier.clickable(onClick = aoTocarTitulo) else Modifier)) {
+                    Text(titulo.uppercase() + if (aoTocarTitulo != null) "  ⌄" else "", color = cores.texto2, fontSize = 11.sp, fontWeight = FontWeight.Bold, letterSpacing = 0.8.sp,
                         modifier = Modifier.weight(1f))
                     if (sub != null) Text(sub, color = cores.mudo, fontSize = 11.sp)
                     acao?.invoke(this)
@@ -170,7 +173,7 @@ fun BotaoSecundario(texto: String, modifier: Modifier = Modifier, aoTocar: () ->
 fun Campo(valor: String, aoMudar: (String) -> Unit, rotulo: String, modifier: Modifier = Modifier, numerico: Boolean = false,
           dica: String? = null, linhas: Int = 1) {
     Column(modifier.fillMaxWidth()) {
-        Text(rotulo, color = cores.mudo, fontSize = 11.sp, modifier = Modifier.padding(bottom = 3.dp))
+        if (rotulo.isNotEmpty()) Text(rotulo, color = cores.mudo, fontSize = 11.sp, modifier = Modifier.padding(bottom = 3.dp))
         BasicTextField(value = valor, onValueChange = aoMudar, singleLine = linhas == 1, minLines = linhas,
             textStyle = TextStyle(color = cores.texto, fontSize = 14.sp), cursorBrush = SolidColor(cores.acento),
             keyboardOptions = if (numerico) KeyboardOptions(keyboardType = KeyboardType.Decimal) else KeyboardOptions.Default,
@@ -268,4 +271,17 @@ fun Titulo(texto: String, detalhe: String? = null) {
         if (detalhe != null) Text("  $detalhe", color = cores.mudo, fontSize = 13.sp, modifier = Modifier.widthIn(max = 220.dp), maxLines = 1,
             overflow = TextOverflow.Ellipsis)
     }
+}
+
+/** O toque faz o de sempre; tocar e segurar abre o gráfico da categoria ou do grupo, em qualquer tela. */
+@OptIn(ExperimentalFoundationApi::class)
+fun Modifier.tocarOuSegurar(categoria: String? = null, grupo: String? = null, nome: String = "", aoTocar: () -> Unit = {}): Modifier {
+    val consulta = when {
+        grupo != null -> "grupo=${Api.q(grupo)}"
+        categoria != null && !categoria.startsWith("meta:") -> "categoria=${Api.q(categoria)}"
+        else -> null
+    }
+    return combinedClickable(onClick = aoTocar, onLongClick = consulta?.let { q ->
+        { Estado.grafico = q to nome.ifEmpty { grupo ?: Vocab.categoria(categoria)?.s("nome") ?: "" } }
+    })
 }

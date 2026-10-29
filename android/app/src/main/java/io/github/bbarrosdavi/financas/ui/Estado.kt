@@ -16,6 +16,8 @@ object Estado {
     var pendentes by mutableIntStateOf(0)
     var demo by mutableStateOf(false)
     var mensagem by mutableStateOf<String?>(null)
+    /** O gráfico aberto por "tocar e segurar" numa categoria ou num grupo (consulta da evolução, nome). */
+    var grafico by mutableStateOf<Pair<String, String>?>(null)
     fun mudou() { versao++ }
 }
 

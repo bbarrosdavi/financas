@@ -25,6 +25,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -51,17 +52,18 @@ import kotlin.math.roundToInt
 @Composable
 fun TelaPainel(irPara: (String) -> Unit) {
     var periodo by rememberSaveable { mutableStateOf("") }
+    var comparar by rememberSaveable { mutableStateOf(false) }
     val c = carregar(periodo) { Api.obj("/api/painel" + if (periodo.isNotEmpty()) "?periodo=$periodo" else "") }
     val p = c.dado ?: return EstadoCarga(c)
     Column(Modifier.verticalScroll(rememberScrollState()).padding(horizontal = 10.dp, vertical = 8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        Periodo(p) { periodo = it }
-        Resultado(p)
+        Periodo(p, comparar, { comparar = it }) { periodo = it }
+        Resultado(p, comparar)
         PodeGastar(p)
         Kpis(p, irPara)
-        Categorias(p)
+        Categorias(p, comparar)
         Grafico(p)
         Composicao(p)
-        Entradas(p)
+        Entradas(p, comparar)
         Metas(p, irPara)
         Cobrancas(p)
         Destinos(p)
@@ -71,7 +73,7 @@ fun TelaPainel(irPara: (String) -> Unit) {
 }
 
 @Composable
-private fun Periodo(p: JSONObject, ir: (String) -> Unit) {
+private fun Periodo(p: JSONObject, comparar: Boolean, aoComparar: (Boolean) -> Unit, ir: (String) -> Unit) {
     val tipo = p.s("tipo")
     val hoje = LocalDate.parse(p.s("hoje"))
     Cartao(modifier = Modifier.alvo("periodo")) {
@@ -86,19 +88,23 @@ private fun Periodo(p: JSONObject, ir: (String) -> Unit) {
             IconButton(onClick = { ir(p.s("proximo")) }) { Icon(Icones.seta, "Período seguinte", tint = cores.texto) }
             TextButton(onClick = { ir(periodoDo(tipo, hoje)) }) { Text("Hoje", color = cores.acento) }
         }
+        Marcar("Comparar com ${rotuloAnterior(p)}", comparar, aoComparar)
     }
 }
 
 @Composable
-private fun Resultado(p: JSONObject) {
+private fun Resultado(p: JSONObject, comparar: Boolean) {
     val t = p.getJSONObject("totais")
+    val ta = p.optJSONObject("totais_anterior")
     val tipo = p.s("tipo")
     val guardado = p.lista("metas").sumOf { it.d("guardado_periodo") }
     Cartao("Resultado " + when (tipo) { "semana" -> "da semana"; "ano" -> "do ano"; else -> "do mês" }, Modifier.alvo("resultado")) {
         Grande(sinal(t.d("resultado")), if (t.d("resultado") < 0) cores.ruim else cores.ok)
         Spacer(Modifier.height(6.dp))
         LinhaKV("Entradas", brl(t.d("renda")))
+        if (comparar && ta != null) Anterior(p, ta.d("renda"))
         LinhaKV("Gastos", brl(t.d("gasto")))
+        if (comparar && ta != null) Anterior(p, ta.d("gasto"))
         LinhaKV("Juros e taxas", brl(t.d("juros")), if (t.d("juros") > 0) cores.ruim else cores.texto)
         if (guardado != 0.0) LinhaKV("Guardado em metas", brl(guardado), cores.ok)
     }
@@ -185,7 +191,7 @@ fun InformarSaldo(aoFechar: () -> Unit) {
 }
 
 @Composable
-private fun Categorias(p: JSONObject) {
+private fun Categorias(p: JSONObject, comparar: Boolean) {
     val ritmo = p.d("ritmo")
     val cats = p.lista("categorias").filter { it.d("gasto") != 0.0 || it.d("parcelas") != 0.0 }
     val grupos = cats.groupBy { it.s("grupo") }.map { (g, cs) ->
@@ -195,18 +201,23 @@ private fun Categorias(p: JSONObject) {
     }.sortedWith(compareByDescending<Triple<String, List<JSONObject>, DoubleArray>> { it.third[3] }.thenByDescending { it.third[0] })
     var evolucao by remember { mutableStateOf<Pair<String, String>?>(null) }
     val acimaTot = cats.sumOf { it.d("acima") }
-    Cartao("Categorias", Modifier.alvo("categorias"), sub = when (p.s("tipo")) { "ano" -> "teto acumulado no ano"; "semana" -> "teto do mês ÷ 4"; else -> "teto do mês" }) {
+    // Abertos ou recolhidos; tocar no título abre ou recolhe todos de uma vez.
+    val abertos = remember(p) { mutableStateMapOf<String, Boolean>().apply { grupos.forEach { (g, _, tot) -> put(g, tot[3] > 0) } } }
+    Cartao("Categorias", Modifier.alvo("categorias"), sub = when (p.s("tipo")) { "ano" -> "teto acumulado no ano"; "semana" -> "teto do mês ÷ 4"; else -> "teto do mês" },
+        aoTocarTitulo = { val abrir = abertos.values.any { !it }; abertos.keys.toList().forEach { abertos[it] = abrir } }) {
         if (acimaTot > 0) Text("${brl(acimaTot)} acima do teto em ${cats.count { it.d("acima") > 0 }} categoria(s)", color = cores.ruim,
             fontWeight = FontWeight.SemiBold, fontSize = 13.sp, modifier = Modifier.padding(bottom = 6.dp))
         if (grupos.isEmpty()) Vazio("Nenhum gasto no período.")
         grupos.forEach { (g, cs, tot) ->
-            var aberto by rememberSaveable(g) { mutableStateOf(tot[3] > 0) }
+            val aberto = abertos[g] ?: false
             val teto = tot[1].takeIf { it >= 0 }
             LinhaGasto(nome = g, cor = corGrupo(g), gasto = tot[0], teto = teto, acima = if (teto != null) max(0.0, tot[0] - teto) else 0.0,
-                parcelas = tot[2], ritmo = null, negrito = true, aoTocar = { aberto = !aberto }, sufixo = if (aberto) "▴" else "▾")
+                parcelas = tot[2], ritmo = null, negrito = true, aoTocar = { abertos[g] = !aberto }, sufixo = if (aberto) "▴" else "▾", grupo = g,
+                anterior = if (comparar) cs.sumOf { it.d("anterior") } to rotuloAnterior(p) else null)
             if (aberto) cs.forEach { cat ->
                 LinhaGasto(nome = cat.s("nome"), cor = corCategoria(cat.s("id")), gasto = cat.d("gasto"), teto = cat.dn("teto"), acima = cat.d("acima"),
-                    parcelas = cat.d("parcelas"), ritmo = if (cat.optInt("fixa") == 0) ritmo else null, recuo = true,
+                    parcelas = cat.d("parcelas"), ritmo = if (cat.optInt("fixa") == 0) ritmo else null, recuo = true, categoria = cat.s("id"),
+                    anterior = if (comparar) cat.d("anterior") to rotuloAnterior(p) else null,
                     aoTocar = { evolucao = "categoria=${Api.q(cat.s("id"))}" to cat.s("nome") })
             }
             Divisor()
@@ -217,10 +228,11 @@ private fun Categorias(p: JSONObject) {
 
 @Composable
 private fun LinhaGasto(nome: String, cor: Color, gasto: Double, teto: Double?, acima: Double, parcelas: Double, ritmo: Double?,
-                       negrito: Boolean = false, recuo: Boolean = false, sufixo: String = "", aoTocar: () -> Unit) {
+                       negrito: Boolean = false, recuo: Boolean = false, sufixo: String = "", categoria: String? = null, grupo: String? = null,
+                       anterior: Pair<Double, String>? = null, aoTocar: () -> Unit) {
     val pct = if (teto != null && teto > 0) gasto / teto else if (gasto > 0) 2.0 else 0.0
     val corBarra = when { teto == null -> cores.mudo; acima > 0 -> cores.ruim; ritmo != null && pct > ritmo + .1 -> cores.atencao; else -> cores.ok }
-    Column(Modifier.fillMaxWidth().clickable(onClick = aoTocar).padding(start = if (recuo) 18.dp else 0.dp, top = 8.dp, bottom = 8.dp)) {
+    Column(Modifier.fillMaxWidth().tocarOuSegurar(categoria, grupo, nome, aoTocar).padding(start = if (recuo) 18.dp else 0.dp, top = 8.dp, bottom = 8.dp)) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Bolinha(cor)
             Text("  $nome $sufixo", color = cores.texto, fontSize = 14.sp, fontWeight = if (negrito) FontWeight.SemiBold else FontWeight.Normal,
@@ -236,11 +248,21 @@ private fun LinhaGasto(nome: String, cor: Color, gasto: Double, teto: Double?, a
                 color = if (acima > 0) cores.ruim else cores.ok, fontSize = 11.sp, fontWeight = FontWeight.SemiBold)
         }
         if (parcelas != 0.0) Text("+ ${brl(parcelas)} de parcelas antigas", color = cores.mudo, fontSize = 11.sp)
+        anterior?.let { (v, rot) -> Text("$rot: ${brl(v)}", color = cores.mudo, fontSize = 11.sp) }
     }
 }
 
+/** O período anterior, para o "comparar": "set/26", "2025" ou "semana anterior". */
+private fun rotuloAnterior(p: JSONObject) = p.s("anterior").let { a ->
+    when (p.s("tipo")) { "ano" -> a; "semana" -> "semana anterior"; else -> if (a.length == 7) mesCurto("$a-01") else a }
+}
+
 @Composable
-private fun Evolucao(q: String, nome: String, tipo: String, aoFechar: () -> Unit) {
+private fun Anterior(p: JSONObject, v: Double) = Text("${rotuloAnterior(p)}: ${brl(v)}", color = cores.mudo, fontSize = 11.sp,
+    modifier = Modifier.fillMaxWidth().padding(bottom = 2.dp), textAlign = androidx.compose.ui.text.style.TextAlign.End)
+
+@Composable
+fun Evolucao(q: String, nome: String, tipo: String, aoFechar: () -> Unit) {
     val c = carregar(q, tipo) { Api.lista("/api/evolucao?tipo=$tipo&$q").objs() }
     AlertDialog(onDismissRequest = aoFechar, containerColor = cores.painelForte, title = { Text("Evolução: $nome") },
         confirmButton = { TextButton(onClick = aoFechar) { Text("Fechar", color = cores.acento) } },
@@ -333,7 +355,7 @@ private fun Composicao(p: JSONObject) {
         }
         Spacer(Modifier.height(8.dp))
         grupos.forEach { (n, v) ->
-            Row(Modifier.padding(vertical = 3.dp), verticalAlignment = Alignment.CenterVertically) {
+            Row(Modifier.fillMaxWidth().tocarOuSegurar(grupo = n, nome = n).padding(vertical = 3.dp), verticalAlignment = Alignment.CenterVertically) {
                 Bolinha(corGrupo(n)); Text("  $n", color = cores.texto, fontSize = 14.sp, modifier = Modifier.weight(1f))
                 Text(brl(v), color = cores.texto, fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
                 Text("  ${(v / total * 100).roundToInt()}%", color = cores.mudo, fontSize = 12.sp, modifier = Modifier.width(44.dp))
@@ -343,11 +365,16 @@ private fun Composicao(p: JSONObject) {
 }
 
 @Composable
-private fun Entradas(p: JSONObject) {
+private fun Entradas(p: JSONObject, comparar: Boolean) {
     val ents = p.lista("entradas").filter { it.d("valor") != 0.0 }
     Cartao("Entradas do período", Modifier.alvo("entradas")) {
         if (ents.isEmpty()) Vazio("Nenhuma entrada no período.")
-        ents.forEach { e -> LinhaKV("${e.s("nome")} (${e.optInt("n")})", brl(e.d("valor")), negrito = false) }
+        ents.forEach { e ->
+            Column(Modifier.fillMaxWidth().tocarOuSegurar(categoria = e.s("id"), nome = e.s("nome"))) {
+                LinhaKV("${e.s("nome")} (${e.optInt("n")})", brl(e.d("valor")), negrito = false)
+                if (comparar) Anterior(p, e.d("anterior"))
+            }
+        }
         if (ents.isNotEmpty()) { Divisor(); LinhaKV("Total", brl(p.getJSONObject("totais").d("renda"))) }
     }
 }

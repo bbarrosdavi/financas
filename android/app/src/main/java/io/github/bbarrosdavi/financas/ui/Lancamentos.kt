@@ -74,11 +74,11 @@ private fun corTipo(t: String): Color = when (t) {
     else -> cores.s3
 }
 
+@OptIn(androidx.compose.foundation.ExperimentalFoundationApi::class)
 @Composable
 fun TelaLancamentos() {
     val base = carregar { Api.lista("/api/meses").let { a -> (0 until a.length()).map { a.getString(it) } } to Api.lista("/api/contas").objs() }
     val (meses, contas) = base.dado ?: return EstadoCarga(base)
-    var mes by rememberSaveable { mutableStateOf(meses.firstOrNull() ?: "") }
     var categoria by rememberSaveable { mutableStateOf("") }
     var tipo by rememberSaveable { mutableStateOf("") }
     var busca by rememberSaveable { mutableStateOf("") }
@@ -86,8 +86,8 @@ fun TelaLancamentos() {
     var ate by rememberSaveable { mutableStateOf("") }
     var buscaAtiva by remember { mutableStateOf(busca) }
     LaunchedEffect(busca) { delay(300); buscaAtiva = busca }
-    val c = carregar(mes, de, ate, categoria, tipo, buscaAtiva) {
-        val q = listOfNotNull(mes.takeIf { it.isNotEmpty() }?.let { "mes=$it" }, de.takeIf { it.isNotEmpty() }?.let { "de=$it" },
+    val c = carregar(de, ate, categoria, tipo, buscaAtiva) {
+        val q = listOfNotNull(de.takeIf { it.isNotEmpty() }?.let { "de=$it" },
             ate.takeIf { it.isNotEmpty() }?.let { "ate=$it" }, categoria.takeIf { it.isNotEmpty() }?.let { "categoria=${Api.q(it)}" },
             buscaAtiva.takeIf { it.isNotBlank() }?.let { "busca=${Api.q(it)}" }, if (tipo == "Pendente") "pendentes=true" else null).joinToString("&")
         Api.lista("/api/lancamentos?$q").objs().filter { tipo.isEmpty() || tipoLanc(it) == tipo }
@@ -98,33 +98,29 @@ fun TelaLancamentos() {
     Box(Modifier.fillMaxSize()) {
         LazyColumn(Modifier.fillMaxSize(), contentPadding = PaddingValues(start = 10.dp, end = 10.dp, top = 8.dp, bottom = 80.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            item { Resumo(c.dado, contas, mes) }
-            item {
+            item { Resumo(c.dado, contas, "") }
+            // Os filtros no modelo da navegação do Orçamento, fixos no alto ao rolar.
+            stickyHeader {
                 Cartao(modifier = Modifier.alvo("lancFiltros")) {
                     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        // Mês ou intervalo: um limpa o outro (no intervalo, tudo conta pela data).
-                        Seletor("Mês", listOf("" to "todos os meses") + meses.map { it to mesLongo(it) }, mes, Modifier.weight(1f)) {
-                            mes = it; if (it.isNotEmpty()) { de = ""; ate = "" }
-                        }
-                        Seletor("Tipo", listOf("" to "todos os tipos") + TIPOS.map { it to it }, tipo, Modifier.weight(1f)) { tipo = it }
-                    }
-                    Spacer(Modifier.height(6.dp))
-                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        CampoData("De", de, Modifier.weight(1f)) { de = it; if (it.isNotEmpty()) mes = "" }
-                        CampoData("Até", ate, Modifier.weight(1f)) { ate = it; if (it.isNotEmpty()) mes = "" }
-                    }
-                    Spacer(Modifier.height(6.dp))
-                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+                        Seletor("Tipo", listOf("" to "todos") + TIPOS.map { it to it }, tipo, Modifier.weight(1f)) { tipo = it }
                         var escolher by remember { mutableStateOf(false) }
                         CampoToque("Categoria", if (categoria.isEmpty()) "todas" else Vocab.categoria(categoria)?.s("nome"), Modifier.weight(1f)) { escolher = true }
                         if (escolher) EscolherDaLista("Categoria", listOf("" to "todas as categorias") +
                             Vocab.categorias.map { it.s("id") to "${it.s("grupo")}: ${it.s("nome")}" }, { escolher = false }) { categoria = it }
-                        Campo(busca, { busca = it }, "Buscar", Modifier.weight(1f))
                     }
-                    if (mes.isNotEmpty() || de.isNotEmpty() || ate.isNotEmpty() || categoria.isNotEmpty() || tipo.isNotEmpty() || busca.isNotEmpty())
-                        TextButton(onClick = { mes = ""; de = ""; ate = ""; categoria = ""; tipo = ""; busca = "" }) {
-                            Text("Limpar filtros", color = cores.acento, fontSize = 13.sp)
-                        }
+                    Row(Modifier.padding(top = 6.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                        CampoData("De", de, Modifier.weight(1f)) { de = it }
+                        Text("a", color = cores.mudo, fontSize = 12.sp)
+                        CampoData("Até", ate, Modifier.weight(1f)) { ate = it }
+                    }
+                    Row(Modifier.padding(top = 6.dp), verticalAlignment = Alignment.CenterVertically) {
+                        Campo(busca, { busca = it }, "", Modifier.weight(1f), dica = "Buscar")
+                        if (de.isNotEmpty() || ate.isNotEmpty() || categoria.isNotEmpty() || tipo.isNotEmpty() || busca.isNotEmpty())
+                            TextButton(onClick = { de = ""; ate = ""; categoria = ""; tipo = ""; busca = "" }) {
+                                Text("Limpar", color = cores.acento, fontSize = 13.sp)
+                            }
+                    }
                 }
             }
             val ls = c.dado
@@ -184,7 +180,7 @@ private fun Resumo(dados: List<JSONObject>?, contas: List<JSONObject>, mes: Stri
 private fun LinhaLanc(l: JSONObject, modifier: Modifier, aoTocar: () -> Unit) {
     val t = tipoLanc(l)
     val partes = l.lista("partes")
-    Cartao(modifier = modifier.clickable(onClick = aoTocar)) {
+    Cartao(modifier = modifier.tocarOuSegurar(categoria = partes.firstOrNull { it.s("categoria").isNotEmpty() }?.s("categoria"), aoTocar = aoTocar)) {
         Row(verticalAlignment = Alignment.Top) {
             Column(Modifier.weight(1f)) {
                 Row(verticalAlignment = Alignment.CenterVertically) {

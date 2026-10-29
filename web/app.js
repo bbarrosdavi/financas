@@ -1333,9 +1333,9 @@ async function ajustes(t) {
     </div>
 
     <div class="grade meio">
-    <section class="painel vidro"><h3>Celular <small>app Finanças ou MacroDroid</small></h3>
-      <p class="sub">Abra esta tela no celular. No app Finanças, copie o endereço e a chave. No MacroDroid, copie os três campos de baixo para a ação "Requisição HTTP" da macro.</p>
-      ${[['Endereço do servidor (app Finanças)', cel.base], ['Chave (app Finanças)', cel.chave], ['URL (método POST)', cel.url], ['Cabeçalho Authorization', cel.authorization], ['Corpo (application/json)', cel.corpo]]
+    <section class="painel vidro"><h3>Celular <small>app Avareza ou MacroDroid</small></h3>
+      <p class="sub">Abra esta tela no celular. No app Avareza, copie o endereço e a chave. No MacroDroid, copie os três campos de baixo para a ação "Requisição HTTP" da macro.</p>
+      ${[['Endereço do servidor (app Avareza)', cel.base], ['Chave (app Avareza)', cel.chave], ['URL (método POST)', cel.url], ['Cabeçalho Authorization', cel.authorization], ['Corpo (application/json)', cel.corpo]]
         .map(([k, v], i) => `<label class="c">${k}<span class="barra" style="margin:2px 0 8px"><input readonly value="${esc(v)}" style="flex:1" id="cel${i}"><button data-copiar="cel${i}">copiar</button></span></label>`).join('')}</section>
     <section class="painel vidro"><h3>Planilha e sessão</h3>
       <p class="sub">No modelo da planilha antiga (.ods): Budget Dashboard, Planning com o orçamento de cada mês, Tracking com renda, gasto e poupança (pendentes em âmbar), Despesas Fixas, e depois as tabelas do site em abas. A simples (.xlsx) tem só as tabelas.</p>
@@ -1486,7 +1486,7 @@ const AJUDA = {
     <p>Cada painel se move pela alça ao lado do título e muda de tamanho pelo canto de baixo à direita.</p>`,
   'pessoas:s-cadastro': `<p>Como o nome de cada pessoa aparece no extrato (para reconhecer o Pix) e o que sugerir quando entra ou sai dinheiro dela: acerto ou uma categoria.</p>`,
   'ajustes:s-mes-da-entrada': `<p>Salário que cai no fim do mês paga o mês seguinte. <b>Ligado</b>: a renda que entra a partir do dia escolhido conta como entrada do mês seguinte, no Painel, em Lançamentos, no Orçamento e na Projeção (em Lançamentos ela aparece no mês em que conta, com "entra em"). <b>Desligado</b>: cada entrada conta no mês da data.</p>`,
-  'ajustes:s-celular': `<p>O endereço e a chave para o app Finanças do celular, e os dados para a macro do MacroDroid mandar as notificações do banco para o site: endereço, chave e corpo da requisição. Abra esta tela no celular e copie cada campo.</p>`,
+  'ajustes:s-celular': `<p>O endereço e a chave para o app Avareza do celular, e os dados para a macro do MacroDroid mandar as notificações do banco para o site: endereço, chave e corpo da requisição. Abra esta tela no celular e copie cada campo.</p>`,
   'ajustes:s-planilha-e-sessao': `<p>Baixa tudo em planilha: no modelo antigo (.ods, preenchido pelo LibreOffice, leva alguns segundos) ou só as tabelas (.xlsx). Sair encerra a sessão neste aparelho.</p>`,
 };
 const popAjuda = Object.assign(document.createElement('div'), {className: 'ajuda-pop', hidden: true});
@@ -1575,7 +1575,7 @@ const PASSOS_TOUR = [
   {rota: 'projecao', alvo: cartaoTour('proj-eventos'), titulo: 'Eventos', texto: `<p class="tour-dados"><b>O que colocar:</b> o que muda e quando: um aumento, uma renda que acaba, uma viagem, o 13º. A projeção recalcula na hora.</p>`},
   {rota: 'pessoas', alvo: cartaoTour('s-cadastro'), titulo: 'Cadastro de pessoas', texto: `<p class="tour-dados"><b>O que colocar:</b> quem divide contas com você, com o nome como aparece no extrato do banco. Assim o Pix dessa pessoa é reconhecido e vem com sugestão.</p>`},
   {rota: 'ajustes', alvo: cartaoTour('s-celular'), titulo: 'Celular', texto: `<p>Para o celular mandar as compras na hora.</p>
-      <p class="tour-dados"><b>O que fazer:</b> no app Finanças do celular, copie o <b>endereço</b> e a <b>chave</b> daqui. Quem usa o MacroDroid copia os três campos de baixo.</p>`},
+      <p class="tour-dados"><b>O que fazer:</b> no app Avareza do celular, copie o <b>endereço</b> e a <b>chave</b> daqui. Quem usa o MacroDroid copia os três campos de baixo.</p>`},
   {rota: 'ajustes', alvo: cartaoTour('s-aparencia'), titulo: 'Aparência', texto: `<p>Tema claro ou escuro e papel de parede. Logo abaixo, em Visualização, o jeito como o site aparece neste aparelho. O botão <b>Rever o tour</b> fica aqui.</p>`},
   {rota: 'painel', titulo: 'Pronto para começar', texto: () => `<p>Um bom começo:</p>
     ${DEMO ? '<p>Explore à vontade com os dados de demonstração. Para começar de verdade, toque em <b>Remover dados de demonstração</b> e então:</p>' : ''}

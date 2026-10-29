@@ -147,7 +147,7 @@ fun TelaPessoas() {
             }
         }
         Cartao("Alguém pagou por você", Modifier.alvo("pessoasPagou")) {
-            Text("Condomínio, luz, gás, mercado da casa: o gasto é seu, o dinheiro saiu de outra pessoa. Vira gasto na categoria e dívida com ela, sem mexer no saldo da conta.",
+            Text("Uma conta sua que outra pessoa pagou.",
                 color = cores.texto2, fontSize = 13.sp)
             Spacer(Modifier.height(8.dp))
             BotaoPrimario("Lançar conta que alguém pagou", Modifier.fillMaxWidth()) { pagou = true }

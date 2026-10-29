@@ -5,6 +5,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
@@ -64,7 +65,9 @@ fun TelaOrcamento() {
     var ano by rememberSaveable { mutableStateOf(LocalDate.now().year) }
     var mes by rememberSaveable { mutableStateOf(LocalDate.now().toString().take(7)) }
     val c = carregar(ano) { Api.obj("/api/orcamento?ano=$ano") to Api.lista("/api/metas").objs() }
-    Column(Modifier.verticalScroll(rememberScrollState()).padding(horizontal = 10.dp, vertical = 8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+    // A navegação fica fixa no alto; só o conteúdo rola.
+    Column(Modifier.fillMaxSize()) {
+      Box(Modifier.padding(start = 10.dp, end = 10.dp, top = 8.dp, bottom = 4.dp)) {
         Cartao(modifier = Modifier.alvo("orcAbas")) {
             Segmentos(ABAS_ORC, aba) { aba = it }
             if (aba == "mes" || aba == "ano" || aba == "fixas") Row(Modifier.padding(top = 6.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -76,6 +79,9 @@ fun TelaOrcamento() {
                     Icon(Icones.seta, "Período seguinte", tint = cores.texto) }
             }
         }
+      }
+      Column(Modifier.weight(1f).verticalScroll(rememberScrollState()).padding(start = 10.dp, end = 10.dp, bottom = 8.dp),
+          verticalArrangement = Arrangement.spacedBy(8.dp)) {
         val (g, metas) = c.dado ?: return@Column EstadoCarga(c)
         val linhas = g.lista("linhas").map(::LinhaOrc)
         val parcelas = g.optJSONObject("parcelas") ?: JSONObject()
@@ -87,6 +93,7 @@ fun TelaOrcamento() {
             "categorias" -> AbaCategorias()
             "metas" -> AbaMetas(metas)
         }
+      }
     }
 }
 
@@ -108,7 +115,7 @@ private fun AbaMes(linhas: List<LinhaOrc>, mes: String, parcelas: Double) {
     Cartao("A alocar", sub = "entradas menos gastos e poupança") {
         LinhaKV("Orçado", sinal(alocarOrc), if (alocarOrc < -.5) cores.ruim else cores.ok)
         if (!futuro) LinhaKV("Realizado", sinal(alocarReal), if (alocarReal < -.5) cores.ruim else cores.ok)
-        Text("Toque numa linha para mudar o orçado do mês. Cinza é o padrão (teto da categoria, soma das fixas ou aporte da meta).",
+        Text("Toque numa linha para mudar.",
             color = cores.mudo, fontSize = 12.sp, modifier = Modifier.padding(top = 4.dp))
     }
     @Composable
@@ -116,10 +123,10 @@ private fun AbaMes(linhas: List<LinhaOrc>, mes: String, parcelas: Double) {
         Cartao(titulo) {
             Cabecalho(futuro)
             if (porGrupo) ls.groupBy { it.grupo }.forEach { (gr, gls) ->
-                LinhaValores(gr, corGrupo(gr), gls.sumOf { it.orcado(mes) ?: 0.0 }, if (futuro) null else gls.sumOf { it.realizado(mes) }, "gasto", negrito = true)
-                gls.forEach { l -> LinhaValores(l.nome, l.cor, l.orcado(mes), if (futuro) null else l.realizado(mes), l.tipo, recuo = true,
+                LinhaValores(gr, corGrupo(gr), gls.sumOf { it.orcado(mes) ?: 0.0 }, if (futuro) null else gls.sumOf { it.realizado(mes) }, "gasto", negrito = true, grupo = gr)
+                gls.forEach { l -> LinhaValores(l.nome, l.cor, l.orcado(mes), if (futuro) null else l.realizado(mes), l.tipo, recuo = true, categoria = l.chave,
                     padrao = !l.definido(mes)) { editando = l } }
-            } else ls.forEach { l -> LinhaValores(l.nome, l.cor, l.orcado(mes), if (futuro) null else l.realizado(mes), l.tipo,
+            } else ls.forEach { l -> LinhaValores(l.nome, l.cor, l.orcado(mes), if (futuro) null else l.realizado(mes), l.tipo, categoria = l.chave,
                 padrao = !l.definido(mes)) { editando = l } }
             if (ls.isEmpty()) Vazio(if (titulo == "Poupança") "Nenhuma meta ativa." else "Nada aqui.")
             if (extra != 0.0 && !futuro) LinhaValores("Parcelas de compras antigas", cores.mudo, null, extra, "gasto")
@@ -146,9 +153,9 @@ private fun Cabecalho(semRealizado: Boolean) {
 
 @Composable
 private fun LinhaValores(nome: String, cor: Color, orcado: Double?, realizado: Double?, tipo: String, negrito: Boolean = false, recuo: Boolean = false,
-                         padrao: Boolean = false, aoTocar: (() -> Unit)? = null) {
+                         padrao: Boolean = false, categoria: String? = null, grupo: String? = null, aoTocar: (() -> Unit)? = null) {
     val dif = if (realizado != null) (if (tipo == "gasto") (orcado ?: 0.0) - realizado else realizado - (orcado ?: 0.0)) else null
-    Row(Modifier.fillMaxWidth().then(if (aoTocar != null) Modifier.clickable(onClick = aoTocar) else Modifier)
+    Row(Modifier.fillMaxWidth().then(if (aoTocar != null || categoria != null || grupo != null) Modifier.tocarOuSegurar(categoria, grupo, nome, aoTocar ?: {}) else Modifier)
         .padding(start = if (recuo) 14.dp else 0.dp, top = 7.dp, bottom = 7.dp), verticalAlignment = Alignment.CenterVertically) {
         Bolinha(cor)
         Text("  $nome", color = cores.texto, fontSize = 14.sp, fontWeight = if (negrito) FontWeight.SemiBold else FontWeight.Normal,
@@ -210,9 +217,9 @@ private fun AbaAno(linhas: List<LinhaOrc>, meses: List<String>, parcelas: JSONOb
         Cartao(titulo) {
             Cabecalho(false)
             if (titulo == "Gastos") ls.groupBy { it.grupo }.forEach { (gr, gls) ->
-                LinhaValores(gr, corGrupo(gr), gls.sumOf(::orcAteHoje), gls.sumOf(::real), "gasto", negrito = true)
-                gls.forEach { l -> LinhaValores(l.nome, l.cor, orcAteHoje(l), real(l), l.tipo, recuo = true) }
-            } else ls.forEach { l -> LinhaValores(l.nome, l.cor, orcAteHoje(l), real(l), l.tipo) }
+                LinhaValores(gr, corGrupo(gr), gls.sumOf(::orcAteHoje), gls.sumOf(::real), "gasto", negrito = true, grupo = gr)
+                gls.forEach { l -> LinhaValores(l.nome, l.cor, orcAteHoje(l), real(l), l.tipo, recuo = true, categoria = l.chave) }
+            } else ls.forEach { l -> LinhaValores(l.nome, l.cor, orcAteHoje(l), real(l), l.tipo, categoria = l.chave) }
             if (titulo == "Gastos" && parc != 0.0) LinhaValores("Parcelas de compras antigas", cores.mudo, null, parc, "gasto")
             Divisor()
             LinhaValores("Total", cores.texto, ls.sumOf(::orcAteHoje), ls.sumOf(::real) + if (titulo == "Gastos") parc else 0.0, ls.firstOrNull()?.tipo ?: "gasto", negrito = true)
@@ -314,7 +321,7 @@ private fun AbaCategorias() {
             Vocab.categorias.filter { it.s("tipo") == tipo }.groupBy { it.s("grupo") }.forEach { (g, cs) ->
                 Rotulo(g, Modifier.padding(top = 8.dp, bottom = 2.dp))
                 cs.forEach { cat ->
-                    Row(Modifier.fillMaxWidth().clickable { editando = cat }.padding(vertical = 7.dp), verticalAlignment = Alignment.CenterVertically) {
+                    Row(Modifier.fillMaxWidth().tocarOuSegurar(categoria = cat.s("id"), nome = cat.s("nome")) { editando = cat }.padding(vertical = 7.dp), verticalAlignment = Alignment.CenterVertically) {
                         Bolinha(corCategoria(cat.s("id")))
                         Text("  ${cat.s("nome")}", color = cores.texto, fontSize = 14.sp, modifier = Modifier.weight(1f), maxLines = 1, overflow = TextOverflow.Ellipsis)
                         if (cat.optInt("fixa") == 1) Text("  fixa  ", color = cores.mudo, fontSize = 11.sp)

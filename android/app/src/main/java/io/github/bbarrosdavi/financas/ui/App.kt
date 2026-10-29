@@ -131,6 +131,7 @@ fun AppFinancas(ajustes: Ajustes, tema: String, aoTrocarTema: (String) -> Unit, 
         }
         TourCamada { tela = it }
     }
+    Estado.grafico?.let { (q, nome) -> Evolucao(q, nome, "mes") { Estado.grafico = null } }
     if (removendo) Confirmar("Remover dados de demonstração",
         "O que você mexeu neles também sai, e o Finanças passa a mostrar os seus dados de verdade.", "Remover", { removendo = false }) {
         escopo.launch { removerDemo() }

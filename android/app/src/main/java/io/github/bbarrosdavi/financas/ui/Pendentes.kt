@@ -78,7 +78,7 @@ fun TelaPendentes() {
         item {
             Cartao(modifier = Modifier.alvo("pendentes")) {
                 Text(if (ls.isEmpty()) "Tudo classificado." else "${ls.size} esperando você", color = cores.texto, fontWeight = FontWeight.SemiBold, fontSize = 16.sp)
-                Text("Um toque classifica. Nada com pessoa é classificado sozinho: o sistema só sugere, e você confirma.", color = cores.texto2, fontSize = 13.sp)
+                Text("Toque na sugestão ou numa categoria.", color = cores.texto2, fontSize = 13.sp)
                 Marcar("sugerir a mesma classificação da próxima vez para o mesmo lugar", lembrar) { lembrar = it }
             }
         }
