@@ -4,6 +4,7 @@ O .ods parte do modelo original (Budget Dashboard, Tracking, Planning, Despesas 
 pelo LibreOffice (app/ods_preencher.py, que roda com o python do sistema, o que tem o módulo uno).
 """
 
+import functools
 import io
 import json
 import os
@@ -175,12 +176,24 @@ def dados_modelo(con, hoje: date | None = None) -> dict:
                                           for i in its]})
     return {
         "ano_inicial": ano_ini, "ano": hoje.year, "mes": hoje.month,
-        "dia_corte": int(db.parametro(con, "dia_renda_mes_seguinte", "25")),
+        "dia_corte": servicos.dia_corte(con),
         "renda": _dobrar(renda, CAPACIDADE["renda"], "Outras entradas"),
         "gastos": _dobrar(gastos, CAPACIDADE["gasto"], "Outros grupos"),
         "poupanca": _dobrar(poupanca, CAPACIDADE["poupanca"], "Outras metas") or [{"nome": "", "meses": {}}],
         "tracking": tracking, "fixas": {"meses": ano, "grupos": fixas}, "abas": abas(con, hoje),
     }
+
+
+@functools.cache
+def ods_indisponivel() -> str | None:
+    """Por que o .ods não sai nesta máquina (None = sai). Precisa do modelo e do LibreOffice com o módulo uno."""
+    if not MODELO.exists():
+        return "falta o modelo em app/modelo/planilha.ods (ele não vem no repositório; veja o README)"
+    try:
+        ok = subprocess.run(["/usr/bin/python3", "-c", "import uno"], capture_output=True, timeout=30).returncode == 0
+    except (OSError, subprocess.TimeoutExpired):
+        ok = False
+    return None if ok else "precisa do LibreOffice com o python3-uno, que esta instalação não tem"
 
 
 def planilha_modelo(dados: dict) -> bytes:

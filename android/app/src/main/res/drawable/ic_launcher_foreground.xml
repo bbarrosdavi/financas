@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- As três barras de web/icon.svg (viewBox 64) no centro da área segura do ícone adaptativo (108 dp). -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <group
+        android:translateX="14"
+        android:translateY="14"
+        android:scaleX="1.25"
+        android:scaleY="1.25">
+        <path
+            android:fillColor="#3987E5"
+            android:pathData="M16,34h4a2,2 0,0 1,2 2v12a2,2 0,0 1,-2 2h-4a2,2 0,0 1,-2 -2v-12a2,2 0,0 1,2 -2z" />
+        <path
+            android:fillColor="#3987E5"
+            android:pathData="M30,24h4a2,2 0,0 1,2 2v22a2,2 0,0 1,-2 2h-4a2,2 0,0 1,-2 -2v-22a2,2 0,0 1,2 -2z" />
+        <path
+            android:fillColor="#D95926"
+            android:pathData="M44,14h4a2,2 0,0 1,2 2v32a2,2 0,0 1,-2 2h-4a2,2 0,0 1,-2 -2v-32a2,2 0,0 1,2 -2z" />
+    </group>
+</vector>

@@ -47,17 +47,13 @@ def test_contraparte_sem_cpf_nem_banco():
     assert lt.movimentos[0].contraparte == "ANA EXEMPLO DA SILVA"
 
 
-def test_boleto_do_aluguel_vira_parte_sua_mais_acertos(con):
+def test_boleto_do_aluguel_fica_pendente_sem_divisao(con):
     lt = importadores.ler_extrato_pdf(EXTRATO)
     for m in lt.movimentos:
         servicos.inserir(con, m.conta, m.data, m.valor, m.descricao, m.contraparte, "extrato_pdf")
     boleto = next(l for l in lancs(con) if "boleto" in l["descricao"])
-    assert boleto["pendente"] and not boleto["partes"]        # o rateio pode mudar: só sugere
-    por = {(p["natureza"], p["categoria"] or p["pessoa"]): p["valor"] for p in boleto["sugestao"]}
-    assert por[("gasto", "aluguel-condominio")] == -629.0
-    assert por[("acerto", "ana")] == -555.0
-    assert por[("acerto", "bruno")] == -666.0
-    assert round(sum(por.values()), 2) == -1850.0
+    assert boleto["pendente"] and not boleto["partes"]
+    assert boleto["sugestao"] is None                   # sem rateio: você lança a sua parte
     ana = next(l for l in lancs(con) if "ANA" in l["contraparte"])
     assert ana["pendente"] and ana["sugestao"][0]["natureza"] == "acerto"   # Pix com pessoa: só sugestão
     salario = next(l for l in lancs(con) if "EMPRESA" in l["contraparte"])
@@ -67,7 +63,7 @@ def test_boleto_do_aluguel_vira_parte_sua_mais_acertos(con):
 def test_recarga_picpay_separa_taxa_e_pede_o_principal(con):
     servicos.inserir(con, "nubank_cartao", "2026-10-06", -104.90, "Picpay*Fulano", origem="fatura_pdf")
     l = lancs(con)[0]
-    taxa = next(p for p in l["partes"] if p["categoria"] == "juros")
+    taxa = next(p for p in l["partes"] if p["categoria"] == "taxa-aporte")
     assert abs(taxa["valor"] + 4.90) < 0.01
     assert l["pendente"]
 
@@ -157,3 +153,71 @@ def test_partes_que_nao_somam_sao_recusadas(con):
         assert "somam" in str(e)
     else:
         raise AssertionError
+
+
+def test_fatura_csv_com_ponto_decimal():
+    lt = importadores.ler_fatura_csv("date,title,amount\n2026-10-03,Netflix.com,32.9\n2026-10-04,Uber *Trip,23.10\n"
+                                     "2026-10-07,Pagamento recebido,-1203.83\n", date(2026, 10, 26))
+    assert [m.valor for m in lt.movimentos] == [-32.9, -23.1, 1203.83]
+    assert importadores.numero("1.234") == 1234 and importadores.numero("R$ 1.250,90") == 1250.9
+
+
+def test_pdf_sem_poppler_explica_o_que_fazer(monkeypatch):
+    import pytest
+    monkeypatch.setenv("PATH", "/nao/existe")
+    with pytest.raises(ValueError, match="Importe o .csv ou o .xlsx"):
+        importadores.ler_arquivo("extrato.pdf", b"%PDF-1.4 qualquer coisa")
+
+
+def test_mes_da_entrada_igual_no_painel_e_nos_lancamentos(con):
+    """A renda que cai a partir do dia de corte conta no mês seguinte nas duas telas; desligada, conta pela data."""
+    servicos.inserir(con, "nubank_conta", "2026-09-30", 3000.0, "Transferência recebida pelo Pix", "EMPRESA EXEMPLO", "manual",
+                     partes=[{"valor": 3000.0, "natureza": "renda", "categoria": "salario"}])
+    servicos.inserir(con, "nubank_conta", "2026-10-15", 200.0, "Transferência recebida pelo Pix", "Fulano", "manual",
+                     partes=[{"valor": 200.0, "natureza": "renda", "categoria": "pais"}])
+    servicos.inserir(con, "nubank_conta", "2026-10-26", 100.0, "Transferência recebida pelo Pix", "Fulano", "manual",
+                     partes=[{"valor": 100.0, "natureza": "renda", "categoria": "pais"}])
+    servicos.inserir(con, "nubank_conta", "2026-10-27", -50.0, "Compra no débito", "LOJA", "manual",
+                     partes=[{"valor": -50.0, "natureza": "gasto", "categoria": "outros"}])
+
+    def nas_duas_telas():
+        painel = servicos.painel(con, date(2026, 10, 29), "2026-10")["totais"]
+        ls = servicos.lancamentos(con, mes="2026-10")
+        renda = sum(p["valor"] for l in ls if l["mes_renda"] == "2026-10" for p in l["partes"] if p["natureza"] == "renda")
+        gasto = -sum(p["valor"] for l in ls if l["data"].startswith("2026-10") for p in l["partes"] if p["natureza"] == "gasto")
+        return painel["renda"], renda, painel["gasto"], gasto
+
+    assert nas_duas_telas() == (3300.0, 3300.0, 50.0, 50.0)       # o salário de 30/09 entra; o Pix de 26/10 (não é salário) fica
+    db.definir_parametro(con, "renda_mes_seguinte", "0")
+    assert nas_duas_telas() == (300.0, 300.0, 50.0, 50.0)         # pela data
+    db.definir_parametro(con, "renda_mes_seguinte", "1")
+    db.definir_parametro(con, "dia_renda_mes_seguinte", "28")
+    assert nas_duas_telas() == (3300.0, 3300.0, 50.0, 50.0)       # dia 28: 30/09 entra, 26/10 fica em outubro
+
+
+def test_lancamentos_por_intervalo(con):
+    for d in ("2026-10-01", "2026-10-10", "2026-10-20"):
+        servicos.inserir(con, "nubank_conta", d, -10.0, "Compra", "LOJA", "manual",
+                         partes=[{"valor": -10.0, "natureza": "gasto", "categoria": "outros"}])
+    assert [l["data"] for l in servicos.lancamentos(con, de="2026-10-05", ate="2026-10-20")] == ["2026-10-20", "2026-10-10"]
+    assert [l["data"] for l in servicos.lancamentos(con, ate="2026-10-05")] == ["2026-10-01"]
+
+
+def test_saldo_atual_parte_do_saldo_do_app_e_soma_o_que_veio_depois(con):
+    servicos.inserir(con, "nubank_conta", "2026-10-28", -10.0, "Compra no débito", "LOJA", "extrato_pdf")
+    servicos.informar_saldo(con, "nubank_conta", 109.40, "2026-10-28")
+    for v in (-13.50, -3.50, -10.96):
+        servicos.inserir(con, "nubank_conta", "2026-10-29", v, "Compra", "LOJA", "manual")
+    c = next(x for x in servicos.saldo_contas(con) if x["id"] == "nubank_conta")
+    assert c["saldo_real"] == 109.40 and c["saldo_atual"] == 81.44
+
+
+def test_aporte_em_outra_carteira_e_vocabulario(con):
+    """99Pay também é carteira de aporte; a taxa vai para Taxas de aporte. Fixas: só Academia e Celular; a TIM é Celular."""
+    servicos.inserir(con, "nubank_cartao", "2026-10-06", -104.90, "99Pay *Recarga", origem="fatura_pdf")
+    taxa = next(p for p in lancs(con)[0]["partes"] if p["categoria"] == "taxa-aporte")
+    assert abs(taxa["valor"] + 4.90) < 0.01 and taxa["motivo"].startswith("taxa de aporte no crédito")
+    assert {r["id"] for r in con.execute("SELECT id FROM categorias WHERE fixa = 1")} == {"academia", "celular"}
+    assert con.execute("SELECT grupo FROM categorias WHERE id = 'juros'").fetchone()[0] == "Juros e taxas"
+    servicos.inserir(con, "nubank_cartao", "2026-10-11", -36.55, "Tim*63984021557", origem="fatura_csv")
+    assert lancs(con)[0]["partes"][0]["categoria"] == "celular"

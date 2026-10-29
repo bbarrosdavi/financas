@@ -110,10 +110,10 @@ LINHAS_CARTAO_1 = [("25/10", "SALDO ANTERIOR", "R$ 300,00"), ("22/10", "PADARIA 
 LINHAS_CARTAO_2 = [("19/08", "LOJA ONLINE", "R$ 59,90"), ("14/10", "APP DE TRANSPORTE", "R$ 23,75")]
 
 
-def _fatura_pdf(total_1="R$ 156,85", total_2="R$ 83,65") -> bytes:
+def _fatura_pdf(total_1="R$ 156,85", total_2="R$ 83,65", arquivo_fonte: str | None = None) -> bytes:
     from PIL import Image, ImageDraw, ImageFont
-    fonte = ImageFont.truetype(subprocess.run(["fc-match", "-f", "%{file}", "DejaVu Sans"], capture_output=True,
-                                              text=True).stdout, 30)
+    fonte = ImageFont.truetype(arquivo_fonte or subprocess.run(["fc-match", "-f", "%{file}", "DejaVu Sans"], capture_output=True,
+                                                               text=True).stdout, 30)
     img = Image.new("RGB", (1980, 2600), "white")
     d = ImageDraw.Draw(img)
     d.text((300, 80), "Aplicativo Bradesco", fill="black", font=fonte)

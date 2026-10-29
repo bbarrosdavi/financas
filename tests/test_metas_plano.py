@@ -64,13 +64,13 @@ def test_apagar_categoria_em_uso_move_os_lancamentos(con):
     from fastapi.testclient import TestClient
     from app.main import app
     servicos.inserir(con, "nubank_conta", "2026-10-01", -10.0, "x", "", "manual",
-                     partes=[{"valor": -10.0, "natureza": "gasto", "categoria": "hobbies"}])
+                     partes=[{"valor": -10.0, "natureza": "gasto", "categoria": "viagem"}])
     con.commit()
     with TestClient(app) as c:
         c.post("/api/login", json={"senha": settings.WEB_PASSWORD})
-        assert c.delete("/api/categorias/hobbies").status_code == 400
-        assert c.delete("/api/categorias/hobbies?mover_para=salario").status_code == 400   # tipo diferente
-        r = c.delete("/api/categorias/hobbies?mover_para=lazer")
+        assert c.delete("/api/categorias/viagem").status_code == 400
+        assert c.delete("/api/categorias/viagem?mover_para=salario").status_code == 400   # tipo diferente
+        r = c.delete("/api/categorias/viagem?mover_para=lazer")
         assert r.status_code == 200 and r.json()["movidos"] == 1
     with db.conectar() as c2:
         assert c2.execute("SELECT categoria FROM partes WHERE valor=-10").fetchone()[0] == "lazer"

@@ -3,9 +3,9 @@
 
 const $ = (s, r = document) => r.querySelector(s);
 const brl = v => (v < 0 ? '-' : '') + 'R$ ' + Math.abs(v || 0).toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2});
-const brl0 = v => (v < 0 ? '-' : '') + 'R$ ' + Math.abs(v || 0).toLocaleString('pt-BR', {maximumFractionDigits: 0});
-const brlv = v => (Math.abs(v) < 10 && v ? brl : brl0)(v);
-const sinal = v => (v > 0 ? '+' : v < 0 ? '-' : '') + brlv(Math.abs(v)).replace('R$', 'R$');
+// Todo valor com os centavos, sem arredondar (também nos rótulos dos gráficos e nos eixos).
+const num2 = v => (v || 0).toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+const sinal = v => (v > 0 ? '+' : v < 0 ? '-' : '') + brl(Math.abs(v));
 const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]));
 const dataBR = d => d ? d.split('-').reverse().join('/') : '';
 const dataCurta = d => d ? `${d.slice(8, 10)}/${d.slice(5, 7)}/${d.slice(2, 4)}` : '';
@@ -14,6 +14,75 @@ const MES3 = MESES.map(m => m.slice(0, 3));
 const mesBR = m => MES3[+m.slice(5, 7) - 1] + '/' + m.slice(2, 4);
 const hojeISO = () => new Date().toLocaleDateString('sv-SE');
 const CONTA = {nubank_conta: 'Conta', nubank_cartao: 'Cartão', picpay: 'PicPay', bradesco_conta: 'Bradesco', bradesco_cartao: 'Cartão Bradesco'};
+
+// ---------------------------------------------------------------- calendário com o tema do site
+// Todo <input type="date"> vira um botão que abre este calendário (o do navegador é cinza e não segue o tema).
+// O campo continua lá, escondido, com a data AAAA-MM-DD em .value: quem lê ou grava o campo não muda.
+let calAberto = null;
+function calendario(ancora, inicial, podeLimpar) {
+  calAberto?.fechar(undefined);
+  return new Promise(ok => {
+    const cx = document.createElement('div');
+    cx.className = 'calendario';
+    const iso = d => d.toLocaleDateString('sv-SE');
+    const ref = new Date((inicial || hojeISO()) + 'T12:00:00'); ref.setDate(1);
+    const fora = e => { const p = e.composedPath(); if (!p.includes(cx) && !p.includes(ancora)) fechar(undefined); };
+    const tecla = e => { if (e.key === 'Escape') fechar(undefined); };
+    const rolou = e => { if (!e.composedPath().includes(cx)) fechar(undefined); };
+    function fechar(v) {
+      cx.remove(); calAberto = null;
+      document.removeEventListener('pointerdown', fora, true); document.removeEventListener('keydown', tecla);
+      window.removeEventListener('scroll', rolou, true); document.removeEventListener('scroll', rolou, true);
+      ok(v);
+    }
+    function desenhar() {
+      const ano = ref.getFullYear(), mes = ref.getMonth(), ini = new Date(ano, mes, 1 - new Date(ano, mes, 1).getDay(), 12);
+      let dias = '';
+      for (let i = 0; i < 42; i++) {
+        const d = new Date(ini); d.setDate(ini.getDate() + i);
+        const s = iso(d), cls = [d.getMonth() !== mes && 'fora', s === hojeISO() && 'hoje', s === inicial && 'on'].filter(Boolean).join(' ');
+        dias += `<button type="button" class="${cls}" data-d="${s}">${d.getDate()}</button>`;
+      }
+      cx.innerHTML = `<div class="cal-topo"><button type="button" data-m="-1" aria-label="Mês anterior">‹</button><b>${MESES[mes]} de ${ano}</b><button type="button" data-m="1" aria-label="Mês seguinte">›</button></div>
+        <div class="cal-sem">${['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sáb'].map(x => `<span>${x}</span>`).join('')}</div><div class="cal-dias">${dias}</div>
+        <div class="cal-pe"><button type="button" data-hoje>Hoje</button>${podeLimpar ? '<button type="button" data-limpar>Limpar</button>' : ''}</div>`;
+    }
+    cx.addEventListener('click', e => {
+      const m = e.target.closest('[data-m]'), d = e.target.closest('[data-d]');
+      if (m) { ref.setMonth(ref.getMonth() + +m.dataset.m); desenhar(); }
+      else if (d) fechar(d.dataset.d);
+      else if (e.target.closest('[data-hoje]')) fechar(hojeISO());
+      else if (e.target.closest('[data-limpar]')) fechar('');
+    });
+    desenhar();
+    document.body.appendChild(cx);
+    calAberto = {ancora, fechar};
+    const r = ancora.getBoundingClientRect(), h = cx.offsetHeight;
+    cx.style.left = Math.max(8, Math.min(r.left, innerWidth - cx.offsetWidth - 8)) + 'px';
+    cx.style.top = (r.bottom + 6 + h > innerHeight ? Math.max(8, r.top - h - 6) : r.bottom + 6) + 'px';
+    document.addEventListener('pointerdown', fora, true); document.addEventListener('keydown', tecla);
+    window.addEventListener('scroll', rolou, true); document.addEventListener('scroll', rolou, true);
+  });
+}
+const VALOR = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value');
+function datasDoTema() {
+  document.querySelectorAll('input[type="date"]').forEach(inp => {
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'campo-data';
+    const mostrar = () => { const v = VALOR.get.call(inp); b.textContent = v ? dataBR(v) : 'dd/mm/aaaa'; b.classList.toggle('vazio', !v); };
+    Object.defineProperty(inp, 'value', {get: () => VALOR.get.call(inp), set: v => { VALOR.set.call(inp, v); mostrar(); }});
+    const limpar = !inp.required;
+    inp.type = 'hidden';
+    inp.after(b); mostrar();
+    b.onclick = async () => {
+      if (calAberto?.ancora === b) return calAberto.fechar(undefined);
+      const v = await calendario(b, inp.value, limpar);
+      if (v === undefined || v === inp.value) return;
+      inp.value = v; inp.dispatchEvent(new Event('change', {bubbles: true}));
+    };
+  });
+}
+new MutationObserver(datasDoTema).observe(document, {childList: true, subtree: true});
 const NAT = {gasto: 'Gasto', renda: 'Renda', transferencia: 'Transferência', acerto: 'Acerto', poupanca: 'Poupança'};
 const ORIGEM = {manual: 'lançado à mão', push: 'pelo celular'};      // extrato e fatura já se veem pela conta
 // Cor fixa por grupo (a cor segue o grupo, nunca a posição). Grupos fora da lista ficam cinza.
@@ -22,10 +91,11 @@ const corGrupo = g => (V.cores_grupos || {})[g] || COR_GRUPO[g] || '#9a99a1';
 const corCat = id => { const c = cat(id); return c?.cor || corGrupo(c?.grupo); };
 
 let V = {categorias: [], pessoas: [], contas: [], metas: []};
+let DEMO = false;          // dados de demonstração ligados (app/demo.py)
 const cat = id => V.categorias.find(c => c.id === id);
 const pessoa = id => V.pessoas.find(p => p.id === id);
 const meta = id => V.metas.find(m => m.id === id);
-const store = {get: (k, d) => { try { return localStorage.getItem(k) ?? d; } catch (_) { return d; } }, set: (k, v) => { try { localStorage.setItem(k, v); } catch (_) {} }};
+const store = {get: (k, d) => { try { return localStorage.getItem(k) ?? d; } catch (_) { return d; } }, set: (k, v) => { try { localStorage.setItem(k, v); } catch (_) {} window.FINANCAS_APE?.guardou?.(k); }};
 
 async function api(path, opts = {}) {
   const r = await fetch(path, {credentials: 'same-origin', ...opts,
@@ -58,14 +128,14 @@ const SOL = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke=
 const ICONE_BARRAS = '<svg viewBox="0 0 16 16" width="13" height="13" fill="currentColor"><rect x="1.5" y="8" width="3" height="6.5" rx="1"/><rect x="6.5" y="4.5" width="3" height="10" rx="1"/><rect x="11.5" y="1.5" width="3" height="13" rx="1"/></svg>';
 const LUA = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>';
 function aplicarTema() {
-  const t = store.get('tema', 'light');
+  const t = store.get('tema', 'dark');
   if (t === 'dark') document.documentElement.dataset.theme = 'dark'; else delete document.documentElement.dataset.theme;
   $('meta[name=theme-color]').content = t === 'dark' ? '#101014' : '#e9ebef';
   const b = $('#tema');
   if (b) { b.innerHTML = t === 'dark' ? SOL : LUA; b.title = t === 'dark' ? 'Mudar para claro' : 'Mudar para escuro'; }
 }
 $('#tema').addEventListener('click', () => {
-  store.set('tema', store.get('tema', 'light') === 'dark' ? 'light' : 'dark');
+  store.set('tema', store.get('tema', 'dark') === 'dark' ? 'light' : 'dark');
   aplicarTema();
   if ((location.hash.slice(1) || '').startsWith('ajustes')) rota();
 });
@@ -99,10 +169,45 @@ async function contarPendentes() {
   const b = $('#n-pend'); b.textContent = p.length; b.hidden = !p.length;
 }
 async function iniciar() {
+  const primeira = store.get('tour', '') !== 'visto';           // primeira entrada neste aparelho
+  let demo = await api('/api/demo').catch(() => ({ativo: false, vazio: false}));
+  // Num Finanças ainda vazio, a demonstração liga sozinha, para o tour ter o que mostrar.
+  if (primeira && demo.vazio && !demo.ativo) demo = await put('/api/demo', {ativo: true}).catch(() => demo);
+  DEMO = demo.ativo;
   V = await api('/api/vocabulario');
   $('#app').hidden = false;
   aplicarPapel().catch(() => {});
+  avisoDemo();
   rota();
+  if (primeira) setTimeout(iniciarTour, 900);
+}
+
+// Dados de demonstração: uma faixa no topo enquanto estão ligados, com o botão de remover.
+function avisoDemo() {
+  let a = $('#demo-aviso');
+  if (!DEMO) return a?.remove();
+  if (!a) {
+    a = Object.assign(document.createElement('div'), {id: 'demo-aviso', className: 'demo-aviso'});
+    $('#tela').before(a);
+  }
+  a.innerHTML = `<span><b>Dados de demonstração.</b> Pessoas, lugares e valores inventados, para você ver tudo funcionando. O que mudar aqui some ao remover; os seus dados de verdade ficam à parte.</span>
+    <button class="prim">Remover dados de demonstração</button>`;
+  a.querySelector('button').onclick = removerDemo;
+}
+async function mudarDemo(ativo) {
+  DEMO = (await put('/api/demo', {ativo})).ativo;
+  V = await api('/api/vocabulario');
+  avisoDemo();
+  await rota();
+}
+async function removerDemo() {
+  if (confirm('Remover os dados de demonstração? O que você mexeu neles também sai, e o Finanças passa a mostrar os seus dados de verdade.'))
+    await mudarDemo(false);
+}
+async function reverTour() {
+  const d = await api('/api/demo').catch(() => ({}));
+  if (d.vazio && !d.ativo) await mudarDemo(true);              // ainda vazio: o tour volta com a demonstração
+  iniciarTour();
 }
 window.addEventListener('hashchange', rota);
 
@@ -274,7 +379,7 @@ function escalaY(max, min, alturaUtil) {
   const passo = [50, 100, 200, 250, 500, 1000, 2000, 2500, 5000, 10000, 20000, 50000].find(p => (max - min) / p <= alvo) || 100000;
   return {passo, topo: Math.ceil(max / passo) * passo || passo, base: Math.floor(min / passo) * passo};
 }
-const kRot = v => Math.abs(v) >= 1000 ? (v / 1000).toLocaleString('pt-BR', {maximumFractionDigits: 1}) + 'k' : String(v);
+const kRot = v => num2(v);
 
 // ---------------------------------------------------------------- dica (tooltip)
 const tip = $('#tip');
@@ -347,36 +452,36 @@ async function painel(t) {
   <div class="mosaico" id="mosaico">
   ${cartao('resumo', 'Resumo do período', '', `<div class="heroi">
     <div>
-      <div class="rot">Resultado ${P.tipo === 'semana' ? 'da semana' : P.tipo === 'ano' ? 'do ano' : 'do mês'}</div>
+      <div class="rot">Balanço ${P.tipo === 'semana' ? 'da semana' : P.tipo === 'ano' ? 'do ano' : 'do mês'}</div>
       <div class="grande ${T.resultado < 0 ? 'neg' : 'pos'}">${sinal(T.resultado)}</div>
       ${comparar ? dlt(T.resultado, TA.resultado, true) : ''}
-      <div class="linha-kv"><span>Entradas</span><b>${brl0(T.renda)}</b></div>
-      <div class="linha-kv"><span>Gastos</span><b>${brl0(T.gasto)}</b></div>
-      <div class="linha-kv"><span>Juros e taxas</span><b class="${T.juros ? 'neg' : ''}">${brlv(T.juros)}</b></div>
-      ${P.metas.some(m => m.guardado_periodo) ? `<div class="linha-kv"><span>Guardado em metas</span><b class="pos">${brl0(P.metas.reduce((a, m) => a + m.guardado_periodo, 0))}</b></div>` : ''}
-      ${comparar ? `<div class="linha-kv muted"><span>${ant}: entradas / gastos</span><span>${brl0(TA.renda)} / ${brl0(TA.gasto)}</span></div>` : ''}
+      <div class="linha-kv"><span>Entradas</span><b>${brl(T.renda)}</b></div>
+      <div class="linha-kv"><span>Gastos</span><b>${brl(T.gasto)}</b></div>
+      <div class="linha-kv"><span>Juros e taxas</span><b class="${T.juros ? 'neg' : ''}">${brl(T.juros)}</b></div>
+      ${P.metas.some(m => m.guardado_periodo) ? `<div class="linha-kv"><span>Guardado em metas</span><b class="pos">${brl(P.metas.reduce((a, m) => a + m.guardado_periodo, 0))}</b></div>` : ''}
+      ${comparar ? `<div class="linha-kv muted"><span>${ant}: entradas / gastos</span><span>${brl(TA.renda)} / ${brl(TA.gasto)}</span></div>` : ''}
     </div>
     <div>
-      <div class="rot">Ainda pode gastar (categorias variáveis)</div>
-      <div class="grande ${P.pode_gastar < 0 ? 'neg' : usoVar > P.ritmo + .1 ? 'warnc' : 'pos'}">${brl0(P.pode_gastar)}</div>
+      <div class="rot">${P.pode_gastar < 0 ? 'Déficit' : 'Excedente'} (categorias variáveis)</div>
+      <div class="grande ${P.pode_gastar < 0 ? 'neg' : usoVar > P.ritmo + .1 ? 'warnc' : 'pos'}">${brl(P.pode_gastar)}</div>
       <div class="barra-grande"><div class="fill" style="width:${Math.min(usoVar, 1) * 100}%;background:${usoVar > 1 ? 'var(--ruim)' : usoVar > P.ritmo + .1 ? 'var(--atencao)' : 'var(--ok)'}"></div>
         ${P.ritmo > 0 && P.ritmo < 1 ? `<div class="ritmo" style="left:${P.ritmo * 100}%"></div>` : ''}</div>
-      <div class="linha-kv"><span>Gasto</span><b>${brl0(P.gasto_variavel)} de ${brl0(P.teto_variavel)}</b></div>
-      ${P.ritmo > 0 && P.ritmo < 1 ? `<div class="linha-kv"><span>No ritmo certo, até hoje</span><b>${brl0(ideal)}</b></div>` : ''}
+      <div class="linha-kv"><span>Gasto</span><b>${brl(P.gasto_variavel)} de ${brl(P.teto_variavel)}</b></div>
+      ${P.ritmo > 0 && P.ritmo < 1 ? `<div class="linha-kv"><span>No ritmo certo, até hoje</span><b>${brl(ideal)}</b></div>` : ''}
     </div>
     <div class="kpis">
       ${kpiConta(conta)}
-      <div class="kpi"><div class="rot">Dívida do cartão</div><div class="v neg">${brl0(P.cartao.divida)}</div>
-        <div class="d">limite livre <b class="${P.cartao.limite_livre < 300 ? 'neg' : ''}">${brl0(P.cartao.limite_livre)}</b> de ${brl0(P.cartao.limite)}</div></div>
-      <div class="kpi"><div class="rot">Você deve / te devem</div><div class="v">${brl0(devo)} <span class="muted">/</span> ${brl0(meDevem)}</div>
+      <div class="kpi"><div class="rot">Dívida do cartão</div><div class="v neg">${brl(P.cartao.divida)}</div>
+        <div class="d">limite livre <b class="${P.cartao.limite_livre < 300 ? 'neg' : ''}">${brl(P.cartao.limite_livre)}</b> de ${brl(P.cartao.limite)}</div></div>
+      <div class="kpi"><div class="rot">Você deve / te devem</div><div class="v">${brl(devo)} <span class="muted">/</span> ${brl(meDevem)}</div>
         <div class="d"><a href="#pessoas">ver pessoas</a></div></div>
       <div class="kpi"><div class="rot">Pendentes</div><div class="v ${P.pendentes ? 'warnc' : 'pos'}">${P.pendentes}</div>
         <div class="d">${P.pendentes ? '<a href="#pendentes">classificar agora</a>' : 'tudo classificado'}</div></div>
     </div></div>`)}
   ${cartao('categorias', 'Categorias', `teto ${P.tipo === 'ano' ? 'acumulado no ano' : P.tipo === 'semana' ? 'do mês ÷ 4' : 'do mês'}`,
-    `${nAcima || acimaAnt ? `<div class="resumo-acima"><div><div class="rot">Acima do teto</div><div class="grande">${brl0(acimaTot)}</div></div>
+    `${nAcima || acimaAnt ? `<div class="resumo-acima"><div><div class="rot">Acima do teto</div><div class="grande">${brl(acimaTot)}</div></div>
         <div>${nAcima} categoria(s) estourada(s)</div>
-        <div>${ant}: <b>${brl0(acimaAnt)}</b> acima · ${acimaTot > acimaAnt ? `<b class="neg">piorou ${brl0(acimaTot - acimaAnt)}</b>` : acimaTot < acimaAnt ? `<b class="pos">melhorou ${brl0(acimaAnt - acimaTot)}</b>` : 'igual'}</div></div>` : ''}
+        <div>${ant}: <b>${brl(acimaAnt)}</b> acima · ${acimaTot > acimaAnt ? `<b class="neg">piorou ${brl(acimaTot - acimaAnt)}</b>` : acimaTot < acimaAnt ? `<b class="pos">melhorou ${brl(acimaAnt - acimaTot)}</b>` : 'igual'}</div></div>` : ''}
       <div id="cats"></div>`)}
   ${PREF.paineis.grafico ? cartao('grafico', 'Entradas e gastos', P.tipo === 'semana' ? 'últimas 12 semanas' : P.tipo === 'ano' ? 'jan a dez' : 'últimos 12 meses',
     `${legendaSeries()}<div class="chart grafico" id="ch"></div>`) : ''}
@@ -393,8 +498,8 @@ async function painel(t) {
   const colunas = (gasto, teto, acima) => {
     const pct = teto ? Math.round(gasto / teto * 100) + '%' : '-';
     const resto = teto == null ? '<span class="muted">sem teto</span>'
-      : acima > 0 ? `<b class="neg">+${brlv(acima)}</b>` : `<b class="pos">${brlv(Math.max(teto - gasto, 0))}</b>`;
-    return `<span class="c-gasto"><b>${brlv(gasto)}</b></span><span class="c-teto">${teto != null ? brl0(teto) : '-'}</span>
+      : acima > 0 ? `<b class="neg">+${brl(acima)}</b>` : `<b class="pos">${brl(Math.max(teto - gasto, 0))}</b>`;
+    return `<span class="c-gasto"><b>${brl(gasto)}</b></span><span class="c-teto">${teto != null ? brl(teto) : '-'}</span>
       <span class="c-pct ${teto && gasto > teto ? 'neg' : ''}">${pct}</span><span class="c-resto">${resto}</span>`;
   };
   const linhaCat = c => {
@@ -404,11 +509,11 @@ async function painel(t) {
     const varTot = c.gasto + c.parcelas - c.anterior;
     const infos = [];
     if (c.acima > 0 || c.acima_anterior > 0)
-      infos.push(c.acima_anterior > 0 ? `<span>${ant}: <b>${brlv(c.acima_anterior)}</b> acima · <span class="vs ${dAcima > 0 ? 'neg' : dAcima < 0 ? 'pos' : ''}">${dAcima > 0 ? 'piorou ' + brlv(dAcima) : dAcima < 0 ? 'melhorou ' + brlv(-dAcima) : 'igual'}</span></span>`
+      infos.push(c.acima_anterior > 0 ? `<span>${ant}: <b>${brl(c.acima_anterior)}</b> acima · <span class="vs ${dAcima > 0 ? 'neg' : dAcima < 0 ? 'pos' : ''}">${dAcima > 0 ? 'piorou ' + brl(dAcima) : dAcima < 0 ? 'melhorou ' + brl(-dAcima) : 'igual'}</span></span>`
         : `<span>${ant}: dentro do teto</span>`);
-    if (comparar) infos.push(`<span>${ant}: ${brlv(c.anterior)} <span class="vs ${varTot > 0 ? 'neg' : varTot < 0 ? 'pos' : ''}">(${sinal(varTot)}${c.anterior ? `, ${varTot > 0 ? '+' : ''}${Math.round(varTot / c.anterior * 100)}%` : ''})</span></span>`);
-    if (c.parcelas) infos.push(`<span>+ ${brlv(c.parcelas)} parcelas antigas</span>`);
-    return `<div class="cat" data-evol-cat="${c.id}" data-tip="<b>${esc(c.nome)}</b><br>${brl(c.gasto)} de ${c.teto != null ? brl(c.teto) : 'sem teto'} · ${c.n} lançamento(s)<br>toque para ver a evolução">
+    if (comparar) infos.push(`<span>${ant}: ${brl(c.anterior)} <span class="vs ${varTot > 0 ? 'neg' : varTot < 0 ? 'pos' : ''}">(${sinal(varTot)}${c.anterior ? `, ${varTot > 0 ? '+' : ''}${Math.round(varTot / c.anterior * 100)}%` : ''})</span></span>`);
+    if (c.parcelas) infos.push(`<span>+ ${brl(c.parcelas)} parcelas antigas</span>`);
+    return `<div class="cat" data-evol-cat="${c.id}" data-segurar-cat="${c.id}" data-tip="<b>${esc(c.nome)}</b><br>${brl(c.gasto)} de ${c.teto != null ? brl(c.teto) : 'sem teto'} · ${c.n} lançamento(s)<br>toque para ver a evolução">
       <div class="nome"><i style="background:${corCat(c.id)}"></i><span>${esc(c.nome)}</span></div>
       <div class="track"><div class="fill ${cls}" style="width:${Math.min(pct, 1) * 100}%"></div>${!c.fixa && P.ritmo > 0 && P.ritmo < 1 ? `<div class="ritmo" style="left:${P.ritmo * 100}%"></div>` : ''}</div>
       ${colunas(c.gasto, c.teto, c.acima)}
@@ -430,10 +535,10 @@ async function painel(t) {
       const aberto = b.g in ab ? ab[b.g] : PREF.grupos === 'abertos' || (PREF.grupos === 'auto' && b.acima > 0);
       const pct = b.teto ? b.gasto / b.teto : 0;
       return `<div class="grupo-cat ${aberto ? 'aberto' : ''}" data-grupo="${esc(b.g)}">
-      <div class="grupo-cab"><span class="nome"><svg class="seta-g" viewBox="0 0 10 10" width="10" height="10"><path d="M3 2l4 3-4 3" fill="none" stroke="currentColor" stroke-width="1.6"/></svg><i style="background:${corGrupo(b.g)}"></i>${esc(b.g)} <small class="muted">${b.cs.length}</small><button class="botao-icone" data-evol-grupo="${esc(b.g)}" title="Evolução de ${esc(b.g)}" aria-label="Evolução de ${esc(b.g)}">${ICONE_BARRAS}</button></span>
+      <div class="grupo-cab" data-segurar-grupo="${esc(b.g)}"><span class="nome"><svg class="seta-g" viewBox="0 0 10 10" width="10" height="10"><path d="M3 2l4 3-4 3" fill="none" stroke="currentColor" stroke-width="1.6"/></svg><i style="background:${corGrupo(b.g)}"></i><span class="g-nome">${esc(b.g)}</span> <small class="muted">${b.cs.length}</small><button class="botao-icone" data-evol-grupo="${esc(b.g)}" title="Evolução de ${esc(b.g)}" aria-label="Evolução de ${esc(b.g)}">${ICONE_BARRAS}</button></span>
         <div class="track mini"><div class="fill ${b.acima > 0 ? 'bad' : ''}" style="width:${Math.min(pct, 1) * 100}%"></div></div>
         ${colunas(b.gasto, b.teto, b.teto != null ? Math.max(0, b.gasto - b.teto) : 0)}
-        <span class="g-extra">${b.parcelas ? `<small class="muted">+ ${brl0(b.parcelas)} de parcelas antigas</small>` : ''}${comparar ? `<small class="muted">${ant}: ${brl0(b.anterior)}</small>` : ''}</span></div>
+        <span class="g-extra">${b.parcelas ? `<small class="muted">+ ${brl(b.parcelas)} de parcelas antigas</small>` : ''}${comparar ? `<small class="muted">${ant}: ${brl(b.anterior)}</small>` : ''}</span></div>
       <div class="grupo-corpo">${b.cs.map(linhaCat).join('')}</div></div>`;
     }).join('') || '<p class="muted">Nenhum gasto no período.</p>';
     $('#cats').querySelectorAll('.grupo-cab').forEach(h => h.onclick = e => {
@@ -441,6 +546,19 @@ async function painel(t) {
       const el = h.parentElement, g = el.dataset.grupo, a = abertos();
       el.classList.toggle('aberto'); a[g] = el.classList.contains('aberto'); store.set('grupos-abertos', JSON.stringify(a));
     });
+    // O título do cartão recolhe ou abre todos os grupos de uma vez.
+    const tit = $('#cats').closest('.cartao')?.querySelector('.titulo-cartao');
+    if (tit && !tit.dataset.todos) {
+      tit.dataset.todos = '1';
+      tit.classList.add('alterna-todos');
+      tit.title = 'Recolher ou abrir todos os grupos';
+      tit.insertAdjacentHTML('beforeend', '<svg class="todos-ind" viewBox="0 0 10 10" width="9" height="9" aria-hidden="true"><path d="M2 3l3 2 3-2M2 6l3 2 3-2" fill="none" stroke="currentColor" stroke-width="1.3"/></svg>');
+      tit.onclick = () => {
+        const gs = [...$('#cats').querySelectorAll('.grupo-cat')], abrir = gs.some(g => !g.classList.contains('aberto')), a = abertos();
+        gs.forEach(g => { g.classList.toggle('aberto', abrir); a[g.dataset.grupo] = abrir; });
+        store.set('grupos-abertos', JSON.stringify(a));
+      };
+    }
   }
 
   if ($('#ch')) {
@@ -452,12 +570,12 @@ async function painel(t) {
   // composição por grupo
   const grupos = Object.entries(P.grupos).sort((a, b) => b[1] - a[1]);
   const totG = grupos.reduce((a, [, v]) => a + v, 0) || 1;
-  if ($('#comp')) $('#comp').innerHTML = `<div class="composicao">${grupos.map(([g, v]) => `<span style="width:${v / totG * 100}%;background:${corGrupo(g)}" data-tip="<b>${esc(g)}</b><br>${brl(v)} (${Math.round(v / totG * 100)}%)"></span>`).join('')}</div>
-    <table>${grupos.map(([g, v]) => `<tr><td><i style="display:inline-block;width:9px;height:9px;border-radius:50%;background:${corGrupo(g)};margin-right:7px"></i>${esc(g)}</td><td class="n">${brl0(v)}</td><td class="n muted">${Math.round(v / totG * 100)}%</td></tr>`).join('')}</table>`;
+  if ($('#comp')) $('#comp').innerHTML = `<div class="composicao">${grupos.map(([g, v]) => `<span data-segurar-grupo="${esc(g)}" style="width:${v / totG * 100}%;background:${corGrupo(g)}" data-tip="<b>${esc(g)}</b><br>${brl(v)} (${Math.round(v / totG * 100)}%)"></span>`).join('')}</div>
+    <table>${grupos.map(([g, v]) => `<tr data-segurar-grupo="${esc(g)}"><td><i style="display:inline-block;width:9px;height:9px;border-radius:50%;background:${corGrupo(g)};margin-right:7px"></i>${esc(g)}</td><td class="n">${brl(v)}</td><td class="n muted">${Math.round(v / totG * 100)}%</td></tr>`).join('')}</table>`;
   // entradas
   const ents = P.entradas.filter(e => e.valor || (comparar && e.anterior));
   if ($('#t-ent')) tabela($('#t-ent'), comparar ? ['Entrada', 'Valor', ant, 'Diferença'] : ['Entrada', 'Valor', 'Lançamentos'],
-    ents.map(e => comparar ? [esc(e.nome), brl(e.valor), brl(e.anterior), `<span class="${e.valor - e.anterior < 0 ? 'neg' : 'pos'}">${sinal(e.valor - e.anterior)}</span>`] : [esc(e.nome), brl(e.valor), e.n])
+    ents.map(e => comparar ? [`<span data-segurar-cat="${e.id}">${esc(e.nome)}</span>`, brl(e.valor), brl(e.anterior), `<span class="${e.valor - e.anterior < 0 ? 'neg' : 'pos'}">${sinal(e.valor - e.anterior)}</span>`] : [`<span data-segurar-cat="${e.id}">${esc(e.nome)}</span>`, brl(e.valor), e.n])
       .concat([comparar ? ['Total', brl(T.renda), brl(TA.renda), sinal(T.renda - TA.renda)] : ['Total', brl(T.renda), '']]),
     comparar ? [1, 2, 3] : [1, 2], l => l[0] === 'Total' ? 'tot' : '');
   // cobranças
@@ -468,8 +586,8 @@ async function painel(t) {
       ${cs.map(c => `<div class="cobranca-item"><span>${esc(c.descricao.replace(/ - Parcela.*| - \d+\/\d+$/, '').replace(/^Pix no Crédito - /, 'Pix no crédito: '))} <span class="muted">${c.parcela}</span></span><span>${brl(c.valor)}</span></div>`).join('')}</div>`).join('') || '<p class="muted">Nenhuma parcela futura.</p>';
   if ($('#t-top')) tabela($('#t-top'), ['Onde', 'Vezes', 'Total'], P.top.map(r => [esc(r.nome), r.n, brl(r.total)]), [1, 2]);
   if ($('#t-plano')) tabela($('#t-plano'), ['Mês', 'Renda', 'Custo de vida', 'Cartão', 'Resultado', 'Falta cobrir', 'Ainda devo', 'Saldo livre'],
-    P.plano.linhas.slice(0, 4).map(l => [mesBR(l.mes + '-01'), brl0(l.renda + l.reembolsos + l.unicos), brl0(l.custo + l.aportes), brl0(l.cartao),
-      `<b class="${l.resultado < 0 ? 'neg' : 'pos'}">${sinal(l.resultado)}</b>`, l.falta ? `<b class="warnc">${brl0(l.falta)}</b>` : '0', brl0(l.deve_pessoas), brl0(l.livre)]), [1, 2, 3, 4, 5, 6, 7]);
+    P.plano.linhas.slice(0, 4).map(l => [mesBR(l.mes + '-01'), brl(l.renda + l.reembolsos + l.unicos), brl(l.custo + l.aportes), brl(l.cartao),
+      `<b class="${l.resultado < 0 ? 'neg' : 'pos'}">${sinal(l.resultado)}</b>`, l.falta ? `<b class="warnc">${brl(l.falta)}</b>` : '0', brl(l.deve_pessoas), brl(l.livre)]), [1, 2, 3, 4, 5, 6, 7]);
   if ($('#t-metas')) tabelaMetas($('#t-metas'), P.metas.filter(m => m.ativa), P.tipo);
   ligarDicas(t);
   t.querySelectorAll('[data-evol-cat]').forEach(el => el.onclick = () => abrirEvolucao({categoria: el.dataset.evolCat}, cat(el.dataset.evolCat)?.nome, P.tipo));
@@ -483,6 +601,23 @@ async function painel(t) {
 }
 
 // Evolução de uma categoria ou grupo: barras de gasto, linha do teto e média.
+// Tocar e segurar (ou manter o clique) numa categoria ou num grupo, em qualquer tela, abre o gráfico dele.
+let segurando = null;
+RAIZ.addEventListener('pointerdown', e => {
+  const el = e.target.closest('[data-segurar-cat], [data-segurar-grupo]');
+  if (!el) return;
+  const g = el.dataset.segurarGrupo, c = el.dataset.segurarCat;
+  segurando = {x: e.clientX, y: e.clientY, feito: false, t: setTimeout(() => {
+    segurando.feito = true;
+    abrirEvolucao(g ? {grupo: g} : {categoria: c}, g || cat(c)?.nome || c, 'mes');
+  }, 550)};
+});
+const soltar = () => { if (segurando) clearTimeout(segurando.t); };
+['pointerup', 'pointercancel'].forEach(ev => RAIZ.addEventListener(ev, soltar));
+RAIZ.addEventListener('pointermove', e => { if (segurando && Math.hypot(e.clientX - segurando.x, e.clientY - segurando.y) > 10) soltar(); });
+RAIZ.addEventListener('click', e => { if (segurando?.feito) { e.preventDefault(); e.stopPropagation(); segurando = null; } }, true);
+RAIZ.addEventListener('contextmenu', e => { if (e.target.closest('[data-segurar-cat], [data-segurar-grupo]')) e.preventDefault(); });
+
 async function abrirEvolucao(alvo, nome, tipo) {
   const q = new URLSearchParams({tipo, ...alvo});
   const S = await api('/api/evolucao?' + q);
@@ -494,14 +629,14 @@ async function abrirEvolucao(alvo, nome, tipo) {
   const y = v => T + (H - T - B) * (1 - v / topo), cx = i => L + gw * i + gw / 2;
   const rot = x => tipo === 'semana' ? `${+x.inicio.slice(8)}/${+x.inicio.slice(5, 7)}` : mesBR(x.periodo + '-01').split('/')[0];
   let s = `<svg viewBox="0 0 ${W} ${H}">`;
-  for (let v = 0; v <= topo; v += passo) s += (PREF.grade !== false || v === 0 ? `<line x1="${L}" x2="${W}" y1="${y(v)}" y2="${y(v)}" stroke="var(--linha)"/>` : '') + `<text x="${L - 6}" y="${y(v) + 4}" font-size="10" text-anchor="end" fill="var(--mudo)">${v >= 1000 ? v / 1000 + 'k' : v}</text>`;
+  for (let v = 0; v <= topo; v += passo) s += (PREF.grade !== false || v === 0 ? `<line x1="${L}" x2="${W}" y1="${y(v)}" y2="${y(v)}" stroke="var(--linha)"/>` : '') + `<text x="${L - 6}" y="${y(v) + 4}" font-size="10" text-anchor="end" fill="var(--mudo)">${num2(v)}</text>`;
   S.forEach((x, i) => {
     const acima = x.teto != null && x.gasto > x.teto;
     const h1 = y(0) - y(x.gasto), h2 = y(0) - y(x.gasto + x.parcelas) - h1;
     if (h1 > 0) s += `<rect x="${cx(i) - bw / 2}" y="${y(x.gasto)}" width="${bw}" height="${h1}" rx="${raioBarra(bw, h1)}" fill="${acima ? 'var(--ruim)' : 'var(--s2)'}"/>`;
     if (h2 > 0) s += `<rect x="${cx(i) - bw / 2}" y="${y(x.gasto + x.parcelas)}" width="${bw}" height="${h2 - 2}" rx="2" fill="var(--mudo)" opacity=".45"/>`;
     const tot = x.gasto + x.parcelas;
-    if (tot > 0) s += `<text x="${cx(i)}" y="${y(tot) - 5}" font-size="10" font-weight="600" text-anchor="middle" fill="${acima ? 'var(--ruim)' : 'var(--texto-2)'}">${tot >= 1000 ? (tot / 1000).toLocaleString('pt-BR', {maximumFractionDigits: 1}) + 'k' : Math.round(tot)}</text>`;
+    if (tot > 0) s += `<text x="${cx(i)}" y="${y(tot) - 5}" font-size="10" font-weight="600" text-anchor="middle" fill="${acima ? 'var(--ruim)' : 'var(--texto-2)'}">${num2(tot)}</text>`;
     s += `<rect x="${cx(i) - gw / 2}" y="${T}" width="${gw}" height="${H - T - B}" fill="transparent" data-tip="<b>${rot(x)}</b><br>Gasto ${brl(x.gasto)}${x.parcelas ? '<br>Parcelas antigas ' + brl(x.parcelas) : ''}<br>Teto ${x.teto != null ? brl(x.teto) : 'sem teto'}${acima ? `<br><b class='neg'>+${brl(x.gasto - x.teto)} acima</b>` : ''}"/>`;
     s += `<text x="${cx(i)}" y="${H - 7}" font-size="10.5" text-anchor="middle" fill="var(--texto-2)">${rot(x)}</text>`;
   });
@@ -529,12 +664,12 @@ function tabelaMetas(el, ms, tipo) {
     const pct = m.completude_periodo != null ? Math.round(m.completude_periodo * 100) + '%' : '-';
     const alvo = m.alvo ? Math.min(m.completude_alvo || 0, 1) : null;
     return `<div class="meta-item">
-      <div class="meta-topo"><b>${esc(m.nome)}</b><span class="muted">${m.onde ? esc(m.onde) : ''}${m.data_alvo ? `${m.onde ? ' · ' : ''}até ${mesBR(m.data_alvo + '-01')}` : ''}${m.por_mes_ate_prazo ? ` · ${brl0(m.por_mes_ate_prazo)}/mês para chegar` : ''}</span></div>
-      <div class="meta-nums"><span>Planejado <b>${brl0(m.planejado_periodo)}</b></span><span>Guardado <b>${brl0(m.guardado_periodo)}</b></span><span>${pct}</span>
-        <span>${m.falta_periodo ? `Falta <b class="warnc">${brl0(m.falta_periodo)}</b>` : '<b class="pos">cumprido</b>'}</span></div>
+      <div class="meta-topo"><b>${esc(m.nome)}</b><span class="muted">${m.onde ? esc(m.onde) : ''}${m.data_alvo ? `${m.onde ? ' · ' : ''}até ${mesBR(m.data_alvo + '-01')}` : ''}${m.por_mes_ate_prazo ? ` · ${brl(m.por_mes_ate_prazo)}/mês para chegar` : ''}</span></div>
+      <div class="meta-nums"><span>Planejado <b>${brl(m.planejado_periodo)}</b></span><span>Guardado <b>${brl(m.guardado_periodo)}</b></span><span>${pct}</span>
+        <span>${m.falta_periodo ? `Falta <b class="warnc">${brl(m.falta_periodo)}</b>` : '<b class="pos">cumprido</b>'}</span></div>
       ${m.alvo ? `<div class="meta-alvo"><div class="track"><div class="fill neutro" style="width:${alvo * 100}%"></div></div>
-        <span>${brl0(m.guardado_total)} de ${brl0(m.alvo)} (${Math.round((m.completude_alvo || 0) * 100)}%)</span></div>`
-        : `<div class="meta-alvo"><span>Acumulado ${brl0(m.guardado_total)}</span></div>`}</div>`;
+        <span>${brl(m.guardado_total)} de ${brl(m.alvo)} (${Math.round((m.completude_alvo || 0) * 100)}%)</span></div>`
+        : `<div class="meta-alvo"><span>Acumulado ${brl(m.guardado_total)}</span></div>`}</div>`;
   }).join('');
 }
 
@@ -542,8 +677,8 @@ function kpiConta(c) {
   if (c.saldo_real == null)
     return `<div class="kpi"><div class="rot">Conta</div><div class="v warnc">${brl(c.saldo)}</div><div class="d">pelo extrato até ${dataBR(c.cobertura)} · <a href="#" data-saldo>informar saldo do app</a></div></div>`;
   const dif = c.diferenca, ok = Math.abs(dif) < .005;
-  return `<div class="kpi"><div class="rot">Conta (saldo do app)</div><div class="v ${c.saldo_real < 100 ? 'neg' : ''}">${brl(c.saldo_real)}</div>
-    <div class="d">em ${dataBR(c.data_real)}${c.data_real < hojeISO() ? ' (desatualizado)' : ''} · ${ok ? 'bate com os lançamentos' : `<b class="warnc">${brl(dif)}</b> não lançados`} · <a href="#" data-saldo>atualizar</a></div></div>`;
+  return `<div class="kpi"><div class="rot">Conta</div><div class="v ${c.saldo_atual < 100 ? 'neg' : ''}">${brl(c.saldo_atual)}</div>
+    <div class="d">${ok ? 'bate com os lançamentos' : `<b class="warnc">${brl(dif)}</b> não lançados`} · <a href="#" data-saldo>atualizar</a></div></div>`;
 }
 document.addEventListener('click', async e => {
   const a = e.target.closest('[data-saldo]'); if (!a) return;
@@ -601,11 +736,12 @@ async function pendentes(t) {
   const L = await api('/api/lancamentos?pendentes=true');
   t.innerHTML = `<div class="titulo"><h2>Pendentes</h2><span class="muted">${L.length ? `${L.length} esperando você` : 'tudo classificado'}</span></div>
     <section class="painel vidro">
-    <p class="sub">Um toque classifica. Nada com pessoa é classificado sozinho: o sistema só sugere, e você confirma.</p>
+    <p class="sub">Toque na sugestão ou numa categoria.</p>
     <label class="alternar"><input type="checkbox" id="lembrar" checked> sugerir a mesma classificação da próxima vez para o mesmo lugar</label>
     <div id="lista"></div></section>`;
   const lista = $('#lista');
-  L.sort((a, b) => Math.abs(b.valor) - Math.abs(a.valor)).forEach(l => lista.appendChild(itemPendente(l)));
+  // Por data, do mais recente ao mais antigo (a ordem do servidor), para a triagem seguir o extrato.
+  L.sort((a, b) => b.data.localeCompare(a.data) || b.id - a.id).forEach(l => lista.appendChild(itemPendente(l)));
 }
 
 function itemPendente(l) {
@@ -716,32 +852,40 @@ function tipoLanc(l) {
 async function lancamentos(t) {
   const [meses, contas] = await Promise.all([api('/api/meses'), api('/api/contas')]);
   t.innerHTML = `<div class="titulo"><h2>Lançamentos</h2></div>
-    <section class="painel vidro"><h3>Resumo <small>do que está filtrado abaixo</small></h3><div class="heroi lanc-heroi" id="lanc-heroi"></div></section>
+    <section class="painel vidro"><h3>Resumo <small class="junto">do que está filtrado abaixo</small></h3><div class="heroi lanc-heroi" id="lanc-heroi"></div></section>
     <section class="painel vidro">
-    <div class="barra"><select id="f-mes"><option value="">todos os meses</option>${meses.map(m => `<option value="${m}">${MESES[+m.slice(5) - 1]} de ${m.slice(0, 4)}</option>`).join('')}</select>
+    <div class="barra"><select id="f-ano"><option value="">todos os anos</option>${[...new Set(meses.map(m => m.slice(0, 4)))].sort().reverse().map(a => `<option>${a}</option>`).join('')}</select>
+      <select id="f-mes"><option value="">todos os meses</option>${MESES.map((m, i) => `<option value="${String(i + 1).padStart(2, '0')}">${m}</option>`).join('')}</select>
       <select id="f-cat"><option value="">todas as categorias</option>${V.categorias.map(c => `<option value="${c.id}">${esc(c.nome)}</option>`).join('')}</select>
       <select id="f-tipo"><option value="">todos os tipos</option><option>Entrada</option><option>Saída</option><option>Transferência</option><option>Acerto</option><option>Dividido</option><option>Estorno</option><option>Poupança</option><option>Pendente</option></select>
       <input id="f-busca" placeholder="buscar" style="flex:1;min-width:140px"><button id="f-limpar">Limpar filtros</button></div>
     <div class="scroll"><table id="t-l"></table></div></section>`;
-  $('#f-mes').value = params().get('cat') ? '' : (params().get('mes') ?? meses[0] ?? '');
+  const mesIni = params().get('cat') ? '' : (params().get('mes') ?? hojeISO().slice(0, 7));
+  $('#f-ano').value = mesIni.slice(0, 4); $('#f-mes').value = mesIni.slice(5, 7);
   if (params().get('cat')) $('#f-cat').value = params().get('cat');
   let dados = [];
   async function carregar() {
     const p = new URLSearchParams();
-    if ($('#f-mes').value) p.set('mes', $('#f-mes').value);
+    // Ano e mês: o mês do ano escolhido; só o ano; ou o mesmo mês em todos os anos.
+    const ano = $('#f-ano').value, mm = $('#f-mes').value, mesF = ano && mm ? `${ano}-${mm}` : '';
+    if (mesF) p.set('mes', mesF);
+    else if (ano) { p.set('de', ano + '-01-01'); p.set('ate', ano + '-12-31'); }
     if ($('#f-cat').value) p.set('categoria', $('#f-cat').value);
     if ($('#f-busca').value) p.set('busca', $('#f-busca').value);
     if ($('#f-tipo').value === 'Pendente') p.set('pendentes', 'true');
-    dados = (await api('/api/lancamentos?' + p)).filter(l => !$('#f-tipo').value || tipoLanc(l)[1] === $('#f-tipo').value);
-    const ps = dados.flatMap(l => l.partes);
-    const ent = ps.filter(p => p.natureza === 'renda').reduce((a, p) => a + p.valor, 0), gas = -ps.filter(p => p.natureza === 'gasto').reduce((a, p) => a + p.valor, 0);
-    const nEnt = dados.filter(l => l.partes.some(p => p.natureza === 'renda')).length, nGas = dados.filter(l => l.partes.some(p => p.natureza === 'gasto')).length;
+    dados = (await api('/api/lancamentos?' + p)).filter(l => (!$('#f-tipo').value || tipoLanc(l)[1] === $('#f-tipo').value) && (mesF || !mm || l.data.slice(5, 7) === mm));
+    // Com um mês escolhido, a renda conta no mês em que entra (Ajustes > Mês da entrada, a mesma regra do Painel)
+    // e o gasto conta pela data.
+    const dEnt = dados.filter(l => !mesF || l.mes_renda === mesF), dGas = dados.filter(l => !mesF || l.data.startsWith(mesF));
+    const soma = (ls, nat) => ls.flatMap(l => l.partes).filter(p => p.natureza === nat).reduce((a, p) => a + p.valor, 0);
+    const ent = soma(dEnt, 'renda'), gas = -soma(dGas, 'gasto');
+    const nEnt = dEnt.filter(l => l.partes.some(p => p.natureza === 'renda')).length, nGas = dGas.filter(l => l.partes.some(p => p.natureza === 'gasto')).length;
     // Falta lançar: diferença entre o saldo que o app mostra e o calculado pelos lançamentos (a mesma do Painel).
     const conta = contas.find(c => c.id === 'nubank_conta'), falta = conta?.saldo_real != null ? conta.diferenca : null, bate = falta != null && Math.abs(falta) < .005;
     $('#lanc-heroi').innerHTML = `
       <div><div class="rot">Entradas</div><div class="grande">${brl(ent)}</div><div class="muted">${nEnt} lançamento(s)</div></div>
       <div><div class="rot">Gastos</div><div class="grande">${brl(gas)}</div><div class="muted">${nGas} lançamento(s)</div></div>
-      <div><div class="rot">Resultado</div><div class="grande ${ent - gas < 0 ? 'neg' : 'pos'}">${sinal(ent - gas)}</div>
+      <div><div class="rot">Balanço</div><div class="grande ${ent - gas < 0 ? 'neg' : 'pos'}">${sinal(ent - gas)}</div>
         <div class="muted">${dados.length} lançamento(s) · ${dados.filter(l => l.pendente).length} pendente(s)</div></div>
       <div><div class="rot">Falta lançar na conta</div><div class="grande ${falta == null ? 'muted' : bate ? 'pos' : 'warnc'}">${falta == null ? '?' : brl(Math.abs(falta))}</div>
         <div class="muted">${falta == null ? '<a href="#" data-saldo>informe o saldo do app</a>' : bate ? 'o saldo do app bate com os lançamentos'
@@ -749,9 +893,9 @@ async function lancamentos(t) {
     tabela($('#t-l'), ['Data', 'Tipo', 'Categoria', 'Valor', 'Detalhes', 'Conta', 'Saldo da conta'], dados.map(l => {
       const [cls, nome] = tipoLanc(l);
       return [`<span class="nw">${dataCurta(l.data)}</span>`, `<span class="tipo ${cls}">${nome}</span>`,
-        l.pendente ? '<span class="muted">a classificar</span>' : l.partes.map(p => `<span class="chip">${esc(p.categoria ? cat(p.categoria)?.nome : p.pessoa ? pessoa(p.pessoa)?.nome : p.meta ? 'meta ' + meta(p.meta)?.nome : NAT[p.natureza])}${l.partes.length > 1 ? ' ' + brl(p.valor) : ''}</span>`).join(''),
+        l.pendente ? '<span class="muted">a classificar</span>' : l.partes.map(p => `<span class="chip" ${p.categoria ? `data-segurar-cat="${p.categoria}"` : ''}>${esc(p.categoria ? cat(p.categoria)?.nome : p.pessoa ? pessoa(p.pessoa)?.nome : p.meta ? 'meta ' + meta(p.meta)?.nome : NAT[p.natureza])}${l.partes.length > 1 ? ' ' + brl(p.valor) : ''}</span>`).join(''),
         `<b class="${l.valor > 0 ? 'pos' : ''}">${brl(l.valor)}</b>`,
-        `${esc(l.contraparte || l.descricao)}<div class="muted">${[l.contraparte ? esc(l.descricao) : '', l.parcela ? 'parcela ' + l.parcela : '', ORIGEM[l.origem] || '', l.nota ? `<span class="obs-lanc">${esc(l.nota)}</span>` : ''].filter(Boolean).join(' · ')}</div>`,
+        `${esc(l.contraparte || l.descricao)}<div class="muted">${[l.contraparte ? esc(l.descricao) : '', l.parcela ? 'parcela ' + l.parcela : '', l.mes_renda && !l.data.startsWith(l.mes_renda) ? 'entra em ' + mesBR(l.mes_renda + '-01') : '', ORIGEM[l.origem] || '', l.nota ? `<span class="obs-lanc">${esc(l.nota)}</span>` : ''].filter(Boolean).join(' · ')}</div>`,
         `<span class="nw">${CONTA[l.conta] || l.conta}</span>`, `<span class="nw ${l.saldo_conta < 0 ? 'neg' : ''}">${brl(l.saldo_conta)}</span>`];
     }), [3, 6], () => 'click');
     $('#t-l').querySelectorAll('tbody tr').forEach((tr, i) => tr.onclick = () => dados[i] && abrirEditor(dados[i], carregar));
@@ -768,7 +912,7 @@ async function lancamentos(t) {
   }
   function linhaNova() {
     const tb = $('#t-l tbody');
-    tb.insertAdjacentHTML('afterbegin', `<tr class="nova"><td><input type="date" id="n-data" value="${hojeISO()}"></td>
+    tb.insertAdjacentHTML('afterbegin', `<tr class="nova"><td><input type="date" id="n-data" required value="${hojeISO()}"></td>
       <td><select id="n-tipo">${Object.entries(TIPOS_NOVO).map(([k, n]) => `<option value="${k}">${n}</option>`).join('')}</select></td>
       <td><select id="n-alvo">${opcoesAlvo('saida')}</select></td>
       <td class="n"><input type="number" step="0.01" min="0" id="n-valor" placeholder="0,00" style="width:100px;text-align:right"></td>
@@ -796,14 +940,14 @@ async function lancamentos(t) {
     tb.querySelector('tr.nova').onclick = e => e.stopPropagation();
   }
   // Limpar: todos os meses, categorias e tipos, sem busca (e tira o filtro que veio no endereço, ex.: da evolução).
-  const filtrado = () => ['f-mes', 'f-cat', 'f-tipo', 'f-busca'].some(id => $('#' + id).value);
+  const filtrado = () => ['f-ano', 'f-mes', 'f-cat', 'f-tipo', 'f-busca'].some(id => $('#' + id).value);
   const marcarLimpar = () => { $('#f-limpar').disabled = !filtrado(); };
   $('#f-limpar').onclick = () => {
-    ['f-mes', 'f-cat', 'f-tipo', 'f-busca'].forEach(id => { $('#' + id).value = ''; });
+    ['f-ano', 'f-mes', 'f-cat', 'f-tipo', 'f-busca'].forEach(id => { $('#' + id).value = ''; });
     if (location.hash.includes('?')) history.replaceState(null, '', '#lancamentos');
     marcarLimpar(); carregar();
   };
-  ['f-mes', 'f-cat', 'f-tipo'].forEach(id => $('#' + id).onchange = () => { marcarLimpar(); carregar(); });
+  ['f-ano', 'f-mes', 'f-cat', 'f-tipo'].forEach(id => $('#' + id).onchange = () => { marcarLimpar(); carregar(); });
   let tm; $('#f-busca').oninput = () => { marcarLimpar(); clearTimeout(tm); tm = setTimeout(carregar, 300); };
   marcarLimpar();
   carregar();
@@ -812,7 +956,7 @@ async function lancamentos(t) {
 // ---------------------------------------------------------------- importar e lançar à mão
 async function importar(t) {
   t.innerHTML = `<div class="titulo"><h2>Importar e lançar</h2></div>
-    <section class="painel vidro"><h3>Extrato e fatura do banco <small>Nubank ou Bradesco · PDF, CSV ou Excel</small></h3>
+    <section class="painel vidro"><h3>Extrato e fatura do banco <small>Nubank ou Bradesco · .pdf, .csv ou .xlsx</small></h3>
       <p class="sub">Quantos quiser de uma vez. O que já existe (mesmo arquivo de novo, ou o que veio pelo celular) não duplica. Extrato que não fecha com o total do banco é recusado. A fatura em aberto do Bradesco é imagem e é lida por OCR: leva uns segundos por página e só entra se cada cartão fechar com o total impresso. Para lançar algo à mão, use a primeira linha da tela <a href="#lancamentos">Lançamentos</a>.</p>
       <label class="drop" id="drop">Solte os arquivos aqui ou toque para escolher<input type="file" id="arq" multiple accept=".pdf,.csv,.xlsx" hidden></label>
       <div class="scroll" style="margin-top:10px"><table id="t-res"></table></div></section>
@@ -838,19 +982,35 @@ async function importar(t) {
     tabela($('#t-ign'), ['Quando', 'Motivo', 'Texto', ''], ign.map(i => [i.quando.slice(0, 16), esc(i.motivo), esc(i.title + ' | ' + i.body), `<button data-r="${i.id}">resgatar</button>`]));
     $('#t-ign').querySelectorAll('[data-r]').forEach(b => b.onclick = async () => { await post(`/api/ignorados/${b.dataset.r}/resgatar`, {}); carregarListas(); contarPendentes(); });
     const imp = await api('/api/importacoes');
-    tabela($('#t-imp'), ['Quando', 'Arquivo', 'Tipo', 'Novos', 'Casados', 'Já existiam'], imp.map(i => [i.quando.slice(0, 16), esc(i.arquivo), i.tipo, i.novos, i.casados, i.repetidos]), [3, 4, 5]);
+    tabelaRecentes($('#t-imp'), ['Quando', 'Arquivo', 'Tipo', 'Novos', 'Casados', 'Já existiam'], imp.map(i => [i.quando.slice(0, 16), esc(i.arquivo), i.tipo, i.novos, i.casados, i.repetidos]), [3, 4, 5]);
   }
   carregarListas();
 }
 
 // ---------------------------------------------------------------- pessoas
+// Lista que cresce sem fim (acertos, importações): só as mais recentes, e mais sob demanda.
+function tabelaRecentes(el, cab, linhas, num, passo = 10) {
+  const caixa = el.closest('.scroll');
+  caixa.parentElement.querySelector(':scope > .mostrar-mais')?.remove();
+  const b = Object.assign(document.createElement('button'), {className: 'mostrar-mais'});
+  b.style.marginTop = '8px';
+  caixa.after(b);
+  let n = passo;
+  const desenhar = () => {
+    tabela(el, cab, linhas.slice(0, n), num);
+    b.hidden = linhas.length <= n;
+    b.textContent = `mostrar mais (${linhas.length - n} restantes)`;
+  };
+  b.onclick = () => { n += passo; desenhar(); };
+  desenhar();
+}
 async function pessoas(t) {
   const [P, L] = await Promise.all([api('/api/painel'), api('/api/lancamentos')]);
   t.innerHTML = `<div class="titulo"><h2>Pessoas</h2><span class="muted">positivo: a pessoa te deve · negativo: você deve a ela</span></div>
     <div class="grade">
     <section class="painel vidro"><h3>Saldos</h3><div class="scroll"><table id="t-p"></table></div></section>
     <section class="painel vidro"><h3>Alguém pagou uma conta por você</h3>
-      <p class="sub">Condomínio, Copel, gás, mercado da casa: o gasto é seu, o dinheiro saiu de outra pessoa. Vira gasto na categoria e dívida com ela, sem mexer no saldo da conta.</p>
+      <p class="sub">Uma conta sua que outra pessoa pagou.</p>
       <form class="linha" id="f-pago">
         <label class="c">Data<input type="date" name="data" required></label>
         <label class="c">Quem pagou<select name="pessoa">${V.pessoas.map(p => `<option value="${p.id}">${esc(p.nome)}</option>`).join('')}</select></label>
@@ -859,6 +1019,13 @@ async function pessoas(t) {
         <label class="c">O que foi<input name="descricao" required placeholder="Copel de novembro"></label>
         <button class="prim">Lançar</button></form></section>
     </div>
+    <section class="painel vidro"><h3>Cadastro <small>como o nome aparece no extrato e o que sugerir</small></h3>
+      <div class="scroll"><table id="t-pes" class="compacta"></table></div>
+      <form class="linha" id="f-pes" style="margin-top:10px">
+        <label class="c">Nome<input name="nome" required></label>
+        <label class="c">Nome no extrato<input name="apelido_extrato" placeholder="FULANO DE TAL"></label>
+        <label class="c">Tipo<select name="tipo"><option>colega</option><option>familia</option><option>credor</option><option>outro</option></select></label>
+        <button class="prim">Adicionar</button></form></section>
     <section class="painel vidro"><h3>Acertos recentes</h3><div class="scroll"><table id="t-ac"></table></div></section>`;
   $('#f-pago').data.value = hojeISO();
   $('#f-pago').onsubmit = async e => {
@@ -870,8 +1037,18 @@ async function pessoas(t) {
   };
   tabela($('#t-p'), ['Pessoa', 'Saldo', 'Situação', 'Parcelas a vencer'], P.pessoas.filter(p => p.saldo || p.a_vencer).map(p =>
     [esc(p.nome), `<b class="${p.saldo < 0 ? 'neg' : 'pos'}">${brl(p.saldo)}</b>`, p.saldo < 0 ? 'você deve' : 'te deve', p.a_vencer ? brl(p.a_vencer) : '']), [1, 3]);
-  const ac = L.flatMap(l => l.partes.filter(p => p.natureza === 'acerto').map(p => ({l, p}))).slice(0, 60);
-  tabela($('#t-ac'), ['Data', 'Pessoa', 'Lançamento', 'Valor', 'Obs'], ac.map(({l, p}) =>
+  const sugeridas = ['acerto', ...V.categorias.map(c => `${c.tipo}:${c.id}`)];
+  const opt = (sel) => sugeridas.map(s => `<option value="${s}" ${s === sel ? 'selected' : ''}>${s === 'acerto' ? 'acerto' : cat(s.split(':')[1])?.nome}</option>`).join('');
+  tabela($('#t-pes'), ['Nome', 'No extrato', 'Quando entra', 'Quando sai'], V.pessoas.map(p => [
+    `<input data-pes="${p.id}" data-k="nome" value="${esc(p.nome)}" style="width:140px">`, `<input data-pes="${p.id}" data-k="apelido_extrato" value="${esc(p.apelido_extrato)}" style="width:170px">`,
+    `<select data-pes="${p.id}" data-k="sugere_entrada">${opt(p.sugere_entrada)}</select>`, `<select data-pes="${p.id}" data-k="sugere_saida">${opt(p.sugere_saida)}</select>`]));
+  t.querySelectorAll('[data-pes]').forEach(i => i.onchange = async () => {
+    const p = V.pessoas.find(x => x.id === i.dataset.pes);
+    await put('/api/pessoas/' + p.id, {...p, [i.dataset.k]: i.value}); V = await api('/api/vocabulario');
+  });
+  $('#f-pes').onsubmit = async e => { e.preventDefault(); try { await post('/api/pessoas', Object.fromEntries(new FormData(e.target))); rota(); } catch (err) { alert(err.message); } };
+  const ac = L.flatMap(l => l.partes.filter(p => p.natureza === 'acerto').map(p => ({l, p})));
+  tabelaRecentes($('#t-ac'), ['Data', 'Pessoa', 'Lançamento', 'Valor', 'Obs'], ac.map(({l, p}) =>
     [dataCurta(l.data), esc(pessoa(p.pessoa)?.nome || ''), esc(l.contraparte || l.descricao), brl(p.valor), esc([l.nota, p.obs, p.motivo].filter(Boolean).join(' · '))]), [3]);
 }
 
@@ -884,14 +1061,15 @@ async function plano(t) {
   t.innerHTML = `<div class="titulo"><h2>Projeção até ${mesBR(pl.horizonte + '-01')}</h2><span class="muted">renda, custo de vida e aportes de cada mês vêm do <a href="#orcamento">Orçamento</a>, mais os eventos</span></div>
     <div class="mosaico" id="mosaico">
     ${cartao('proj-resumo', 'Resumo', '', `<div class="heroi" style="grid-template-columns:repeat(3,minmax(0,1fr))">
-      <div><div class="rot">Falta cobrir no período</div><div class="grande ${pl.falta_total ? 'warnc' : 'pos'}">${brl0(pl.falta_total)}</div><div class="muted">soma dos meses no vermelho</div></div>
+      <div><div class="rot">Falta cobrir no período</div><div class="grande ${pl.falta_total ? 'warnc' : 'pos'}">${brl(pl.falta_total)}</div><div class="muted">soma dos meses no vermelho</div></div>
       <div><div class="rot">Quem você deve, quitado em</div><div class="grande">${quitado ? mesBR(quitado.mes + '-01') : 'não quita'}</div></div>
-      <div><div class="rot">Saldo livre em ${mesBR(pl.horizonte + '-01')}</div><div class="grande ${(fim.livre || 0) > 0 ? 'pos' : 'warnc'}">${brl0(fim.livre)}</div><div class="muted">${brl0(fim.metas)} nas metas</div></div></div>`)}
-    ${cartao('proj-grafico', 'Resultado mês a mês', 'cartão congelado', `<div class="legend"><span><i style="background:var(--ok)"></i>Sobra</span><span><i style="background:var(--ruim)"></i>Falta</span><span><i style="background:var(--acento);height:3px"></i>Saldo livre acumulado</span></div><div class="chart grafico" id="ch-proj"></div>`)}
+      <div><div class="rot">Saldo livre em ${mesBR(pl.horizonte + '-01')}</div><div class="grande ${(fim.livre || 0) > 0 ? 'pos' : 'warnc'}">${brl(fim.livre)}</div><div class="muted">${brl(fim.metas)} nas metas</div></div></div>`)}
+    ${cartao('proj-grafico', 'Resultado mês a mês', 'cartão: só parcelas a cair', `<div class="legend"><span><i style="background:var(--ok)"></i>Sobra</span><span><i style="background:var(--ruim)"></i>Falta</span><span><i style="background:var(--acento);height:3px"></i>Saldo livre acumulado</span></div><div class="chart grafico" id="ch-proj"></div>`)}
     ${cartao('proj-premissas', 'Premissas', '', `<form class="linha" id="f-prm">
         <label class="c">Renda mensal base<input type="number" step="0.01" name="salario_mensal" value="${prm.salario_mensal}"></label>
         <label class="c">Horizonte (AAAA-MM)<input name="horizonte" value="${pl.horizonte}"></label>
-        <label class="c">Taxa da ponte do PicPay<input type="number" step="0.001" name="taxa_ponte_picpay" value="${prm.taxa_ponte_picpay}"></label>
+        <label class="c">Taxa de aporte no crédito<input type="number" step="0.001" name="taxa_ponte_picpay" value="${prm.taxa_ponte_picpay}"></label>
+        <label class="c">Carteiras de aporte<input name="carteiras_aporte" value="${esc(prm.carteiras_aporte || '')}" placeholder="PICPAY, 99PAY"></label>
         <button class="prim">Recalcular</button></form>
       <p class="sub" style="margin-top:8px">Renda base = padrão do salário no <a href="#orcamento">Orçamento</a>. Custo de vida e aportes = orçado de cada mês. Reembolsos = parcelas que alguém te deve.</p>`)}
     ${cartao('proj-tabela', 'Mês a mês', '', '<div class="scroll"><table id="t-pl"></table></div>')}
@@ -906,8 +1084,8 @@ async function plano(t) {
         <button class="prim">Adicionar</button></form>`)}
     </div>`;
   tabela($('#t-pl'), ['Mês', 'Renda', 'Reemb.', 'Únicos', 'Custo', 'Cartão', 'Metas', 'Resultado', 'Falta', 'Devo', 'Livre'],
-    L.map(l => [`<b class="nw">${mesBR(l.mes + '-01')}</b>`, brl0(l.renda), brl0(l.reembolsos), l.unicos ? sinal(l.unicos) : '0', brl0(l.custo), brl0(l.cartao), brl0(l.aportes),
-      `<b class="${l.resultado < 0 ? 'neg' : 'pos'}">${sinal(l.resultado)}</b>`, l.falta ? `<b class="warnc">${brl0(l.falta)}</b>` : '0', brl0(l.deve_pessoas), brl0(l.livre)]), [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+    L.map(l => [`<b class="nw">${mesBR(l.mes + '-01')}</b>`, brl(l.renda), brl(l.reembolsos), l.unicos ? sinal(l.unicos) : '0', brl(l.custo), brl(l.cartao), brl(l.aportes),
+      `<b class="${l.resultado < 0 ? 'neg' : 'pos'}">${sinal(l.resultado)}</b>`, l.falta ? `<b class="warnc">${brl(l.falta)}</b>` : '0', brl(l.deve_pessoas), brl(l.livre)]), [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
   // gráfico: barras do resultado do mês e linha do saldo livre acumulado
   desenharNoTamanho($('#ch-proj'), (W, H) => {
     const Lm = 46, B = 22, Tp = 10, n = L.length || 1, gw = (W - Lm) / n, bw = Math.max(4, gw * (FRACAO_BARRA[PREF.barras_larg] || .7) * .8);
@@ -921,7 +1099,7 @@ async function plano(t) {
       const y0 = y(0), y1 = y(l.resultado), r = raioBarra(bw, Math.abs(y1 - y0));
       g += `<rect x="${cx(i) - bw / 2}" y="${Math.min(y0, y1)}" width="${bw}" height="${Math.max(Math.abs(y1 - y0), 1)}" rx="${r}" fill="${l.resultado < 0 ? 'var(--ruim)' : 'var(--ok)'}"/>`;
       // valor na ponta da barra: acima da positiva, abaixo da negativa
-      const txt = Math.abs(l.resultado) >= 1000 ? (l.resultado / 1000).toLocaleString('pt-BR', {maximumFractionDigits: 1}) + 'k' : String(Math.round(l.resultado));
+      const txt = num2(l.resultado);
       g += `<text x="${cx(i)}" y="${l.resultado < 0 ? y1 + 12 : y1 - 4}" font-size="${gw < 30 ? 8.5 : 10}" font-weight="600" text-anchor="middle" fill="${l.resultado < 0 ? 'var(--ruim)' : 'var(--ok)'}">${txt}</text>`;
       g += `<rect x="${cx(i) - gw / 2}" y="${Tp}" width="${gw}" height="${H - Tp - B}" fill="transparent" data-tip="<b>${mesBR(l.mes + '-01')}</b><br>Resultado ${brl(l.resultado)}<br>Falta ${brl(l.falta)}<br>Saldo livre ${brl(l.livre)}"/>`;
       if (gw >= 34 || i % 2 === 0) g += `<text x="${cx(i)}" y="${H - 6}" font-size="10" text-anchor="middle" fill="var(--texto-2)">${mesBR(l.mes + '-01')}</text>`;
@@ -953,7 +1131,7 @@ async function plano(t) {
 const ICONE_LIXO = '<svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M2.5 4h11M6 4V2.5h4V4M4 4l.7 9.5h6.6L12 4"/></svg>';
 const lixeira = (attr, id, titulo) => `<button class="botao-icone apagar" ${attr}="${esc(id)}" title="${titulo}" aria-label="${titulo}">${ICONE_LIXO}</button>`;
 const numEd = v => v == null ? '' : String(Math.round(v * 100) / 100).replace('.', ',');
-const numVer = v => v == null ? '' : (Math.round(v) || 0).toLocaleString('pt-BR');
+const numVer = v => v == null ? '' : num2(v);
 function lerNum(s) {
   s = String(s).trim().replace(/^R\$\s*/, '');
   if (!s) return null;
@@ -991,7 +1169,7 @@ async function orcamento(t) {
   const dicaPadrao = l => l.tipo === 'poupanca' ? 'padrão: aporte mensal da meta' : l.tipo === 'renda' ? (l.chave === 'salario' ? 'padrão: renda base' : 'sem padrão')
     : l.por_itens ? 'padrão: soma das despesas fixas' : 'padrão: teto da categoria';
   const linhaCat = l => {
-    const nome = `<span class="nome-orc">${l.tipo === 'poupanca' ? '<i class="ponto" style="background:var(--s-poup)"></i>' : pontoCor(corCat(l.chave), 'data-cor-cat', l.chave)}
+    const nome = `<span class="nome-orc" ${l.tipo === 'poupanca' ? '' : `data-segurar-cat="${esc(l.chave)}"`}>${l.tipo === 'poupanca' ? '<i class="ponto" style="background:var(--s-poup)"></i>' : pontoCor(corCat(l.chave), 'data-cor-cat', l.chave)}
       <span>${esc(l.nome)}</span>${l.por_itens ? '<small class="etiqueta" title="orçada pela soma das despesas fixas">itens</small>' : ''}</span>`;
     if (modo !== 'orcado') return `<tr class="cat-orc"><td>${nome}</td>${celulas(m => val(l, m))}</tr>`;
     return `<tr class="cat-orc"><td>${nome}</td>${M.map(m => {
@@ -1000,7 +1178,7 @@ async function orcamento(t) {
         value="${numEd(l.orcado[m])}" placeholder="–" title="${def ? 'valor deste mês; apague para voltar ao padrão' : dicaPadrao(l)}"></td>`;
     }).join('')}<td class="n ano">${numVer(anual(m => l.orcado[m]))}</td></tr>`;
   };
-  const linhaGrupo = g => `<tr class="grp-orc"><td><span class="nome-orc">${pontoCor(corGrupo(g), 'data-cor-grupo', g)}<span>${esc(g)}</span></span></td>${celulas(total(gasto.filter(l => l.grupo === g)))}</tr>`;
+  const linhaGrupo = g => `<tr class="grp-orc"><td><span class="nome-orc" data-segurar-grupo="${esc(g)}">${pontoCor(corGrupo(g), 'data-cor-grupo', g)}<span>${esc(g)}</span></span></td>${celulas(total(gasto.filter(l => l.grupo === g)))}</tr>`;
   const sec = (cls, nome) => `<tr class="sec-orc ${cls}"><td colspan="${M.length + 2}">${nome}</td></tr>`;
   const parcelas = modo === 'realizado' && M.some(m => G.parcelas[m])
     ? `<tr class="cat-orc"><td><span class="nome-orc"><i class="ponto" style="background:var(--mudo)"></i><span>Parcelas de compras antigas</span></span></td>${celulas(m => futuro(m) ? null : G.parcelas[m])}</tr>` : '';
@@ -1013,7 +1191,8 @@ async function orcamento(t) {
     <tr class="tot-orc poup"><td>Total poupado</td>${celulas(total(poup))}</tr></tbody></table>`;
 
   // despesas fixas: itens por categoria; a soma do mês pode ser o orçamento da categoria
-  const comItens = gasto.filter(l => l.itens.length), mr = MES3[+mesRef.slice(5) - 1];
+  // As categorias fixas (aluguel, contas da casa...) aparecem sempre, mesmo antes de ter item.
+  const comItens = gasto.filter(l => l.itens.length || l.fixa), mr = MES3[+mesRef.slice(5) - 1];
   const fixas = `<div class="scroll"><table class="compacta fixas"><thead><tr><th>Item</th><th class="n">Valor mensal</th><th>De</th><th>Até</th><th></th></tr></thead><tbody>
     ${comItens.length ? comItens.map(l => {
       const s = l.soma_itens[mesRef], o = l.orcado[mesRef], pelaSoma = l.por_itens && !l.definido.includes(mesRef);
@@ -1049,7 +1228,7 @@ async function orcamento(t) {
     <div class="mosaico" id="mosaico">
     ${cartao('orc-grade', 'Planejamento mensal', '', `<div class="scroll grade-orc-wrap">${grade}</div>`)}
     ${cartao('orc-fixas', 'Despesas fixas', 'o que você planeja gastar em cada categoria', fixas)}
-    ${cartao('orc-cats', 'Categorias', 'teto vazio = sem teto · fixa = não entra no "ainda pode gastar"', `
+    ${cartao('orc-cats', 'Categorias', 'teto vazio = sem teto · fixa = não entra no excedente ou déficit', `
       <div class="subsecao">Cores dos grupos</div>
       <div class="cores-grupos">${todosGrupos.map(g => `<span class="chip-cor">${pontoCor(corGrupo(g), 'data-cor-grupo', g)}${esc(g)}</span>`).join('')}</div>
       <div class="subsecao">Gastos</div><div class="scroll"><table id="t-cats" class="compacta"></table></div>
@@ -1174,14 +1353,15 @@ async function orcamento(t) {
 const opcao = (rotulo, k, valores) => `<div class="opcao"><span class="rot">${rotulo}</span><div class="segmentos">${valores.map(([v, n]) =>
   `<button data-pref="${k}" data-v="${v}" class="${String(PREF[k]) === String(v) ? 'on' : ''}">${n}</button>`).join('')}</div></div>`;
 async function ajustes(t) {
-  const [papeis, prm, cel] = await Promise.all([api('/api/papeis'), api('/api/parametros'), api('/api/celular')]);
+  const [papeis, prm, cel, ods] = await Promise.all([api('/api/papeis'), api('/api/parametros'), api('/api/celular'), api('/api/exportar.ods/estado')]);
   V = await api('/api/vocabulario');
-  // Você e os colegas, mesmo quem ainda não tem parte (0%).
-  const rateio = Object.fromEntries(['eu', ...V.pessoas.filter(p => p.tipo === 'colega').map(p => p.id)].map(k => [k, 0]));
-  Object.assign(rateio, JSON.parse(prm.aluguel_rateio || '{}'));
   t.innerHTML = `<div class="titulo"><h2>Ajustes</h2></div>
+    ${DEMO ? `<section class="painel vidro"><h3>Dados de demonstração</h3>
+      <p class="sub">O Finanças está mostrando dados inventados. Remover apaga a demonstração e o que você mexeu nela; os seus dados de verdade ficam como estão.</p>
+      <div class="barra"><button class="prim" id="remover-demo">Remover dados de demonstração</button></div></section>` : ''}
     <section class="painel vidro"><h3>Aparência</h3>
-      <div class="barra"><span class="muted">Tema</span><div class="segmentos"><button data-th="light" class="${store.get('tema', 'light') !== 'dark' ? 'on' : ''}">Claro</button><button data-th="dark" class="${store.get('tema') === 'dark' ? 'on' : ''}">Escuro</button></div></div>
+      <div class="barra"><span class="muted">Tema</span><div class="segmentos"><button data-th="light" class="${store.get('tema', 'light') !== 'dark' ? 'on' : ''}">Claro</button><button data-th="dark" class="${store.get('tema') === 'dark' ? 'on' : ''}">Escuro</button></div>
+        <button id="rever-tour">Rever o tour</button></div>
       <div class="papeis" id="papeis">
         <div class="papel ${!papeis.atual ? 'on' : ''}" data-papel=""><span>sem papel de parede</span></div>
         ${papeis.papeis.map(p => `<div class="papel ${p === papeis.atual ? 'on' : ''}" data-papel="${esc(p)}" style="background-image:url('/papel/${encodeURIComponent(p)}')"><span>${esc(p)}</span><button data-rm-papel="${esc(p)}">apagar</button></div>`).join('')}
@@ -1214,46 +1394,30 @@ async function ajustes(t) {
         <span class="muted">Arraste cada painel pela alça ao lado do título; o canto de baixo à direita muda largura e altura (duplo clique volta à altura automática).</span></div></section>
 
     <div class="grade meio">
-    <section class="painel vidro"><h3>Pessoas <small>como o nome aparece no extrato e o que sugerir</small></h3>
-      <div class="scroll"><table id="t-pes" class="compacta"></table></div>
-      <form class="linha" id="f-pes" style="margin-top:10px">
-        <label class="c">Nome<input name="nome" required></label>
-        <label class="c">Nome no extrato<input name="apelido_extrato" placeholder="FULANO DE TAL"></label>
-        <label class="c">Tipo<select name="tipo"><option>colega</option><option>familia</option><option>credor</option><option>outro</option></select></label>
-        <button class="prim">Adicionar</button></form></section>
-    <section class="painel vidro"><h3>Rateio do aluguel <small>sugestão para o boleto da imobiliária</small></h3>
-      <form class="linha" id="f-rateio">${Object.entries(rateio).map(([k, v]) => `<label class="c">${esc(k === 'eu' ? 'Você' : pessoa(k)?.nome || k)} (%)<input type="number" step="0.1" name="${esc(k)}" value="${(v * 100).toFixed(1)}"></label>`).join('')}
-        <button class="prim">Salvar</button></form><p class="sub" id="rateio-msg"></p></section>
+    <section class="painel vidro"><h3>Mês da entrada <small>Painel, Lançamentos, Orçamento e Projeção</small></h3>
+      <form class="linha" id="f-corte"><label class="alternar"><input type="checkbox" name="ligado" ${prm.renda_mes_seguinte !== '0' ? 'checked' : ''}> Renda que cai a partir do dia</label>
+        <label class="c">Dia<input type="number" min="1" max="31" name="dia" value="${esc(prm.dia_renda_mes_seguinte || '25')}" style="width:70px"></label>
+        <span class="muted">conta como entrada do mês seguinte</span><button class="prim">Salvar</button></form><p class="sub" id="corte-msg"></p></section>
     </div>
 
     <div class="grade meio">
-    <section class="painel vidro"><h3>Celular (MacroDroid)</h3>
-      <p class="sub">Abra esta tela no celular e copie cada campo para a ação "Requisição HTTP" da macro.</p>
-      ${[['URL (método POST)', cel.url], ['Cabeçalho Authorization', cel.authorization], ['Corpo (application/json)', cel.corpo]]
+    <section class="painel vidro"><h3>Celular <small>app Avareza ou MacroDroid</small></h3>
+      <p class="sub">Abra esta tela no celular. No app Avareza, copie o endereço e a chave. No MacroDroid, copie os três campos de baixo para a ação "Requisição HTTP" da macro.</p>
+      ${[['Endereço do servidor (app Avareza)', cel.base], ['Chave (app Avareza)', cel.chave], ['URL (método POST)', cel.url], ['Cabeçalho Authorization', cel.authorization], ['Corpo (application/json)', cel.corpo]]
         .map(([k, v], i) => `<label class="c">${k}<span class="barra" style="margin:2px 0 8px"><input readonly value="${esc(v)}" style="flex:1" id="cel${i}"><button data-copiar="cel${i}">copiar</button></span></label>`).join('')}</section>
     <section class="painel vidro"><h3>Planilha e sessão</h3>
       <p class="sub">No modelo da planilha antiga (.ods): Budget Dashboard, Planning com o orçamento de cada mês, Tracking com renda, gasto e poupança (pendentes em âmbar), Despesas Fixas, e depois as tabelas do site em abas. A simples (.xlsx) tem só as tabelas.</p>
-      <div class="barra"><button id="baixar-ods" class="prim">Baixar no modelo antigo (.ods)</button><a href="/api/exportar.xlsx"><button>Baixar tabelas (.xlsx)</button></a><button id="sair">Sair</button></div>
-      <p class="sub" id="ods-msg"></p></section>
+      <div class="barra"><button id="baixar-ods" class="prim" ${ods.disponivel ? '' : 'disabled'}>Baixar no modelo antigo (.ods)</button><a href="/api/exportar.xlsx"><button>Baixar tabelas (.xlsx)</button></a><button id="sair">Sair</button></div>
+      <p class="sub" id="ods-msg">${ods.disponivel ? '' : 'O modelo antigo (.ods) não sai aqui: ' + esc(ods.motivo) + '. A .xlsx funciona.'}</p></section>
     </div>`;
 
-  const sugeridas = ['acerto', ...V.categorias.map(c => `${c.tipo}:${c.id}`)];
-  // pessoas
-  const opt = (sel) => sugeridas.map(s => `<option value="${s}" ${s === sel ? 'selected' : ''}>${s === 'acerto' ? 'acerto' : cat(s.split(':')[1])?.nome}</option>`).join('');
-  tabela($('#t-pes'), ['Nome', 'No extrato', 'Quando entra', 'Quando sai'], V.pessoas.map(p => [
-    `<input data-pes="${p.id}" data-k="nome" value="${esc(p.nome)}" style="width:140px">`, `<input data-pes="${p.id}" data-k="apelido_extrato" value="${esc(p.apelido_extrato)}" style="width:170px">`,
-    `<select data-pes="${p.id}" data-k="sugere_entrada">${opt(p.sugere_entrada)}</select>`, `<select data-pes="${p.id}" data-k="sugere_saida">${opt(p.sugere_saida)}</select>`]));
-  t.querySelectorAll('[data-pes]').forEach(i => i.onchange = async () => {
-    const p = V.pessoas.find(x => x.id === i.dataset.pes);
-    await put('/api/pessoas/' + p.id, {...p, [i.dataset.k]: i.value}); V = await api('/api/vocabulario');
-  });
-  $('#f-pes').onsubmit = async e => { e.preventDefault(); try { await post('/api/pessoas', Object.fromEntries(new FormData(e.target))); rota(); } catch (err) { alert(err.message); } };
-  $('#f-rateio').onsubmit = async e => {
+  $('#f-corte').onsubmit = async e => {
     e.preventDefault();
-    const r = Object.fromEntries([...new FormData(e.target)].map(([k, v]) => [k, Math.round(+v * 10) / 1000]));
-    const soma = Object.values(r).reduce((a, b) => a + b, 0);
-    if (Math.abs(soma - 1) > .001) return ($('#rateio-msg').textContent = `A soma dá ${(soma * 100).toFixed(1)}%; precisa dar 100%.`);
-    await put('/api/parametros/aluguel_rateio', {valor: JSON.stringify(r)}); $('#rateio-msg').textContent = 'Salvo.';
+    const f = new FormData(e.target), dia = Math.round(+f.get('dia'));
+    if (!(dia >= 1 && dia <= 31)) return ($('#corte-msg').textContent = 'O dia vai de 1 a 31.');
+    await put('/api/parametros/renda_mes_seguinte', {valor: f.get('ligado') ? '1' : '0'});
+    await put('/api/parametros/dia_renda_mes_seguinte', {valor: String(dia)});
+    $('#corte-msg').textContent = 'Salvo.';
   };
   // visualização
   t.querySelectorAll('[data-pref]').forEach(b => b.onclick = () => {
@@ -1276,6 +1440,8 @@ async function ajustes(t) {
   $('#pref-padrao').onclick = () => { PREF = JSON.parse(JSON.stringify(PREF_PADRAO)); store.set('prefs', JSON.stringify(PREF)); store.set('grupos-abertos', '{}'); aplicarVisual(); rota(); };
   // aparência
   t.querySelectorAll('[data-th]').forEach(b => b.onclick = () => { store.set('tema', b.dataset.th); aplicarTema(); rota(); });
+  $('#rever-tour').onclick = reverTour;
+  if ($('#remover-demo')) $('#remover-demo').onclick = removerDemo;
   t.querySelectorAll('[data-papel]').forEach(d => d.onclick = async e => { if (e.target.closest('button')) return; await put('/api/papeis/atual', {nome: d.dataset.papel}); await aplicarPapel(); rota(); });
   t.querySelectorAll('[data-rm-papel]').forEach(b => b.onclick = async () => { if (confirm('Apagar este papel de parede?')) { await del('/api/papeis/' + encodeURIComponent(b.dataset.rmPapel)); rota(); } });
   $('#novo-papel').onchange = async e => {
@@ -1288,7 +1454,7 @@ async function ajustes(t) {
     try { await navigator.clipboard.writeText(i.value); } catch (_) { document.execCommand('copy'); }
     b.textContent = 'copiado';
   });
-  $('#sair').onclick = async () => { await post('/api/logout', {}); mostrarLogin(); };
+  if ($('#sair')) $('#sair').onclick = async () => { await post('/api/logout', {}); mostrarLogin(); };
   $('#baixar-ods').onclick = async e => {
     const b = e.target, msg = $('#ods-msg');
     b.disabled = true; msg.textContent = 'Gerando no LibreOffice, leva uns 15 segundos...';
@@ -1334,8 +1500,8 @@ const AJUDA = {
   'painel:periodo': `<p>O Painel mostra uma semana, um mês ou um ano. As setas vão para o período anterior ou o próximo, e <b>Hoje</b> volta para o atual.</p>
     <p><b>Comparar</b> mostra, nos números e nas categorias, a diferença para o período anterior.</p>
     <p>Renda que cai a partir do dia 25 conta no mês seguinte (o salário do dia 25 é do mês que vem). Na visão de semana isso não se aplica.</p>`,
-  'painel:resumo': `<p><b>Resultado</b>: entradas menos gastos do período. Transferências entre suas contas e acertos com pessoas não entram. <b>Juros e taxas</b> é a parte dos gastos que foi juro, IOF ou tarifa.</p>
-    <p><b>Ainda pode gastar</b>: o orçado das categorias variáveis (as que não são fixas e têm valor orçado) menos o que já foi gasto nelas. A marca na barra é o ritmo: quanto do período já passou.</p>
+  'painel:resumo': `<p><b>Balanço</b>: entradas menos gastos do período. Transferências entre suas contas e acertos com pessoas não entram. <b>Juros e taxas</b> é a parte dos gastos que foi juro, IOF ou tarifa.</p>
+    <p><b>Excedente ou déficit</b>: o orçado das categorias variáveis (as que não são fixas e têm valor orçado) menos o que já foi gasto nelas. A marca na barra é o ritmo: quanto do período já passou.</p>
     <p><b>Conta</b>: o saldo que você informou do app; a diferença para o calculado é o que falta lançar. <b>Dívida do cartão</b>: fatura em aberto e limite livre. <b>Você deve / te devem</b>: saldos com pessoas. <b>Pendentes</b>: lançamentos esperando classificação.</p>`,
   'painel:categorias': `<p>Gasto de cada categoria no período contra o orçado (o teto). No mês vale o orçado do mês; na semana, o do mês dividido por 4; no ano, a soma dos meses até agora.</p>
     <p>Parcela de compra antiga (da 2ª em diante) não conta contra o teto: aparece à parte como parcelas antigas.</p>
@@ -1354,7 +1520,7 @@ const AJUDA = {
     <p>O cartão fica congelado: entram a fatura atual, com o juro do rotativo, e as parcelas já contratadas. A sobra de cada mês paga primeiro quem você deve, e o resto vira saldo livre.</p>`,
   'projecao:proj-resumo': `<p><b>Falta cobrir</b>: soma dos meses que fecham no vermelho. <b>Quitado em</b>: mês em que a dívida com pessoas zera com as sobras. <b>Saldo livre</b>: o que sobra no fim do horizonte depois de pagar pessoas, com o total guardado nas metas embaixo.</p>`,
   'projecao:proj-grafico': `<p>Barras: resultado de cada mês (verde sobra, vermelho falta), com o valor na ponta. Linha azul: saldo livre acumulado.</p>`,
-  'projecao:proj-premissas': `<p><b>Renda mensal base</b>: o padrão do salário no Orçamento. <b>Horizonte</b>: até quando projetar (AAAA-MM). <b>Taxa da ponte do PicPay</b>: a taxa de passar dinheiro do crédito pelo PicPay, usada para separar a taxa do valor principal.</p>`,
+  'projecao:proj-premissas': `<p><b>Renda mensal base</b>: o padrão do salário no Orçamento. <b>Horizonte</b>: até quando projetar (AAAA-MM). <b>Taxa de aporte no crédito</b>: a taxa de pôr dinheiro numa carteira com o cartão; ela vai para <b>Taxas de aporte</b> e o resto fica como principal, para você dizer o que foi. <b>Carteiras de aporte</b>: os nomes como aparecem na fatura (PICPAY, 99PAY...), separados por vírgula.</p>`,
   'projecao:proj-tabela': `<p>Os números de cada mês: renda, reembolsos de parcelas que alguém te deve, entradas e saídas únicas, custo de vida, cartão, metas, resultado, falta, quanto ainda deve a pessoas e o saldo livre acumulado.</p>`,
   'projecao:proj-eventos': `<p>O que muda e quando: renda ou gasto mensal que muda a partir de um mês (e, se quiser, até outro), ou uma entrada ou saída única. Valor positivo aumenta, negativo diminui. Desmarque <b>Ativo</b> para ver a projeção sem o evento.</p>`,
 
@@ -1365,7 +1531,7 @@ const AJUDA = {
     <p>Enter desce para a linha de baixo na mesma coluna. <b>A alocar</b> é entradas menos gastos menos poupança. O ponto colorido ao lado do nome muda a cor da categoria ou do grupo.</p>`,
   'orcamento:orc-fixas': `<p>A aba Despesas Fixas da planilha: os itens que você planeja pagar em cada categoria (aluguel, internet, academia), com mês de início e de fim opcionais.</p>
     <p>Cada categoria mostra a soma dos itens no mês, quanto foi orçado e o que sobra para o resto. Marque <b>usar a soma como orçamento</b> para o padrão da categoria passar a ser a soma dos itens.</p>`,
-  'orcamento:orc-cats': `<p>Categorias de gasto e de renda: grupo, nome, teto mensal (o padrão do orçamento) e se é fixa (fixa não entra no ainda pode gastar). Ao apagar uma categoria com lançamentos, você escolhe para qual eles vão. As cores valem para o site inteiro.</p>`,
+  'orcamento:orc-cats': `<p>Categorias de gasto e de renda: grupo, nome, teto mensal (o padrão do orçamento) e se é fixa (fixa não entra no excedente ou déficit). Ao apagar uma categoria com lançamentos, você escolhe para qual eles vão. As cores valem para o site inteiro.</p>`,
   'orcamento:orc-metas': `<p>Metas de poupança: objetivo, prazo, aporte mensal (o padrão do orçamento da meta) e onde o dinheiro fica. Meta com aportes não se apaga, só se desativa.</p>`,
 
   'pendentes:titulo': `<p>Lançamentos que ainda não têm classificação completa. Um toque numa sugestão classifica; <b>Dividir</b> separa em partes (a sua e a de outra pessoa, por exemplo). Nada com pessoa é classificado sozinho: o site só sugere.</p>
@@ -1375,20 +1541,20 @@ const AJUDA = {
   'lancamentos:titulo': `<p>Todos os lançamentos, filtráveis por mês, categoria, tipo e busca. A primeira linha da tabela lança algo à mão. Toque num lançamento para mudar a classificação, dividir em partes ou apagar (só os lançados à mão ou pelo celular).</p>
     <p>A última coluna é o saldo da conta (ou do cartão) logo depois de cada lançamento.</p>`,
   'importar:titulo': `<p>Traz extratos e faturas do Nubank e do Bradesco e mostra o que o filtro do celular descartou.</p>`,
-  'importar:s-extrato-e-fatura-do-banco': `<p>Solte o extrato da conta e a fatura do cartão. Nubank: PDF ou CSV. Bradesco: extrato em PDF, CSV ou Excel (.xlsx) e a fatura em aberto que o aplicativo gera em PDF. O que já existe não duplica, e o que veio pelo celular é casado com a linha do arquivo. Extrato que não fecha com o total ou com a corrente de saldos do banco é recusado. A fatura do Bradesco é imagem: é lida por OCR e só entra se cada cartão fechar com o "Total para" impresso. Na primeira importação, as contas Bradesco e Cartão Bradesco são criadas, a conta com o saldo que o extrato mostra antes do primeiro lançamento.</p>`,
+  'importar:s-extrato-e-fatura-do-banco': `<p>Solte o extrato da conta e a fatura do cartão. Nubank: .pdf ou .csv. Bradesco: extrato em .pdf, .csv ou .xlsx e a fatura em aberto que o aplicativo gera em .pdf. O que já existe não duplica, e o que veio pelo celular é casado com a linha do arquivo. Extrato que não fecha com o total ou com a corrente de saldos do banco é recusado. A fatura do Bradesco é imagem: é lida por OCR e só entra se cada cartão fechar com o "Total para" impresso. Na primeira importação, as contas Bradesco e Cartão Bradesco são criadas, a conta com o saldo que o extrato mostra antes do primeiro lançamento.</p>`,
   'importar:s-notificacoes-descartadas-pelo-filtro': `<p>Notificações do celular que o filtro entendeu que não eram compra. Se alguma era, <b>resgatar</b> a transforma em lançamento.</p>`,
   'importar:s-ultimas-importacoes': `<p>Histórico das importações: quantos lançamentos novos, quantos casaram com o que veio pelo celular e quantos já existiam.</p>`,
   'pessoas:titulo': `<p>Quanto você deve a cada pessoa e quanto cada uma te deve. Positivo: a pessoa te deve. Negativo: você deve a ela.</p>`,
   'pessoas:s-saldos': `<p>Saldo com cada pessoa, somando acertos, contas divididas e parcelas que alguém te deve. Parcelas a vencer são as que ainda vão cair.</p>`,
   'pessoas:s-alguem-pagou-uma-conta-por-voce': `<p>Quando outra pessoa paga uma conta sua (condomínio, luz, mercado da casa): o gasto entra na categoria e vira dívida com ela, sem mexer no saldo da sua conta.</p>`,
   'pessoas:s-acertos-recentes': `<p>Os últimos acertos com pessoas: Pix que você mandou ou recebeu para quitar o que devia ou te deviam.</p>`,
-  'ajustes:titulo': `<p>Aparência, visualização, pessoas, rateio do aluguel, celular e planilha. Categorias e metas ficam no Orçamento.</p>`,
+  'ajustes:titulo': `<p>Aparência, visualização, pessoas, celular e planilha. Categorias e metas ficam no Orçamento.</p>`,
   'ajustes:s-aparencia': `<p>Tema claro ou escuro e papel de parede. Envie uma imagem para usar como fundo.</p>`,
   'ajustes:s-visualizacao': `<p>Vale só para este aparelho: largura, densidade, fonte, estilo dos painéis e dos gráficos, como as categorias aparecem no Painel, quais painéis mostrar e a ordem das abas.</p>
     <p>Cada painel se move pela alça ao lado do título e muda de tamanho pelo canto de baixo à direita.</p>`,
-  'ajustes:s-pessoas': `<p>Como o nome de cada pessoa aparece no extrato (para reconhecer o Pix) e o que sugerir quando entra ou sai dinheiro dela: acerto ou uma categoria.</p>`,
-  'ajustes:s-rateio-do-aluguel': `<p>Quanto de cada boleto da imobiliária é de cada morador. Vira sugestão de divisão quando o boleto aparece: sua parte como gasto e a dos outros como acerto. A soma precisa dar 100%.</p>`,
-  'ajustes:s-celular-macrodroid': `<p>Os dados para a macro do MacroDroid mandar as notificações do banco para o site: endereço, chave e corpo da requisição. Abra esta tela no celular e copie cada campo.</p>`,
+  'pessoas:s-cadastro': `<p>Como o nome de cada pessoa aparece no extrato (para reconhecer o Pix) e o que sugerir quando entra ou sai dinheiro dela: acerto ou uma categoria.</p>`,
+  'ajustes:s-mes-da-entrada': `<p>Salário que cai no fim do mês paga o mês seguinte. <b>Ligado</b>: a renda que entra a partir do dia escolhido conta como entrada do mês seguinte, no Painel, em Lançamentos, no Orçamento e na Projeção (em Lançamentos ela aparece no mês em que conta, com "entra em"). <b>Desligado</b>: cada entrada conta no mês da data.</p>`,
+  'ajustes:s-celular': `<p>O endereço e a chave para o app Avareza do celular, e os dados para a macro do MacroDroid mandar as notificações do banco para o site: endereço, chave e corpo da requisição. Abra esta tela no celular e copie cada campo.</p>`,
   'ajustes:s-planilha-e-sessao': `<p>Baixa tudo em planilha: no modelo antigo (.ods, preenchido pelo LibreOffice, leva alguns segundos) ou só as tabelas (.xlsx). Sair encerra a sessão neste aparelho.</p>`,
 };
 const popAjuda = Object.assign(document.createElement('div'), {className: 'ajuda-pop', hidden: true});
@@ -1419,6 +1585,166 @@ function ligarAjuda(raiz, pagina) {
     alvo?.after(b);
   });
 }
+
+// ---------------------------------------------------------------- tour do primeiro acesso
+// Na primeira entrada neste aparelho (no app, na primeira abertura), passa por cada tela e cada painel: o que mostra,
+// como ler e o que colocar. Fica marcado como visto neste aparelho; Ajustes > Aparência tem "Rever o tour".
+const cartaoTour = id => `#mosaico > .cartao[data-id="${id}"]`;
+const PASSOS_TOUR = [
+  {titulo: 'Bem-vindo ao Finanças', texto: () => `<p>Em poucos minutos este tour passa por cada tela e cada painel: o que mostra, como ler os números e o que você coloca em cada lugar.</p>
+    ${DEMO ? `<p class="tour-dados"><b>Os dados que aparecem agora são de demonstração</b>: pessoas, lugares e valores inventados, para cada painel ter o que mostrar. Os seus dados de verdade ficam à parte. Depois de explorar, toque em <b>Remover dados de demonstração</b>, na faixa do topo ou em Ajustes.</p>` : ''}
+    <p>Use <b>Próximo</b> e <b>Voltar</b> (ou as setas do teclado). Dá para sair a qualquer hora e rever depois em <b>Ajustes</b>.</p>`},
+  {rota: 'painel', alvo: '#nav', titulo: 'As abas', texto: `<p><b>Painel</b>: o resumo. <b>Pendentes</b>: o que falta classificar (o número vermelho diz quantos). <b>Lançamentos</b>: tudo que entrou e saiu. <b>Orçamento</b>: quanto você planeja gastar. <b>Importar</b>: extratos e faturas. <b>Pessoas</b>: quem deve a quem. <b>Projeção</b>: os próximos meses. <b>Ajustes</b>: aparência, pessoas e celular.</p>
+    <p>O botão de sol ou lua troca o tema claro e escuro.</p>`},
+  {rota: 'painel', alvo: cartaoTour('periodo'), titulo: 'Qual período ver', texto: `<p>Escolha <b>semana</b>, <b>mês</b> ou <b>ano</b>. As setas vão para o período anterior ou o próximo, e <b>Hoje</b> volta ao atual.</p>
+    <p><b>Comparar</b> mostra, em cada número, a diferença para o período anterior. Salário que cai do dia 25 em diante conta no mês seguinte.</p>`},
+  {rota: 'painel', alvo: cartaoTour('resumo'), titulo: 'Resumo do período', texto: `<p>Os números que mais importam, num painel só. Os próximos passos explicam cada parte.</p>
+    <p>Todo painel se arrasta pela alça (os seis pontinhos ao lado do título), muda de largura no botão à direita do título e tem um <b>?</b> que explica de novo.</p>`},
+  {rota: 'painel', alvo: cartaoTour('resumo') + ' .heroi > div:nth-child(1)', titulo: 'Balanço', texto: `<p>Entradas menos gastos do período. <b class="pos">Verde</b>: sobrou dinheiro. <b class="neg">Vermelho</b>: gastou mais do que entrou.</p>
+    <p>Transferência entre contas suas e acerto com pessoas não contam: não são ganho nem gasto seu. <b>Juros e taxas</b> é a parte dos gastos que foi juro, IOF ou tarifa. <b>Guardado em metas</b> aparece quando você guarda dinheiro.</p>`},
+  {rota: 'painel', alvo: cartaoTour('resumo') + ' .heroi > div:nth-child(2)', titulo: 'Excedente ou déficit', texto: `<p><b>Excedente</b> (positivo) é quanto ainda cabe no orçamento das categorias variáveis; <b>déficit</b> (negativo) é quanto passou dele. Não inclui renda nem categorias fixas. Categorias variáveis (mercado, delivery, transporte, lazer). A barra enche conforme você gasta; o traço vertical é o ritmo, até onde a barra deveria ir hoje.</p>
+    <p><b class="pos">Verde</b>: no ritmo. <b class="warnc">Amarelo</b>: gastando mais rápido que o ritmo. <b class="neg">Vermelho</b>: o orçamento estourou.</p>
+    <p class="tour-dados"><b>O que colocar:</b> o teto de cada categoria, no <b>Orçamento</b>. Sem teto, este número fica zerado.</p>`},
+  {rota: 'painel', alvo: cartaoTour('resumo') + ' .kpis', titulo: 'Conta, cartão, pessoas e pendentes', texto: `<p><b>Conta</b>: o saldo que o app do banco mostra; a diferença para o que os lançamentos somam é o que ainda não foi lançado. <b>Dívida do cartão</b>: a fatura em aberto e o limite livre. <b>Você deve / te devem</b>: os saldos com pessoas. <b>Pendentes</b>: quantos lançamentos esperam você.</p>
+    <p class="tour-dados"><b>O que colocar:</b> toque em <b>informar saldo do app</b> e digite o saldo que o app do banco mostra agora. Atualize de vez em quando.</p>`},
+  {rota: 'painel', alvo: cartaoTour('categorias'), titulo: 'Categorias', texto: `<p>Cada categoria contra o teto do período: quanto gastou, o teto, a porcentagem e quanto resta (<b class="pos">verde</b>) ou passou (<b class="neg">vermelho</b>). Toque num grupo para abrir; toque no título <b>Categorias</b> para abrir ou recolher todos. Segure um grupo ou uma categoria (ou use o ícone de barras) para ver a evolução.</p>
+    <p>Parcela de compra antiga (da 2ª em diante) aparece à parte, como parcelas antigas, e não conta contra o teto.</p>`},
+  {rota: 'painel', alvo: cartaoTour('grafico'), titulo: 'Entradas e gastos', texto: `<p>Entradas, gastos e poupança de cada mês (ou semana), com o orçado em tom claro atrás de cada barra. As caixinhas ligam e desligam cada série; toque numa coluna para ver os valores.</p>`},
+  {rota: 'painel', alvo: cartaoTour('composicao'), titulo: 'Para onde foi', texto: `<p>A fatia de cada grupo (moradia, alimentação, transporte...) no gasto do período, em valor e porcentagem.</p>`},
+  {rota: 'painel', alvo: cartaoTour('entradas'), titulo: 'Entradas do período', texto: `<p>O que entrou, por categoria de renda (salário, ajuda dos pais, extras), com quantos lançamentos.</p>
+    <p class="tour-dados"><b>O que colocar:</b> nada direto: vem dos lançamentos classificados como renda.</p>`},
+  {rota: 'painel', alvo: cartaoTour('metas'), titulo: 'Poupança e metas', texto: `<p>Cada meta: quanto você planejou guardar no período, quanto guardou, quanto falta e o total contra o objetivo.</p>
+    <p class="tour-dados"><b>O que colocar:</b> crie as metas no <b>Orçamento</b> (reserva de emergência, uma compra). Guardar é lançar como poupança ligada à meta, por exemplo o dinheiro que vai para a caixinha.</p>`},
+  {rota: 'painel', alvo: cartaoTour('cobrancas'), titulo: 'Próximas cobranças no cartão', texto: `<p>As parcelas que ainda vão cair no cartão, agrupadas pelo mês da fatura. Aparecem sozinhas quando uma compra parcelada entra (pela fatura ou pelo celular).</p>`},
+  {rota: 'painel', alvo: cartaoTour('destinos'), titulo: 'Maiores destinos', texto: `<p>Onde mais saiu dinheiro no período, somado por lugar ou por pessoa, com quantas vezes.</p>`},
+  {rota: 'painel', alvo: cartaoTour('plano'), titulo: 'Projeção', texto: `<p>Os próximos 4 meses: renda, custo de vida, cartão, resultado, quanto falta cobrir, quanto ainda deve a pessoas e o saldo livre. A conta completa fica na aba <b>Projeção</b>.</p>`},
+  {rota: 'pendentes', alvo: () => $('#lista')?.closest('.cartao'), titulo: 'Pendentes', texto: `<p>O que o sistema não classifica sozinho: lugar novo, Pix para uma pessoa (o mesmo Pix pode ter outra finalidade), aporte numa carteira (PicPay, 99Pay...) com o cartão.</p>
+    <p class="tour-dados"><b>O que fazer:</b> toque numa sugestão ou numa categoria e pronto. <b>Dividir</b> separa em partes, por exemplo a sua parte e a de um colega. Com <b>sugerir da próxima vez</b> marcado, o mesmo lugar já chega com a sugestão.</p>`},
+  {rota: 'lancamentos', alvo: '#lanc-heroi', titulo: 'Lançamentos: o resumo', texto: `<p>Entradas, gastos e resultado do que está filtrado na tabela, e quanto falta lançar na conta (a diferença para o saldo que o app do banco mostra).</p>`},
+  {rota: 'lancamentos', alvo: () => $('#f-mes')?.closest('.barra'), titulo: 'Filtros', texto: `<p>Mês, categoria, tipo (entrada, saída, transferência, acerto, poupança, pendente) ou uma busca pelo nome. O resumo acima acompanha o filtro.</p>`},
+  {rota: 'lancamentos', alvo: () => $('#n-data')?.closest('tr'), titulo: 'Lançar à mão', texto: `<p>A primeira linha da tabela lança o que não passa pelo banco: dinheiro vivo, uma conta que alguém pagou por você, um acerto.</p>
+    <p class="tour-dados"><b>O que colocar:</b> a data, o tipo (saída, entrada, guardar em meta, acerto...), a categoria ou a pessoa, o valor, o que foi e a conta. Enter lança.</p>`},
+  {rota: 'lancamentos', alvo: '#t-l', titulo: 'Tudo que entrou e saiu', texto: `<p>Do mais novo ao mais antigo. Toque num lançamento para mudar a categoria, dividir em partes ou apagar (só os lançados à mão ou pelo celular; o do extrato é a fonte). A última coluna é o saldo da conta logo depois de cada lançamento.</p>`},
+  {rota: 'orcamento', alvo: cartaoTour('orc-cats'), titulo: 'Suas categorias', texto: `<p>Grupo, nome, teto mensal e se é fixa. Categoria fixa (aluguel, academia) não entra no excedente ou déficit.</p>
+    <p class="tour-dados"><b>Comece por aqui:</b> dê um teto para mercado, delivery, transporte e lazer. Crie ou apague categorias do seu jeito.</p>`},
+  {rota: 'orcamento', alvo: cartaoTour('orc-grade'), titulo: 'Orçamento mês a mês', texto: `<p>Quanto você planeja receber, gastar e guardar em cada mês. Em cinza está o padrão (o teto da categoria); digite numa célula para mudar só aquele mês, e marque <b>repetir até dezembro</b> para valer nos seguintes.</p>
+    <p>Os modos <b>Realizado</b> e <b>Diferença</b> mostram o que aconteceu e o quanto ficou a favor ou contra.</p>`},
+  {rota: 'orcamento', alvo: cartaoTour('orc-fixas'), titulo: 'Despesas fixas', texto: `<p>Os itens que você paga todo mês em cada categoria (aluguel, internet, academia), com início e fim se tiverem.</p>
+    <p class="tour-dados"><b>O que colocar:</b> cada conta fixa com o valor. Marque <b>usar a soma como orçamento</b> para a categoria orçar pela soma dos itens.</p>`},
+  {rota: 'orcamento', alvo: cartaoTour('orc-metas'), titulo: 'Metas', texto: `<p class="tour-dados"><b>O que colocar:</b> o nome da meta, o objetivo em reais, o prazo, quanto guardar por mês e onde o dinheiro fica (a caixinha do banco, por exemplo).</p>`},
+  {rota: 'importar', alvo: cartaoTour('s-extrato-e-fatura-do-banco'), titulo: 'Importar extrato e fatura', texto: `<p>Solte aqui os arquivos do banco. <b>Nubank</b>: extrato e fatura em .pdf ou .csv. <b>Bradesco</b>: extrato em .pdf, .csv ou .xlsx e a fatura em aberto em .pdf.</p>
+    <p>O que já existe não duplica, e a compra que veio pelo celular é casada com a linha do arquivo. Extrato que não fecha com o total do banco é recusado.</p>
+    <p class="tour-dados"><b>Quando:</b> uma vez por mês, ou sempre que quiser conferir. É assim que o saldo e o cartão ficam completos.</p>`},
+  {rota: 'importar', alvo: cartaoTour('s-notificacoes-descartadas-pelo-filtro'), titulo: 'Notificações descartadas', texto: `<p>Notificações do banco que o filtro entendeu que não eram compra (aviso de fatura, propaganda, código de segurança). Se alguma era compra, <b>Resgatar</b> transforma em lançamento.</p>`},
+  {rota: 'importar', alvo: cartaoTour('s-ultimas-importacoes'), titulo: 'Últimas importações', texto: `<p>O histórico: quantos lançamentos novos, quantos casaram com o que veio pelo celular e quantos já existiam.</p>`},
+  {rota: 'pessoas', alvo: cartaoTour('s-saldos'), titulo: 'Quem deve a quem', texto: `<p>Positivo: a pessoa te deve. Negativo: você deve a ela. Muda quando uma parte de um lançamento é um <b>acerto</b>: dividir uma conta, receber o Pix de volta, pagar o que devia.</p>`},
+  {rota: 'pessoas', alvo: cartaoTour('s-alguem-pagou-uma-conta-por-voce'), titulo: 'Alguém pagou por você', texto: `<p class="tour-dados"><b>O que colocar:</b> quando outra pessoa paga uma conta sua (a luz, o mercado da casa), lance aqui: o gasto entra na categoria e vira dívida com ela, sem mexer no saldo da sua conta.</p>`},
+  {rota: 'projecao', alvo: cartaoTour('proj-resumo'), titulo: 'Projeção', texto: `<p>Mês a mês até o horizonte. <b>Renda</b> e <b>custo de vida</b> vêm do Orçamento de cada mês. A coluna <b>Cartão</b> soma só as parcelas de compras já feitas que ainda vão cair: o que você comprar depois entra no custo de vida, não ali, para não contar duas vezes. <b>Resultado</b> é o que sobra (verde) ou falta (vermelho) em cada mês. <b>Falta cobrir</b> soma os meses no vermelho; <b>saldo livre</b> é o que sobra depois de pagar quem você deve.</p>`},
+  {rota: 'projecao', alvo: cartaoTour('proj-eventos'), titulo: 'Eventos', texto: `<p class="tour-dados"><b>O que colocar:</b> o que muda e quando: um aumento, uma renda que acaba, uma viagem, o 13º. A projeção recalcula na hora.</p>`},
+  {rota: 'pessoas', alvo: cartaoTour('s-cadastro'), titulo: 'Cadastro de pessoas', texto: `<p class="tour-dados"><b>O que colocar:</b> quem divide contas com você, com o nome como aparece no extrato do banco. Assim o Pix dessa pessoa é reconhecido e vem com sugestão.</p>`},
+  {rota: 'ajustes', alvo: cartaoTour('s-celular'), titulo: 'Celular', texto: `<p>Para o celular mandar as compras na hora.</p>
+      <p class="tour-dados"><b>O que fazer:</b> no app Avareza do celular, copie o <b>endereço</b> e a <b>chave</b> daqui. Quem usa o MacroDroid copia os três campos de baixo.</p>`},
+  {rota: 'ajustes', alvo: cartaoTour('s-aparencia'), titulo: 'Aparência', texto: `<p>Tema claro ou escuro e papel de parede. Logo abaixo, em Visualização, o jeito como o site aparece neste aparelho. O botão <b>Rever o tour</b> fica aqui.</p>`},
+  {rota: 'painel', titulo: 'Pronto para começar', texto: () => `<p>Um bom começo:</p>
+    ${DEMO ? '<p>Explore à vontade com os dados de demonstração. Para começar de verdade, toque em <b>Remover dados de demonstração</b> e então:</p>' : ''}
+    <p>1. No <b>Orçamento</b>, dê um teto para as categorias que você quer controlar.<br>2. Em <b>Ajustes</b>, cadastre quem divide contas com você.<br>3. Em <b>Importar</b>, traga o extrato e a fatura do mês, ou deixe o celular mandar as compras.<br>4. Classifique o que aparecer em <b>Pendentes</b>.</p>
+    <p>O <b>?</b> de cada painel explica de novo.</p>`},
+];
+const tourFoco = Object.assign(document.createElement('div'), {className: 'tour-foco', hidden: true});
+const tourCaixa = Object.assign(document.createElement('div'), {className: 'tour-caixa', hidden: true});
+tourCaixa.setAttribute('role', 'dialog');
+document.body.append(tourFoco, tourCaixa);
+let tourI = -1, tourEl = null;
+const tourAberto = () => tourI >= 0;
+const alvoTour = p => { const el = !p.alvo ? null : typeof p.alvo === 'function' ? p.alvo() : $(p.alvo); return el && el.getClientRects().length ? el : null; };
+function iniciarTour() { const ja = tourAberto(); mostrarPasso(0); if (!ja) requestAnimationFrame(seguirTour); }
+function fecharTour(fim) {
+  tourI = -1; tourEl = null; tourFoco.hidden = tourCaixa.hidden = true;
+  store.set('tour', 'visto');
+  if (fim) location.hash = '#painel';
+}
+async function mostrarPasso(i) {
+  tourI = i; tourEl = null;
+  const p = PASSOS_TOUR[i], n = PASSOS_TOUR.length;
+  fecharAjuda();
+  if (p.rota && (location.hash.slice(1) || 'painel').split('?')[0] !== p.rota) location.hash = '#' + p.rota;
+  tourCaixa.innerHTML = `<div class="tour-topo"><b>${p.titulo}</b><span class="muted">${i + 1} de ${n}</span></div><div class="tour-texto">${typeof p.texto === 'function' ? p.texto() : p.texto}</div>
+    <div class="tour-botoes"><button data-tour="sair">Sair do tour</button><span class="espaco"></span>${i ? '<button data-tour="voltar">Voltar</button>' : ''}
+      <button class="prim" data-tour="proximo">${i === n - 1 ? 'Começar a usar' : 'Próximo'}</button></div>`;
+  tourCaixa.hidden = tourFoco.hidden = false;
+  tourCaixa.querySelector('[data-tour="sair"]').onclick = () => fecharTour(false);
+  tourCaixa.querySelector('[data-tour="proximo"]').onclick = () => (i === n - 1 ? fecharTour(true) : mostrarPasso(i + 1));
+  const voltar = tourCaixa.querySelector('[data-tour="voltar"]');
+  if (voltar) voltar.onclick = () => mostrarPasso(i - 1);
+  for (let t = 0; p.alvo && t < 50 && tourI === i; t++) {     // a tela da aba pode levar um instante para desenhar
+    const el = alvoTour(p);
+    if (el) {
+      await pausaTour(300);
+      if (tourI !== i) return;
+      enquadrarTour(el);
+      await pausaTour(250);                                   // a rolagem e o mosaico assentam
+      if (tourI === i) tourEl = el;
+      break;
+    }
+    await pausaTour(100);
+  }
+}
+const pausaTour = ms => new Promise(r => setTimeout(r, ms));
+const TOUR_FOLGA = 12;
+// Fundo da barra fixa do topo: o que fica atrás dela não conta como visível (a não ser que o alvo seja a própria barra).
+const topoTour = el => { const t = $('#topo'); return t && !t.contains(el) ? Math.max(0, t.getBoundingClientRect().bottom) : 0; };
+// Rola o alvo para a vista: centrado se o balão couber ao lado; senão, o começo dele logo abaixo da barra do topo.
+function enquadrarTour(el) {
+  const r = el.getBoundingClientRect(), w = tourCaixa.offsetWidth, topo = topoTour(el), f = TOUR_FOLGA;
+  const aoLado = innerWidth >= 700 && (innerWidth - r.right >= w + 2 * f || r.left >= w + 2 * f);
+  el.style.scrollMarginTop = topo + f + 'px';
+  el.scrollIntoView({block: aoLado && r.height <= innerHeight - topo - 2 * f ? 'center' : 'start'});
+  el.style.scrollMarginTop = '';
+}
+// Onde o balão cabe sem cobrir o alvo: ao lado, embaixo ou em cima. Sem espaço livre (alvo maior que a tela), ele fica
+// preso na borda e o destaque vai só até ele, cobrindo a parte do alvo que ficou visível.
+function ladoTour(r, topo) {
+  const w = tourCaixa.offsetWidth, h = tourCaixa.offsetHeight, f = TOUR_FOLGA;
+  if (innerWidth >= 700 && innerWidth - r.right >= w + 2 * f) return 'direita';
+  if (innerWidth >= 700 && r.left >= w + 2 * f) return 'esquerda';
+  if (innerHeight - r.bottom >= h + 2 * f) return 'baixo';
+  if (r.top - topo >= h + 2 * f) return 'cima';
+  return (r.top + r.bottom) / 2 < (topo + innerHeight) / 2 ? 'borda-baixo' : 'borda-cima';
+}
+// O destaque acompanha o alvo (rolagem, mudança de tamanho, o mosaico se arrumando) a cada quadro.
+function seguirTour() {
+  if (!tourAberto()) return;
+  const el = tourEl?.isConnected ? tourEl : null;     // isConnected também vale dentro de shadow root
+  const c = tourCaixa, w = c.offsetWidth, h = c.offsetHeight, f = TOUR_FOLGA, m = 6, estreito = innerWidth < 700;
+  const meio = (a, v, b) => Math.max(a, Math.min(v, b));
+  let x = (innerWidth - w) / 2, y = (innerHeight - h) / 2, foco = null;
+  if (el) {
+    const r = el.getBoundingClientRect(), topo = topoTour(el), lado = ladoTour(r, topo);
+    let t = Math.max(r.top, topo), b = Math.min(r.bottom, innerHeight);
+    const l = Math.max(r.left, 0), d = Math.min(r.right, innerWidth);
+    x = r.left;
+    if (lado === 'direita') { x = r.right + f; y = r.top; }
+    else if (lado === 'esquerda') { x = r.left - w - f; y = r.top; }
+    else if (lado === 'baixo') y = r.bottom + f;
+    else if (lado === 'cima') y = r.top - h - f;
+    else if (lado === 'borda-baixo') { y = innerHeight - h - f; b = Math.min(b, y - f); }
+    else { y = topo + f; t = Math.max(t, y + h + f); }
+    y = meio(topo + f, y, innerHeight - h - f);
+    if (b - t > 2 * m && d > l) foco = {left: l - m, top: t - m, width: d - l + 2 * m, height: b - t + 2 * m};
+  }
+  Object.assign(tourFoco.style, Object.fromEntries(Object.entries(foco || {left: innerWidth / 2, top: innerHeight / 2, width: 0, height: 0})
+    .map(([k, v]) => [k, v + 'px'])));
+  if (estreito) { c.style.left = c.style.right = '8px'; }                  // celular: o balão ocupa a largura
+  else { c.style.right = 'auto'; c.style.left = meio(f, x, innerWidth - w - f) + 'px'; }
+  c.style.top = y + 'px';
+  requestAnimationFrame(seguirTour);
+}
+document.addEventListener('keydown', e => {
+  if (!tourAberto()) return;
+  if (e.key === 'Escape') fecharTour(false);
+  else if (e.key === 'ArrowRight') tourCaixa.querySelector('[data-tour="proximo"]').click();
+  else if (e.key === 'ArrowLeft' && tourI > 0) mostrarPasso(tourI - 1);
+});
 
 // ---------------------------------------------------------------- partida
 aplicarTema();

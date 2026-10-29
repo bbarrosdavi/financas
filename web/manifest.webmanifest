@@ -1,9 +1,9 @@
 {
-  "name": "Finanças",
-  "short_name": "Finanças",
+  "name": "Avareza",
+  "short_name": "Avareza",
   "start_url": "/#painel",
   "display": "standalone",
   "background_color": "#121211",
   "theme_color": "#121211",
-  "icons": [{"src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable"}]
+  "icons": [{"src": "icone-192.png", "sizes": "192x192", "type": "image/png"}, {"src": "icone.png", "sizes": "512x512", "type": "image/png"}]
 }

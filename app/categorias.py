@@ -1,8 +1,7 @@
 """Vocabulário inicial: contas, categorias, regras e parâmetros que todo banco novo recebe.
 
-Só o ponto de partida. Pessoas, tetos, metas e eventos você cadastra no site. Alimentação vem
-separada em mercado, conveniência, RU e delivery; moradia em fixo e contas; juros e taxas são gasto
-próprio, para que o custo do crédito apareça. Pagamento de dívida não é categoria, é acerto ou
+Só o ponto de partida, genérico: categorias, pessoas, tetos, metas e eventos você ajusta no site. Juros e
+taxas são gasto próprio, para que o custo do crédito apareça. Pagamento de dívida não é categoria, é acerto ou
 transferência (ver app/db.py).
 """
 
@@ -20,40 +19,40 @@ PESSOAS: list[tuple] = []
 
 # id, grupo, nome, tipo, teto mensal (None = sem teto), fixa
 CATEGORIAS = [
-    ("aluguel-condominio", "Moradia", "Aluguel e condomínio", "gasto", None, 1),
-    ("contas-casa", "Moradia", "Contas da casa (luz, gás, internet)", "gasto", None, 1),
-    ("casa-moveis", "Moradia", "Casa e móveis", "gasto", None, 0),
-    ("mercado", "Alimentação", "Mercado planejado", "gasto", None, 0),
-    ("ru", "Alimentação", "RU (dias de aula)", "gasto", None, 0),
-    ("conveniencia", "Alimentação", "Conveniência e lanches", "gasto", None, 0),
-    ("delivery", "Alimentação", "Delivery e restaurante", "gasto", None, 0),
-    ("remedios", "Saúde", "Remédios", "gasto", None, 1),
-    ("consultas", "Saúde", "Consultas e terapia", "gasto", None, 1),
-    ("academia", "Saúde", "Academia", "gasto", None, 1),
-    ("saude-outros", "Saúde", "Saúde (outros)", "gasto", None, 0),
-    ("app-transporte", "Transporte", "App (Uber/99)", "gasto", None, 0),
-    ("onibus", "Transporte", "Ônibus e combustível", "gasto", None, 0),
-    ("assinaturas", "Assinaturas", "Assinaturas e celular", "gasto", None, 1),
-    ("ferramentas", "Trabalho", "Ferramentas de trabalho", "gasto", None, 0),
+    ("aluguel-condominio", "Moradia", "Aluguel e condomínio", "gasto", None, 0),
+    ("contas-casa", "Moradia", "Contas da casa (luz, água, gás, internet)", "gasto", None, 0),
+    ("casa-moveis", "Moradia", "Casa e manutenção", "gasto", None, 0),
+    ("mercado", "Alimentação", "Mercado", "gasto", None, 0),
+    ("delivery", "Alimentação", "Restaurantes e delivery", "gasto", None, 0),
+    ("conveniencia", "Alimentação", "Lanches e café", "gasto", None, 0),
+    ("remedios", "Saúde", "Remédios", "gasto", None, 0),
+    ("consultas", "Saúde", "Consultas e exames", "gasto", None, 0),
+    ("academia", "Saúde", "Academia e esportes", "gasto", None, 1),
+    ("app-transporte", "Transporte", "Transporte por app", "gasto", None, 0),
+    ("onibus", "Transporte", "Transporte público e combustível", "gasto", None, 0),
+    ("educacao", "Educação", "Cursos e material", "gasto", None, 0),
+    ("assinaturas", "Assinaturas", "Assinaturas", "gasto", None, 0),
+    ("celular", "Celular", "Celular", "gasto", None, 1),
+    ("vestuario", "Compras", "Roupas e calçados", "gasto", None, 0),
     ("eletronicos", "Compras", "Eletrônicos", "gasto", None, 0),
-    ("vestuario", "Compras", "Vestuário e imagem", "gasto", None, 0),
-    ("lazer", "Lazer", "Lazer e rolê", "gasto", None, 0),
-    ("viagem", "Lazer", "Viagem", "gasto", None, 0),
-    ("hobbies", "Lazer", "Hobbies", "gasto", None, 0),
-    ("pets", "Casa", "Pets", "gasto", None, 0),
-    ("familia", "Família", "Família e presentes", "gasto", None, 0),
-    ("juros", "Financeiro", "Juros e taxas", "gasto", None, 0),
+    ("lazer", "Lazer", "Lazer e passeios", "gasto", None, 0),
+    ("viagem", "Lazer", "Viagens", "gasto", None, 0),
+    ("pets", "Pets", "Pets", "gasto", None, 0),
+    ("familia", "Família", "Presentes e família", "gasto", None, 0),
+    ("juros", "Juros e taxas", "Juros e taxas", "gasto", None, 0),
+    ("taxa-aporte", "Juros e taxas", "Taxas de aporte", "gasto", None, 0),
     ("outros", "Outros", "Outros", "gasto", None, 0),
-    ("salario", "Renda", "Salário", "renda", None, 1),
-    ("pais", "Renda", "Ajuda dos pais", "renda", None, 0),
-    ("extras", "Renda", "Extras", "renda", None, 0),
+    ("salario", "Renda", "Salário", "renda", None, 0),
+    ("pais", "Renda", "Ajuda da família", "renda", None, 0),
+    ("extras", "Renda", "Renda extra", "renda", None, 0),
     ("outras-entradas", "Renda", "Outras entradas", "renda", None, 0),
 ]
 
 # Regras do sistema: regex sobre "DESCRICAO | CONTRAPARTE" em maiúsculas.
 # A primeira que casa vence; casos que dividem o valor ficam em app/classificar.py.
 REGRAS = [
-    (r"DL\*GOOGLE|GOOGLE ONE|GOOGLE GOOGLE|TIM\*|\bTIM\b", "gasto", "assinaturas", None),
+    (r"DL\*GOOGLE|GOOGLE ONE|GOOGLE GOOGLE", "gasto", "assinaturas", None),
+    (r"TIM\*|\bTIM\b", "gasto", "celular", None),
     (r"SMART FIT", "gasto", "academia", None),
     (r"RAIA|DROGASIL|PANVEL|NISSEI|FARMAIS|DRUGSTORE|FARMACIA", "gasto", "remedios", None),
     (r"CONVENIENCIA", "gasto", "conveniencia", None),
@@ -70,9 +69,10 @@ REGRAS = [
 PARAMETROS = {
     "salario_mensal": "0",
     "dia_renda_mes_seguinte": "25",
-    # Rateio do boleto da imobiliária entre os moradores: {"eu": 0.5, "<id da pessoa>": 0.5}. Vazio = não sugere.
-    "aluguel_rateio": "{}",
+    "renda_mes_seguinte": "1",
     "taxa_ponte_picpay": "0.049",
+    # Carteiras em que você põe dinheiro com o cartão (nome como aparece na fatura): a taxa vai para Taxas de aporte.
+    "carteiras_aporte": "PICPAY, 99PAY",
 }
 
 # Eventos do plano (renda que acaba, compra grande): você cadastra no site.

@@ -1,4 +1,4 @@
-"""Leitura dos arquivos do Bradesco: extrato da conta (PDF, CSV ou Excel) e fatura do cartão em aberto (PDF).
+"""Leitura dos arquivos do Bradesco: extrato da conta (.pdf, .csv ou .xlsx) e fatura do cartão em aberto (.pdf).
 
 Extrato: tabela Data, Histórico, Docto., Crédito, Débito e Saldo. No PDF cada lançamento ocupa até
 três linhas (histórico; data, valores e saldo; "REM:" ou "DES:" com a outra pessoa) e a data só
@@ -102,7 +102,7 @@ def ler_extrato_pdf(texto: str) -> Leitura:
 
 
 # ---------------------------------------------------------------------------
-# Extrato da conta (CSV ou Excel exportado pelo site/aplicativo)
+# Extrato da conta (.csv ou .xlsx exportado pelo site/aplicativo)
 # ---------------------------------------------------------------------------
 def eh_extrato_tabela(linhas: list[list[str]]) -> bool:
     return bool(linhas) and str(linhas[0][0] or "").strip().startswith("Extrato de:")
@@ -258,7 +258,7 @@ def ler_fatura_pdf(conteudo: bytes, hoje: date | None = None) -> Leitura:
         soma = round(sum(v for _, _, v in s["linhas"]), 2)
         if s["linhas"] and (s["total"] is None or abs(soma - s["total"]) > 0.005):
             raise ValueError(f"Fatura do Bradesco não fecha no cartão final {s['final']}: lido {soma}, "
-                             f"total impresso {s['total']}. Confira o arquivo (o PDF é imagem e foi lido por OCR).")
+                             f"total impresso {s['total']}. Confira o arquivo (o .pdf é imagem e foi lido por OCR).")
         for d, desc, valor in s["linhas"]:
             if desc.upper().startswith("SALDO ANTERIOR"):
                 anterior += valor    # dívida da fatura passada: entra no total do cartão, mas não é compra

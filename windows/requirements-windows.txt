@@ -1,0 +1,5 @@
+# Build do instalador do Windows (o servidor usa o mesmo requirements.txt do Docker).
+-r ../requirements.txt
+# O Windows não traz a base de fusos horários que o zoneinfo usa.
+tzdata
+pyinstaller>=6.10

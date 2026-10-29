@@ -31,7 +31,7 @@ def hash_push(package: str, title: str, text: str) -> str:
 def receber(package: str, title: str, text: str, quando: datetime) -> tuple[str, int | None]:
     """Grava na inbox. Devolve ('duplicate', None) se o mesmo push chegou há pouco."""
     h = hash_push(package, title, text)
-    with db.conectar() as con:
+    with db.conectar_real() as con:
         dup = con.execute("SELECT id FROM inbox WHERE dedup_hash=? AND recebido_em >= datetime(?, ?)",
                           (h, quando.strftime("%Y-%m-%d %H:%M:%S"), f"-{settings.DEDUP_WINDOW_MINUTES} minutes")).fetchone()
         if dup:
@@ -42,7 +42,7 @@ def receber(package: str, title: str, text: str, quando: datetime) -> tuple[str,
 
 
 def processar(inbox_id: int) -> dict | None:
-    with db.conectar() as con:
+    with db.conectar_real() as con:
         row = con.execute("SELECT * FROM inbox WHERE id=?", (inbox_id,)).fetchone()
         if row is None or row["state"] == "done":
             return None
@@ -81,7 +81,7 @@ async def worker() -> None:
             if lanc and lanc["pendente"]:
                 await asyncio.to_thread(avisos.pendente, lanc)
         except Exception as e:  # o worker não pode morrer; o erro fica na inbox
-            with db.conectar() as con:
+            with db.conectar_real() as con:
                 con.execute("UPDATE inbox SET attempts=attempts+1, last_error=?, "
                             "state=CASE WHEN attempts+1>=? THEN 'dead' ELSE 'pending' END WHERE id=?",
                             (str(e)[:500], settings.MAX_ATTEMPTS, inbox_id))
@@ -90,7 +90,7 @@ async def worker() -> None:
 
 
 def reenfileirar() -> int:
-    with db.conectar() as con:
+    with db.conectar_real() as con:
         ids = [r["id"] for r in con.execute("SELECT id FROM inbox WHERE state='pending' ORDER BY id")]
     for i in ids:
         fila.put_nowait(i)

@@ -108,10 +108,19 @@ def _partes(con, ids: list[int]) -> dict[int, list[dict]]:
     return out
 
 
-def lancamentos(con, mes=None, busca=None, pendentes=False, categoria=None, limite=500) -> list[dict]:
+def lancamentos(con, mes=None, busca=None, pendentes=False, categoria=None, limite=500, de=None, ate=None) -> list[dict]:
     cond, args = ["1=1"], []
+    corte = dia_corte(con)
+    tem_renda = "EXISTS (SELECT 1 FROM partes p WHERE p.lancamento_id=l.id AND p.natureza='renda' AND p.categoria='salario')"
+    # Mês em que a renda do lançamento conta (a mesma regra do painel); o resto conta pela data.
+    mes_renda = (f"CASE WHEN {tem_renda} AND CAST(substr(l.data,9,2) AS INTEGER) >= {int(corte)} "
+                 "THEN strftime('%Y-%m', l.data, 'start of month', '+1 month') ELSE substr(l.data,1,7) END")
     if mes:
-        cond.append("substr(l.data,1,7)=?"); args.append(mes)
+        cond.append(f"(substr(l.data,1,7)=? OR {mes_renda}=?)"); args += [mes, mes]
+    if de:
+        cond.append("l.data >= ?"); args.append(de)
+    if ate:
+        cond.append("l.data <= ?"); args.append(ate)
     if busca:
         cond.append("(l.descricao LIKE ? OR l.contraparte LIKE ?)"); args += [f"%{busca}%"] * 2
     if pendentes:
@@ -119,7 +128,7 @@ def lancamentos(con, mes=None, busca=None, pendentes=False, categoria=None, limi
     if categoria:
         cond.append("EXISTS (SELECT 1 FROM partes p WHERE p.lancamento_id=l.id AND p.categoria=?)"); args.append(categoria)
     rows = [dict(r) for r in con.execute(
-        f"SELECT l.*, ({PENDENTE_SQL}) AS pendente FROM lancamentos l WHERE {' AND '.join(cond)} "
+        f"SELECT l.*, ({PENDENTE_SQL}) AS pendente, {mes_renda} AS mes_renda FROM lancamentos l WHERE {' AND '.join(cond)} "
         f"ORDER BY l.data DESC, l.id DESC LIMIT ?", args + [limite])]
     ps = _partes(con, [r["id"] for r in rows])
     saldo = _saldo_apos(con)
@@ -182,12 +191,14 @@ def saldo_contas(con, ate: str | None = None) -> list[dict]:
         cobertura = con.execute("SELECT MAX(data) FROM lancamentos WHERE conta=? AND origem IN "
                                 "('extrato_pdf','extrato_csv','fatura_pdf','fatura_csv')", (c["id"],)).fetchone()[0]
         real = json.loads(db.parametro(con, f"saldo_real:{c['id']}", "null") or "null")
-        item = {**dict(c), "saldo": saldo, "cobertura": cobertura, "saldo_real": None, "diferenca": None}
+        item = {**dict(c), "saldo": saldo, "cobertura": cobertura, "saldo_real": None, "diferenca": None, "saldo_atual": saldo}
         if real:
             calc = round(c["saldo_inicial"] + con.execute(
                 "SELECT COALESCE(SUM(valor),0) FROM lancamentos WHERE conta=? AND data>=? AND data<=?",
                 (c["id"], c["data_saldo_inicial"], real["data"])).fetchone()[0], 2)
-            item.update(saldo_real=real["valor"], data_real=real["data"], diferenca=round(real["valor"] - calc, 2))
+            # O saldo de hoje parte do que o app do banco mostrou naquele dia e soma o que foi lançado depois.
+            item.update(saldo_real=real["valor"], data_real=real["data"], diferenca=round(real["valor"] - calc, 2),
+                        saldo_atual=round(real["valor"] + saldo - calc, 2))
         out.append(item)
     return out
 
@@ -210,20 +221,28 @@ def saldo_pessoas(con) -> list[dict]:
     return out
 
 
-def _mes_efetivo(data: str, tipo: str, dia_corte: int) -> str:
-    """Renda que cai a partir do dia de corte conta para o mês seguinte (salário do fim do mês)."""
-    if tipo == "renda" and int(data[8:10]) >= dia_corte:
+def dia_corte(con) -> int:
+    """Dia a partir do qual a renda conta para o mês seguinte (salário do fim do mês). Com a opção
+    desligada em Ajustes, 32: nenhuma renda muda de mês."""
+    if db.parametro(con, "renda_mes_seguinte", "1") != "1":
+        return 32
+    return int(db.parametro(con, "dia_renda_mes_seguinte", "25") or 25)
+
+
+def _mes_efetivo(data: str, tipo: str, dia_corte: int, categoria: str | None = "salario") -> str:
+    """Salário que cai a partir do dia de corte conta para o mês seguinte (o do fim do mês); o resto, pela data."""
+    if tipo == "renda" and categoria == "salario" and int(data[8:10]) >= dia_corte:
         y, m = int(data[:4]), int(data[5:7])
         return f"{y + m // 12}-{m % 12 + 1:02d}"
     return data[:7]
 
 
 def serie_mensal(con, meses=12) -> list[dict]:
-    corte = int(db.parametro(con, "dia_renda_mes_seguinte", "25"))
+    corte = dia_corte(con)
     tot = defaultdict(lambda: {"renda": 0.0, "gasto": 0.0, "juros": 0.0})
     for r in con.execute("SELECT l.data, pt.natureza, pt.categoria, pt.valor FROM partes pt JOIN lancamentos l ON l.id=pt.lancamento_id "
                          "WHERE pt.natureza IN ('gasto','renda')"):
-        m = _mes_efetivo(r["data"], r["natureza"], corte)
+        m = _mes_efetivo(r["data"], r["natureza"], corte, r["categoria"])
         if r["natureza"] == "renda":
             tot[m]["renda"] += r["valor"]
         else:
@@ -297,11 +316,11 @@ def gastos_por_categoria(con, inicio: str, fim: str, meses_orc: list[str] | None
 
 def entradas_por_categoria(con, inicio: str, fim: str, deslocar: bool) -> list[dict]:
     """Renda por categoria (a tabela 'Income' da planilha)."""
-    corte = int(db.parametro(con, "dia_renda_mes_seguinte", "25"))
+    corte = dia_corte(con)
     rows = {r["id"]: {**dict(r), "valor": 0.0, "n": 0} for r in con.execute("SELECT * FROM categorias WHERE tipo='renda' ORDER BY ordem")}
     for r in con.execute("SELECT l.data, pt.categoria, pt.valor FROM partes pt JOIN lancamentos l ON l.id=pt.lancamento_id "
                          "WHERE pt.natureza='renda' AND pt.categoria IS NOT NULL"):
-        d = _data_efetiva(r["data"], corte) if deslocar else r["data"]
+        d = _data_efetiva(r["data"], corte, r["categoria"]) if deslocar else r["data"]
         if inicio <= d <= fim:
             rows[r["categoria"]]["valor"] += r["valor"]
             rows[r["categoria"]]["n"] += 1
@@ -310,9 +329,9 @@ def entradas_por_categoria(con, inicio: str, fim: str, deslocar: bool) -> list[d
     return list(rows.values())
 
 
-def _data_efetiva(data: str, corte: int) -> str:
-    """Renda que cai a partir do dia de corte conta como primeiro dia do mês seguinte."""
-    if int(data[8:10]) >= corte:
+def _data_efetiva(data: str, corte: int, categoria: str | None = "salario") -> str:
+    """Salário que cai a partir do dia de corte conta como primeiro dia do mês seguinte; o resto, pela data."""
+    if categoria == "salario" and int(data[8:10]) >= corte:
         y, m = int(data[:4]), int(data[5:7])
         return f"{y + m // 12}-{m % 12 + 1:02d}-01"
     return data
@@ -378,12 +397,12 @@ def fatura_aberta(con, hoje: date) -> dict:
 
 
 def _totais(con, inicio: str, fim: str, deslocar: bool) -> dict:
-    corte = int(db.parametro(con, "dia_renda_mes_seguinte", "25"))
+    corte = dia_corte(con)
     renda = gasto = juros = 0.0
     for r in con.execute("SELECT l.data, pt.natureza, pt.categoria, pt.valor FROM partes pt JOIN lancamentos l ON l.id=pt.lancamento_id "
                          "WHERE pt.natureza IN ('gasto','renda')"):
         if r["natureza"] == "renda":
-            d = _data_efetiva(r["data"], corte) if deslocar else r["data"]
+            d = _data_efetiva(r["data"], corte, r["categoria"]) if deslocar else r["data"]
             if inicio <= d <= fim:
                 renda += r["valor"]
         elif inicio <= r["data"] <= fim:
@@ -539,13 +558,13 @@ def grade_orcamento(con, ano: int) -> dict:
     meses = [f"{ano}-{m:02d}" for m in range(1, 13)]
     orc = orcado(con, meses)
     itens = itens_fixos(con)
-    corte = int(db.parametro(con, "dia_renda_mes_seguinte", "25"))
+    corte = dia_corte(con)
     real: dict[str, dict[str, float]] = defaultdict(lambda: defaultdict(float))
     for r in con.execute("SELECT l.data, l.parcela, pt.natureza, pt.categoria, pt.meta, pt.valor FROM partes pt "
                          "JOIN lancamentos l ON l.id=pt.lancamento_id WHERE pt.natureza IN ('gasto','renda','poupanca') "
                          "AND substr(l.data,1,4) IN (?, ?)", (str(ano), str(ano - 1))):
         if r["natureza"] == "renda":
-            real[r["categoria"]][_data_efetiva(r["data"], corte)[:7]] += r["valor"]
+            real[r["categoria"]][_data_efetiva(r["data"], corte, r["categoria"])[:7]] += r["valor"]
         elif r["natureza"] == "gasto":
             antiga = bool(r["parcela"]) and not r["parcela"].startswith("1/")
             real["parcelas" if antiga else r["categoria"]][r["data"][:7]] += -r["valor"]

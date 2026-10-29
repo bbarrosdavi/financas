@@ -12,6 +12,7 @@ import hmac
 import io
 import json
 import secrets
+import sqlite3
 import time
 from contextlib import asynccontextmanager
 from datetime import date, datetime
@@ -22,7 +23,7 @@ from fastapi.responses import FileResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
-from app import db, exportar, push, servicos
+from app import db, demo, exportar, push, servicos, sync
 from app.config import settings
 
 WEB = Path(__file__).resolve().parent.parent / "web"
@@ -33,6 +34,8 @@ VALIDADE = 60 * 60 * 24 * 60   # 60 dias
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     db.iniciar()
+    if db.demo_ativa():
+        db.iniciar(db.caminho())
     tarefa = asyncio.create_task(push.worker())
     push.reenfileirar()
     try:
@@ -110,10 +113,87 @@ def webhook(n: Notificacao):
     return {"status": estado, "inbox_id": inbox_id}
 
 
+class Sincronia(BaseModel):
+    protocolo: int = 1
+    cursor: int = 0
+    mudancas: list[dict] = []
+
+
+@app.post("/api/v1/sync", dependencies=[Depends(bearer)])
+def sincronizar(body: Sincronia):
+    """O app do celular manda o que mudou nele e recebe o que mudou aqui (ver app/sync.py)."""
+    if body.protocolo != sync.PROTOCOLO:
+        raise HTTPException(409, "Versão do app incompatível com a do servidor: atualize os dois.")
+    with db.conectar_real() as con:
+        r = sync.servir(con, body.cursor, body.mudancas, settings.TITULAR)
+    r.pop("lancamentos")
+    r["aparencia"] = _aparencia_do_dono()
+    return r
+
+
+def _papel_do_dono() -> Path | None:
+    with db.conectar_real() as con:
+        nome = db.parametro(con, "papel_de_parede", None)
+    nome = settings.PAPEL_PADRAO if nome is None else nome
+    f = Path(settings.PAPEIS_DIR) / Path(nome).name if nome else None
+    if f and not f.is_file() and f.name == settings.PAPEL_PADRAO:
+        f = WEB / settings.PAPEL_PADRAO
+    return f if f and f.is_file() else None
+
+
+def _aparencia_do_dono() -> dict:
+    """A aparência da conta do dono no Apê (tema, claro ou escuro, desfoque, preferências) e o papel de parede
+    dele: o app do celular passa a usar a mesma. Sem o Apê (Finanças sozinho), vai só o papel."""
+    valores = {}
+    ape_db = Path(settings.DATABASE_PATH).parent / "ape.db"
+    if ape_db.is_file():
+        try:
+            c = sqlite3.connect(f"file:{ape_db}?mode=ro", uri=True)
+            r = c.execute("SELECT s.value FROM app_settings s JOIN users u ON s.key = 'aparencia:' || u.id "
+                          "WHERE u.username = ?", (getattr(settings, "FINANCAS_DONO", ""),)).fetchone()
+            c.close()
+            valores = json.loads(r[0]) if r else {}
+        except (sqlite3.Error, ValueError):
+            valores = {}
+    f = _papel_do_dono()
+    return {"valores": valores, "papel": f.name if f else "",
+            "papel_versao": f"{f.stat().st_size}-{int(f.stat().st_mtime)}" if f else ""}
+
+
+@app.get("/api/v1/papel", dependencies=[Depends(bearer)])
+def papel_do_dono():
+    """O papel de parede do dono, para o app do celular (a mesma chave da sincronização)."""
+    f = _papel_do_dono()
+    if not f:
+        raise HTTPException(404, "Sem papel de parede.")
+    return FileResponse(f)
+
+
 # ---------------------------------------------------------------------------
 # Site
 # ---------------------------------------------------------------------------
 api = Depends(sessao)
+
+
+class Demo(BaseModel):
+    ativo: bool
+
+
+@app.get("/api/demo", dependencies=[api])
+def ver_demo():
+    """Dados de demonstração (app/demo.py): se estão ligados e se o banco de verdade ainda está vazio."""
+    with db.conectar_real() as con:
+        vazio = con.execute("SELECT 1 FROM lancamentos LIMIT 1").fetchone() is None
+    return {"ativo": db.demo_ativa(), "vazio": vazio}
+
+
+@app.put("/api/demo", dependencies=[api])
+def mudar_demo(body: Demo):
+    try:
+        demo.ligar(date.today()) if body.ativo else demo.desligar()
+    except ValueError as e:
+        raise HTTPException(409, str(e))
+    return ver_demo()
 
 
 @app.get("/api/painel", dependencies=[api])
@@ -135,14 +215,22 @@ def evolucao(tipo: str = "mes", categoria: str | None = None, grupo: str | None 
 
 @app.get("/api/meses", dependencies=[api])
 def meses():
+    """Os meses com lançamento e os 12 seguintes ao atual (dá para lançar no futuro)."""
+    hoje = date.today()
+    futuros = {f"{hoje.year + (hoje.month - 1 + k) // 12}-{(hoje.month - 1 + k) % 12 + 1:02d}" for k in range(13)}
     with db.conectar() as con:
-        return [r[0] for r in con.execute("SELECT DISTINCT substr(data,1,7) FROM lancamentos ORDER BY 1 DESC")]
+        com_dado = {r[0] for r in con.execute("SELECT DISTINCT substr(data,1,7) FROM lancamentos")}
+    return sorted(com_dado | futuros, reverse=True)
 
 
 @app.get("/api/lancamentos", dependencies=[api])
-def listar(mes: str | None = None, busca: str | None = None, pendentes: bool = False, categoria: str | None = None):
+def listar(mes: str | None = None, busca: str | None = None, pendentes: bool = False, categoria: str | None = None,
+           de: str | None = None, ate: str | None = None):
+    import re
+    if any(d and not re.fullmatch(r"\d{4}-\d{2}-\d{2}", d) for d in (de, ate)):
+        raise HTTPException(400, "Datas no formato AAAA-MM-DD.")
     with db.conectar() as con:
-        return servicos.lancamentos(con, mes, busca, pendentes, categoria, limite=2000)
+        return servicos.lancamentos(con, mes, busca, pendentes, categoria, limite=2000, de=de, ate=ate)
 
 
 class Parte(BaseModel):
@@ -556,11 +644,17 @@ class Param(BaseModel):
 
 @app.put("/api/parametros/{chave}", dependencies=[api])
 def definir_param(chave: str, body: Param):
-    if chave not in ("salario_mensal", "horizonte", "dia_renda_mes_seguinte", "taxa_ponte_picpay", "aluguel_rateio", "cores_grupos"):
+    if chave not in ("salario_mensal", "horizonte", "dia_renda_mes_seguinte", "renda_mes_seguinte", "taxa_ponte_picpay", "carteiras_aporte", "cores_grupos"):
         raise HTTPException(400, "Parâmetro não editável pelo site.")
     with db.conectar() as con:
         db.definir_parametro(con, chave, body.valor)
         return {"ok": True}
+
+
+@app.get("/api/exportar.ods/estado", dependencies=[api])
+def estado_modelo():
+    motivo = exportar.ods_indisponivel()
+    return {"disponivel": motivo is None, "motivo": motivo or ""}
 
 
 @app.get("/api/exportar.ods", dependencies=[api])
@@ -588,8 +682,9 @@ def baixar():
 
 @app.get("/api/celular", dependencies=[api])
 def celular():
-    """O que a macro do MacroDroid precisa, para copiar no celular já logado."""
-    return {"url": f"{settings.URL_PUBLICA}/api/v1/transaction/webhook", "authorization": f"Bearer {settings.API_KEY}",
+    """O que o app Finanças e a macro do MacroDroid precisam, para copiar no celular já logado."""
+    return {"base": settings.URL_PUBLICA, "chave": settings.API_KEY,
+            "url": f"{settings.URL_PUBLICA}/api/v1/transaction/webhook", "authorization": f"Bearer {settings.API_KEY}",
             "corpo": '{"package":"{not_app_package}","title":"{not_title}","text":"{notification}"}'}
 
 
@@ -602,11 +697,25 @@ def _papeis() -> Path:
     return p
 
 
+@app.get("/api/aparencia-conta", dependencies=[api])
+def aparencia_conta():
+    """No celular: a aparência da conta no servidor, trazida pela sincronização (vazia sem servidor)."""
+    with db.conectar() as con:
+        try:
+            v = {r[0]: r[1] for r in con.execute(
+                "SELECT chave, valor FROM sync_cliente WHERE chave IN ('aparencia', 'papel_servidor')")}
+        except sqlite3.Error:
+            v = {}
+    return {"valores": json.loads(v.get("aparencia") or "{}"), "papel": v.get("papel_servidor", "")}
+
+
 @app.get("/api/papeis", dependencies=[api])
 def listar_papeis():
     with db.conectar() as con:
-        atual = db.parametro(con, "papel_de_parede", "")
-    return {"atual": atual, "papeis": sorted(f.name for f in _papeis().iterdir() if f.suffix.lower() in MIDIA)}
+        atual = db.parametro(con, "papel_de_parede", None)
+    # Quem nunca escolheu fica com o papel padrão; quem escolheu "sem papel de parede" fica sem.
+    nomes = {f.name for f in _papeis().iterdir() if f.suffix.lower() in MIDIA} | {settings.PAPEL_PADRAO}
+    return {"atual": settings.PAPEL_PADRAO if atual is None else atual, "papeis": sorted(nomes)}
 
 
 @app.post("/api/papeis", dependencies=[api])
@@ -643,6 +752,8 @@ def apagar_papel(nome: str):
 @app.get("/papel/{nome}", dependencies=[api])
 def papel(nome: str):
     f = _papeis() / Path(nome).name
+    if not f.exists() and f.name == settings.PAPEL_PADRAO:
+        f = WEB / settings.PAPEL_PADRAO          # o padrão vem com o app
     if not f.exists() or f.suffix.lower() not in MIDIA:
         raise HTTPException(404)
     return FileResponse(f, media_type=MIDIA[f.suffix.lower()], headers={"Cache-Control": "private, max-age=604800"})

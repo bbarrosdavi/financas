@@ -1,0 +1,120 @@
+# Instalador do Windows: PyInstaller (o runtime Python embutido) + poppler + tesseract com português + Inno Setup.
+# O PyInstaller não gera executável de Windows fora do Windows, por isso o build é aqui.
+name: Instalador Windows
+
+on:
+  push:
+    branches: [main, windows-android]
+    paths: ["app/**", "web/**", "windows/**", "tests/**", "requirements*.txt", ".github/workflows/windows.yml"]
+  workflow_dispatch:
+
+env:
+  POPPLER_URL: https://github.com/oschwartz10612/poppler-windows/releases/download/v26.09.0-0/Release-26.09.0-0.zip
+  TESSERACT_URL: https://github.com/UB-Mannheim/tesseract/releases/download/v5.4.0.20240606/tesseract-ocr-w64-setup-5.4.0.20240606.exe
+  # O mesmo modelo de português (tessdata_fast) que o pacote tesseract-ocr-por do Debian, o da imagem Docker.
+  POR_URL: https://raw.githubusercontent.com/tesseract-ocr/tessdata_fast/main/por.traineddata
+
+jobs:
+  instalador:
+    runs-on: windows-latest
+    timeout-minutes: 45
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: |
+            requirements.txt
+            requirements-dev.txt
+            windows/requirements-windows.txt
+
+      - name: Dependências
+        run: python -m pip install -r windows/requirements-windows.txt -r requirements-dev.txt pefile
+
+      - name: Poppler e tesseract
+        run: |
+          $ErrorActionPreference = "Stop"
+          $tam = { param($d) "{0:N1} MB" -f ((Get-ChildItem $d -Recurse -File | Measure-Object Length -Sum).Sum / 1MB) }
+          New-Item -ItemType Directory -Force ferramentas | Out-Null
+          Invoke-WebRequest $env:POPPLER_URL -OutFile ferramentas\poppler.zip
+          Expand-Archive ferramentas\poppler.zip ferramentas\poppler-zip
+          $bin = (Get-ChildItem ferramentas\poppler-zip -Recurse -Filter pdftotext.exe | Select-Object -First 1).DirectoryName
+          # Só o pdftotext, o pdftoppm e as DLLs que eles carregam (o pacote traz todas as ferramentas do poppler).
+          python windows\dlls_necessarias.py $bin ferramentas\poppler pdftotext.exe pdftoppm.exe
+          Invoke-WebRequest $env:TESSERACT_URL -OutFile ferramentas\tesseract-setup.exe
+          # O instalador do UB-Mannheim é NSIS: o 7-Zip do runner abre o pacote sem instalar nada na máquina.
+          7z x ferramentas\tesseract-setup.exe -oferramentas\tesseract-inst -y | Out-Null
+          "tesseract inteiro: $(& $tam ferramentas\tesseract-inst)"
+          # Só o executável e a cadeia de DLLs dele (as ferramentas de treino e o ICU ficam de fora) ...
+          python windows\dlls_necessarias.py ferramentas\tesseract-inst ferramentas\tesseract tesseract.exe
+          # ... sem os símbolos de depuração do MinGW (a libtesseract-5.dll tem uns 95 MB só deles).
+          C:\msys64\usr\bin\bash.exe -lc "pacman -Sy --noconfirm --needed mingw-w64-x86_64-binutils" | Out-Null
+          Get-ChildItem ferramentas\tesseract -File | ForEach-Object { C:\msys64\mingw64\bin\strip.exe --strip-debug $_.FullName }
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          New-Item -ItemType Directory -Force ferramentas\tesseract\tessdata | Out-Null
+          # As configurações (tsv) e o português.
+          Copy-Item ferramentas\tesseract-inst\tessdata\configs, ferramentas\tesseract-inst\tessdata\tessconfigs ferramentas\tesseract\tessdata -Recurse
+          Invoke-WebRequest $env:POR_URL -OutFile ferramentas\tesseract\tessdata\por.traineddata
+          "poppler no pacote: $(& $tam ferramentas\poppler) | tesseract no pacote: $(& $tam ferramentas\tesseract)"
+          ferramentas\poppler\pdftotext.exe -v
+          $env:TESSDATA_PREFIX = "$PWD\ferramentas\tesseract\tessdata"
+          ferramentas\tesseract\tesseract.exe --list-langs
+
+      - name: Testes (pytest no Windows, com o poppler e o tesseract acima)
+        run: |
+          $env:PATH = "$PWD\ferramentas\poppler;$PWD\ferramentas\tesseract;$env:PATH"
+          $env:TESSDATA_PREFIX = "$PWD\ferramentas\tesseract\tessdata"
+          python -m pytest -q
+
+      - name: PyInstaller
+        run: |
+          $ErrorActionPreference = "Stop"
+          pyinstaller --noconfirm windows/financas.spec
+          Copy-Item ferramentas\poppler dist\Financas\poppler -Recurse
+          Copy-Item ferramentas\tesseract dist\Financas\tesseract -Recurse
+
+      - name: Inno Setup
+        run: |
+          $ErrorActionPreference = "Stop"
+          $versao = (Get-Content windows\VERSAO).Trim()
+          $iscc = "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe"
+          if (-not (Test-Path $iscc)) { choco install innosetup -y --no-progress; $iscc = "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe" }
+          & $iscc "/DVersao=$versao" windows\financas.iss
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          Get-ChildItem dist-instalador | Format-Table Name, @{n="MB"; e={"{0:N1}" -f ($_.Length / 1MB)}}
+
+      - name: Instalar, testar e desinstalar
+        run: |
+          $ErrorActionPreference = "Stop"
+          $setup = (Get-ChildItem dist-instalador\financas-setup-*.exe | Select-Object -First 1).FullName
+          Start-Process $setup -ArgumentList "/VERYSILENT", "/SUPPRESSMSGBOXES", "/NORESTART", "/SENHA=senha-do-teste-ci", '/TASKS="autostart,rede"', "/TITULAR=FULANO" -Wait
+          $app = "$env:LOCALAPPDATA\Programs\Financas"
+          $dados = "$env:LOCALAPPDATA\Financas"
+          if (-not (Test-Path "$app\Financas.exe")) { throw "o instalador não pôs o Financas.exe em $app" }
+          if (-not (Test-Path "$env:APPDATA\Microsoft\Windows\Start Menu\Programs\Finanças.lnk")) { throw "faltou o atalho do Menu Iniciar" }
+          $run = (Get-ItemProperty HKCU:\Software\Microsoft\Windows\CurrentVersion\Run).Financas
+          if ($run -notlike "*--servidor") { throw "faltou o autostart: $run" }
+          Get-NetFirewallRule -DisplayName "Financas (celular)" | Format-List DisplayName, Enabled, Direction, Action
+          if ((Get-ItemProperty HKCU:\Software\Financas -ErrorAction SilentlyContinue).RegraFirewall -ne 1) { throw "o instalador não marcou a regra do firewall" }
+          Start-Process "$app\Financas.exe" -ArgumentList "--servidor"
+          python windows\teste_windows.py --senha senha-do-teste-ci --env "$dados\.env"
+          if ($LASTEXITCODE) { Get-Content "$dados\logs\servidor.log" -Tail 60; exit $LASTEXITCODE }
+          Get-NetTCPConnection -LocalPort 8095 -State Listen | Format-Table LocalAddress, LocalPort, OwningProcess
+          Start-Process "$app\unins000.exe" -ArgumentList "/VERYSILENT", "/SUPPRESSMSGBOXES", "/APAGARDADOS=1" -Wait
+          for ($i = 0; $i -lt 30 -and (Test-Path "$app\Financas.exe"); $i++) { Start-Sleep 1 }
+          if (Test-Path "$app\Financas.exe") { throw "o desinstalador deixou o programa" }
+          if ((Get-ItemProperty HKCU:\Software\Microsoft\Windows\CurrentVersion\Run).Financas) { throw "o autostart ficou" }
+          if (Test-Path $dados) { throw "os dados ficaram, mesmo com /APAGARDADOS=1" }
+          if (Get-NetFirewallRule -DisplayName "Financas (celular)" -ErrorAction SilentlyContinue) { throw "a regra do firewall ficou" }
+          "instalação, teste e desinstalação ok"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: financas-setup
+          path: dist-instalador/financas-setup-*.exe
+          if-no-files-found: error

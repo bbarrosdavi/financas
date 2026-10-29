@@ -25,12 +25,11 @@ def _vocabulario_de_teste(c) -> None:
                   [("ana", "Ana", "colega", "ANA EXEMPLO DA SILVA", "acerto", "acerto"),
                    ("bruno", "Bruno", "colega", "BRUNO EXEMPLO", "acerto", "acerto"),
                    ("mae", "Mãe", "familia", "MARIA EXEMPLO", "renda:pais", "acerto")])
-    c.execute("UPDATE categorias SET teto=84 WHERE id='ru'")
+    c.execute("UPDATE categorias SET teto=84 WHERE id='conveniencia'")
     c.execute("UPDATE categorias SET teto=500 WHERE id='mercado'")
     c.execute("UPDATE categorias SET teto=900 WHERE id='aluguel-condominio'")
     c.execute("INSERT INTO regras (padrao, natureza, categoria, pessoa, origem) VALUES ('EMPRESA EXEMPLO', 'renda', 'salario', NULL, 'sistema')")
     db.definir_parametro(c, "salario_mensal", "3000")
-    db.definir_parametro(c, "aluguel_rateio", '{"eu": 0.34, "bruno": 0.36, "ana": 0.30}')
 
 
 @pytest.fixture
