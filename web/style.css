@@ -441,3 +441,21 @@ body.larga .demo-aviso { max-width: none; }
 
 /* Subtítulo junto do título (Resumo de Lançamentos). */
 .painel > h3 small.junto { margin-left: 8px; }
+
+/* Calendário do tema, no lugar do seletor de data do navegador. */
+.campo-data { font: inherit; color: var(--texto); background: var(--painel-forte); border: 1px solid var(--linha); border-radius: 8px; padding: 6px 10px; cursor: pointer; min-width: 108px; text-align: left; font-variant-numeric: tabular-nums; }
+.campo-data.vazio { color: var(--mudo); }
+.calendario { position: fixed; z-index: 1000; width: 272px; padding: 10px; border-radius: 14px; background: linear-gradient(var(--painel-forte), var(--painel-forte)), var(--fundo); border: 1px solid var(--linha); box-shadow: var(--sombra); color: var(--texto); }
+.calendario button { font: inherit; color: inherit; background: none; border: 0; border-radius: 8px; cursor: pointer; padding: 0; min-width: 0; }
+.calendario .cal-topo { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
+.calendario .cal-topo b { font-size: .92rem; }
+.calendario .cal-topo button { width: 30px; height: 30px; font-size: 1.15rem; color: var(--texto-2); }
+.calendario .cal-topo button:hover, .calendario .cal-dias button:hover, .calendario .cal-pe button:hover { background: var(--trilho); }
+.calendario .cal-sem, .calendario .cal-dias { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); text-align: center; }
+.calendario .cal-sem span { font-size: .7rem; color: var(--mudo); padding: 4px 0; }
+.calendario .cal-dias button { height: 32px; font-size: .85rem; font-variant-numeric: tabular-nums; }
+.calendario .cal-dias button.fora { color: var(--mudo); opacity: .5; }
+.calendario .cal-dias button.hoje { box-shadow: inset 0 0 0 1px var(--acento); }
+.calendario .cal-dias button.on { background: var(--acento); color: #fff; }
+.calendario .cal-pe { display: flex; justify-content: flex-end; gap: 6px; margin-top: 6px; }
+.calendario .cal-pe button { padding: 5px 10px; font-size: .82rem; color: var(--acento); }

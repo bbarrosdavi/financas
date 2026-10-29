@@ -14,6 +14,75 @@ const MES3 = MESES.map(m => m.slice(0, 3));
 const mesBR = m => MES3[+m.slice(5, 7) - 1] + '/' + m.slice(2, 4);
 const hojeISO = () => new Date().toLocaleDateString('sv-SE');
 const CONTA = {nubank_conta: 'Conta', nubank_cartao: 'Cartão', picpay: 'PicPay', bradesco_conta: 'Bradesco', bradesco_cartao: 'Cartão Bradesco'};
+
+// ---------------------------------------------------------------- calendário com o tema do site
+// Todo <input type="date"> vira um botão que abre este calendário (o do navegador é cinza e não segue o tema).
+// O campo continua lá, escondido, com a data AAAA-MM-DD em .value: quem lê ou grava o campo não muda.
+let calAberto = null;
+function calendario(ancora, inicial, podeLimpar) {
+  calAberto?.fechar(undefined);
+  return new Promise(ok => {
+    const cx = document.createElement('div');
+    cx.className = 'calendario';
+    const iso = d => d.toLocaleDateString('sv-SE');
+    const ref = new Date((inicial || hojeISO()) + 'T12:00:00'); ref.setDate(1);
+    const fora = e => { const p = e.composedPath(); if (!p.includes(cx) && !p.includes(ancora)) fechar(undefined); };
+    const tecla = e => { if (e.key === 'Escape') fechar(undefined); };
+    const rolou = e => { if (!e.composedPath().includes(cx)) fechar(undefined); };
+    function fechar(v) {
+      cx.remove(); calAberto = null;
+      document.removeEventListener('pointerdown', fora, true); document.removeEventListener('keydown', tecla);
+      window.removeEventListener('scroll', rolou, true); document.removeEventListener('scroll', rolou, true);
+      ok(v);
+    }
+    function desenhar() {
+      const ano = ref.getFullYear(), mes = ref.getMonth(), ini = new Date(ano, mes, 1 - new Date(ano, mes, 1).getDay(), 12);
+      let dias = '';
+      for (let i = 0; i < 42; i++) {
+        const d = new Date(ini); d.setDate(ini.getDate() + i);
+        const s = iso(d), cls = [d.getMonth() !== mes && 'fora', s === hojeISO() && 'hoje', s === inicial && 'on'].filter(Boolean).join(' ');
+        dias += `<button type="button" class="${cls}" data-d="${s}">${d.getDate()}</button>`;
+      }
+      cx.innerHTML = `<div class="cal-topo"><button type="button" data-m="-1" aria-label="Mês anterior">‹</button><b>${MESES[mes]} de ${ano}</b><button type="button" data-m="1" aria-label="Mês seguinte">›</button></div>
+        <div class="cal-sem">${['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sáb'].map(x => `<span>${x}</span>`).join('')}</div><div class="cal-dias">${dias}</div>
+        <div class="cal-pe"><button type="button" data-hoje>Hoje</button>${podeLimpar ? '<button type="button" data-limpar>Limpar</button>' : ''}</div>`;
+    }
+    cx.addEventListener('click', e => {
+      const m = e.target.closest('[data-m]'), d = e.target.closest('[data-d]');
+      if (m) { ref.setMonth(ref.getMonth() + +m.dataset.m); desenhar(); }
+      else if (d) fechar(d.dataset.d);
+      else if (e.target.closest('[data-hoje]')) fechar(hojeISO());
+      else if (e.target.closest('[data-limpar]')) fechar('');
+    });
+    desenhar();
+    document.body.appendChild(cx);
+    calAberto = {ancora, fechar};
+    const r = ancora.getBoundingClientRect(), h = cx.offsetHeight;
+    cx.style.left = Math.max(8, Math.min(r.left, innerWidth - cx.offsetWidth - 8)) + 'px';
+    cx.style.top = (r.bottom + 6 + h > innerHeight ? Math.max(8, r.top - h - 6) : r.bottom + 6) + 'px';
+    document.addEventListener('pointerdown', fora, true); document.addEventListener('keydown', tecla);
+    window.addEventListener('scroll', rolou, true); document.addEventListener('scroll', rolou, true);
+  });
+}
+const VALOR = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value');
+function datasDoTema() {
+  document.querySelectorAll('input[type="date"]').forEach(inp => {
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'campo-data';
+    const mostrar = () => { const v = VALOR.get.call(inp); b.textContent = v ? dataBR(v) : 'dd/mm/aaaa'; b.classList.toggle('vazio', !v); };
+    Object.defineProperty(inp, 'value', {get: () => VALOR.get.call(inp), set: v => { VALOR.set.call(inp, v); mostrar(); }});
+    const limpar = !inp.required;
+    inp.type = 'hidden';
+    inp.after(b); mostrar();
+    b.onclick = async () => {
+      if (calAberto?.ancora === b) return calAberto.fechar(undefined);
+      const v = await calendario(b, inp.value, limpar);
+      if (v === undefined || v === inp.value) return;
+      inp.value = v; inp.dispatchEvent(new Event('change', {bubbles: true}));
+    };
+  });
+}
+new MutationObserver(datasDoTema).observe(document, {childList: true, subtree: true});
 const NAT = {gasto: 'Gasto', renda: 'Renda', transferencia: 'Transferência', acerto: 'Acerto', poupanca: 'Poupança'};
 const ORIGEM = {manual: 'lançado à mão', push: 'pelo celular'};      // extrato e fatura já se veem pela conta
 // Cor fixa por grupo (a cor segue o grupo, nunca a posição). Grupos fora da lista ficam cinza.
@@ -785,27 +854,28 @@ async function lancamentos(t) {
   t.innerHTML = `<div class="titulo"><h2>Lançamentos</h2></div>
     <section class="painel vidro"><h3>Resumo <small class="junto">do que está filtrado abaixo</small></h3><div class="heroi lanc-heroi" id="lanc-heroi"></div></section>
     <section class="painel vidro">
-    <div class="barra"><select id="f-mes"><option value="">todos os meses</option>${meses.map(m => `<option value="${m}">${MESES[+m.slice(5) - 1]} de ${m.slice(0, 4)}</option>`).join('')}</select>
-      <label class="nw muted">de <input type="date" id="f-de"></label><label class="nw muted">até <input type="date" id="f-ate"></label>
+    <div class="barra"><select id="f-ano"><option value="">todos os anos</option>${[...new Set(meses.map(m => m.slice(0, 4)))].sort().reverse().map(a => `<option>${a}</option>`).join('')}</select>
+      <select id="f-mes"><option value="">todos os meses</option>${MESES.map((m, i) => `<option value="${String(i + 1).padStart(2, '0')}">${m}</option>`).join('')}</select>
       <select id="f-cat"><option value="">todas as categorias</option>${V.categorias.map(c => `<option value="${c.id}">${esc(c.nome)}</option>`).join('')}</select>
       <select id="f-tipo"><option value="">todos os tipos</option><option>Entrada</option><option>Saída</option><option>Transferência</option><option>Acerto</option><option>Dividido</option><option>Estorno</option><option>Poupança</option><option>Pendente</option></select>
       <input id="f-busca" placeholder="buscar" style="flex:1;min-width:140px"><button id="f-limpar">Limpar filtros</button></div>
     <div class="scroll"><table id="t-l"></table></div></section>`;
-  $('#f-mes').value = params().get('cat') ? '' : (params().get('mes') ?? hojeISO().slice(0, 7));
+  const mesIni = params().get('cat') ? '' : (params().get('mes') ?? hojeISO().slice(0, 7));
+  $('#f-ano').value = mesIni.slice(0, 4); $('#f-mes').value = mesIni.slice(5, 7);
   if (params().get('cat')) $('#f-cat').value = params().get('cat');
   let dados = [];
   async function carregar() {
     const p = new URLSearchParams();
-    if ($('#f-mes').value) p.set('mes', $('#f-mes').value);
-    if ($('#f-de').value) p.set('de', $('#f-de').value);
-    if ($('#f-ate').value) p.set('ate', $('#f-ate').value);
+    // Ano e mês: o mês do ano escolhido; só o ano; ou o mesmo mês em todos os anos.
+    const ano = $('#f-ano').value, mm = $('#f-mes').value, mesF = ano && mm ? `${ano}-${mm}` : '';
+    if (mesF) p.set('mes', mesF);
+    else if (ano) { p.set('de', ano + '-01-01'); p.set('ate', ano + '-12-31'); }
     if ($('#f-cat').value) p.set('categoria', $('#f-cat').value);
     if ($('#f-busca').value) p.set('busca', $('#f-busca').value);
     if ($('#f-tipo').value === 'Pendente') p.set('pendentes', 'true');
-    dados = (await api('/api/lancamentos?' + p)).filter(l => !$('#f-tipo').value || tipoLanc(l)[1] === $('#f-tipo').value);
+    dados = (await api('/api/lancamentos?' + p)).filter(l => (!$('#f-tipo').value || tipoLanc(l)[1] === $('#f-tipo').value) && (mesF || !mm || l.data.slice(5, 7) === mm));
     // Com um mês escolhido, a renda conta no mês em que entra (Ajustes > Mês da entrada, a mesma regra do Painel)
     // e o gasto conta pela data.
-    const mesF = $('#f-mes').value;
     const dEnt = dados.filter(l => !mesF || l.mes_renda === mesF), dGas = dados.filter(l => !mesF || l.data.startsWith(mesF));
     const soma = (ls, nat) => ls.flatMap(l => l.partes).filter(p => p.natureza === nat).reduce((a, p) => a + p.valor, 0);
     const ent = soma(dEnt, 'renda'), gas = -soma(dGas, 'gasto');
@@ -842,7 +912,7 @@ async function lancamentos(t) {
   }
   function linhaNova() {
     const tb = $('#t-l tbody');
-    tb.insertAdjacentHTML('afterbegin', `<tr class="nova"><td><input type="date" id="n-data" value="${hojeISO()}"></td>
+    tb.insertAdjacentHTML('afterbegin', `<tr class="nova"><td><input type="date" id="n-data" required value="${hojeISO()}"></td>
       <td><select id="n-tipo">${Object.entries(TIPOS_NOVO).map(([k, n]) => `<option value="${k}">${n}</option>`).join('')}</select></td>
       <td><select id="n-alvo">${opcoesAlvo('saida')}</select></td>
       <td class="n"><input type="number" step="0.01" min="0" id="n-valor" placeholder="0,00" style="width:100px;text-align:right"></td>
@@ -870,17 +940,14 @@ async function lancamentos(t) {
     tb.querySelector('tr.nova').onclick = e => e.stopPropagation();
   }
   // Limpar: todos os meses, categorias e tipos, sem busca (e tira o filtro que veio no endereço, ex.: da evolução).
-  const filtrado = () => ['f-mes', 'f-de', 'f-ate', 'f-cat', 'f-tipo', 'f-busca'].some(id => $('#' + id).value);
+  const filtrado = () => ['f-ano', 'f-mes', 'f-cat', 'f-tipo', 'f-busca'].some(id => $('#' + id).value);
   const marcarLimpar = () => { $('#f-limpar').disabled = !filtrado(); };
   $('#f-limpar').onclick = () => {
-    ['f-mes', 'f-de', 'f-ate', 'f-cat', 'f-tipo', 'f-busca'].forEach(id => { $('#' + id).value = ''; });
+    ['f-ano', 'f-mes', 'f-cat', 'f-tipo', 'f-busca'].forEach(id => { $('#' + id).value = ''; });
     if (location.hash.includes('?')) history.replaceState(null, '', '#lancamentos');
     marcarLimpar(); carregar();
   };
-  ['f-mes', 'f-cat', 'f-tipo'].forEach(id => $('#' + id).onchange = () => { marcarLimpar(); carregar(); });
-  // Mês ou intervalo: um limpa o outro (no intervalo, tudo conta pela data).
-  $('#f-mes').onchange = () => { if ($('#f-mes').value) { $('#f-de').value = ''; $('#f-ate').value = ''; } marcarLimpar(); carregar(); };
-  ['f-de', 'f-ate'].forEach(id => $('#' + id).onchange = () => { $('#f-mes').value = ''; marcarLimpar(); carregar(); });
+  ['f-ano', 'f-mes', 'f-cat', 'f-tipo'].forEach(id => $('#' + id).onchange = () => { marcarLimpar(); carregar(); });
   let tm; $('#f-busca').oninput = () => { marcarLimpar(); clearTimeout(tm); tm = setTimeout(carregar, 300); };
   marcarLimpar();
   carregar();
