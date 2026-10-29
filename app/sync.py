@@ -492,7 +492,41 @@ def sincronizar(conectar, base: str, chave_api: str, timeout: float = 30) -> dic
                         (m["tabela"], uid, m["alterado_em"]))
         _definir_cliente(con, "cursor", resp.get("cursor", cursor))
         _definir_cliente(con, "titular", resp.get("titular", ""))
+    _guardar_aparencia(conectar, base, chave_api, resp.get("aparencia"), timeout)
     return {"modo": "sync", "enviadas": len(enviadas), "recebidas": len(resp.get("mudancas", [])), **r}
+
+
+def _baixar(url: str, chave_api: str, timeout: float) -> bytes | None:
+    req = urllib.request.Request(url, headers={"Authorization": f"Bearer {chave_api}"})
+    try:
+        with urllib.request.urlopen(req, timeout=timeout) as r:
+            return r.read()
+    except (urllib.error.URLError, OSError):
+        return None
+
+
+def _guardar_aparencia(conectar, base: str, chave_api: str, ap, timeout: float) -> None:
+    """A aparência da conta no servidor (tema, claro ou escuro, desfoque e o papel de parede) passa a valer aqui.
+    O papel só é baixado de novo quando muda."""
+    if not isinstance(ap, dict):
+        return
+    from pathlib import Path
+    from app.config import settings
+    nome, versao = Path(ap.get("papel") or "").name, ap.get("papel_versao") or ""
+    with conectar() as con:
+        _definir_cliente(con, "aparencia", json.dumps(ap.get("valores") or {}, ensure_ascii=False))
+        baixar = bool(nome) and versao != _cliente(con, "papel_versao", "")
+        if not nome:
+            _definir_cliente(con, "papel_servidor", "")
+    if baixar:
+        dados = _baixar(f"{base}/api/v1/papel", chave_api, timeout)
+        if dados:
+            pasta = Path(settings.PAPEIS_DIR)
+            pasta.mkdir(parents=True, exist_ok=True)
+            (pasta / nome).write_bytes(dados)
+            with conectar() as con:
+                _definir_cliente(con, "papel_servidor", nome)
+                _definir_cliente(con, "papel_versao", versao)
 
 
 def _pelo_webhook(conectar, base: str, chave_api: str, timeout: float) -> dict:

@@ -68,12 +68,13 @@ fun detalheLanc(l: JSONObject, comDescricao: Boolean = true) = listOfNotNull(
 
 @Composable
 fun TelaPendentes() {
-    val c = carregar { Api.lista("/api/lancamentos?pendentes=true").objs().sortedByDescending { abs(it.d("valor")) } }
+    val c = carregar { Api.lista("/api/lancamentos?pendentes=true").objs()       // por data, para a triagem
+        .sortedWith(compareByDescending<JSONObject> { it.s("data") }.thenByDescending { it.optInt("id") }) }
     val ls = c.dado ?: return EstadoCarga(c)
     var lembrar by rememberSaveable { mutableStateOf(true) }
     var editando by remember { mutableStateOf<JSONObject?>(null) }
-    LazyColumn(Modifier.fillMaxWidth(), contentPadding = androidx.compose.foundation.layout.PaddingValues(12.dp),
-        verticalArrangement = Arrangement.spacedBy(10.dp)) {
+    LazyColumn(Modifier.fillMaxWidth(), contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 10.dp, vertical = 8.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)) {
         item {
             Cartao(modifier = Modifier.alvo("pendentes")) {
                 Text(if (ls.isEmpty()) "Tudo classificado." else "${ls.size} esperando você", color = cores.texto, fontWeight = FontWeight.SemiBold, fontSize = 16.sp)
@@ -193,7 +194,7 @@ fun EditorPartes(l: JSONObject, aoFechar: () -> Unit) {
     val id = l.optInt("id")
 
     Dialog(onDismissRequest = aoFechar, properties = DialogProperties(usePlatformDefaultWidth = false)) {
-        Surface(shape = RoundedCornerShape(16.dp), color = cores.painel, modifier = Modifier.fillMaxWidth(.94f)) {
+        Surface(shape = RoundedCornerShape(16.dp), color = cores.painelForte, modifier = Modifier.fillMaxWidth(.94f)) {
             Column(Modifier.verticalScroll(rememberScrollState()).padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Text(l.s("contraparte").ifEmpty { l.s("descricao") }, color = cores.texto, fontWeight = FontWeight.Bold, fontSize = 18.sp)
                 Text(detalheLanc(l) + " · " + brl(l.d("valor")), color = cores.mudo, fontSize = 12.sp)

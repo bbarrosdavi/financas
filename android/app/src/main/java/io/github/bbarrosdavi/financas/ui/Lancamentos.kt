@@ -82,10 +82,13 @@ fun TelaLancamentos() {
     var categoria by rememberSaveable { mutableStateOf("") }
     var tipo by rememberSaveable { mutableStateOf("") }
     var busca by rememberSaveable { mutableStateOf("") }
+    var de by rememberSaveable { mutableStateOf("") }
+    var ate by rememberSaveable { mutableStateOf("") }
     var buscaAtiva by remember { mutableStateOf(busca) }
     LaunchedEffect(busca) { delay(300); buscaAtiva = busca }
-    val c = carregar(mes, categoria, tipo, buscaAtiva) {
-        val q = listOfNotNull(mes.takeIf { it.isNotEmpty() }?.let { "mes=$it" }, categoria.takeIf { it.isNotEmpty() }?.let { "categoria=${Api.q(it)}" },
+    val c = carregar(mes, de, ate, categoria, tipo, buscaAtiva) {
+        val q = listOfNotNull(mes.takeIf { it.isNotEmpty() }?.let { "mes=$it" }, de.takeIf { it.isNotEmpty() }?.let { "de=$it" },
+            ate.takeIf { it.isNotEmpty() }?.let { "ate=$it" }, categoria.takeIf { it.isNotEmpty() }?.let { "categoria=${Api.q(it)}" },
             buscaAtiva.takeIf { it.isNotBlank() }?.let { "busca=${Api.q(it)}" }, if (tipo == "Pendente") "pendentes=true" else null).joinToString("&")
         Api.lista("/api/lancamentos?$q").objs().filter { tipo.isEmpty() || tipoLanc(it) == tipo }
     }
@@ -93,16 +96,24 @@ fun TelaLancamentos() {
     var lancando by remember { mutableStateOf(false) }
 
     Box(Modifier.fillMaxSize()) {
-        LazyColumn(Modifier.fillMaxSize(), contentPadding = PaddingValues(start = 12.dp, end = 12.dp, top = 12.dp, bottom = 88.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp)) {
-            item { Resumo(c.dado, contas) }
+        LazyColumn(Modifier.fillMaxSize(), contentPadding = PaddingValues(start = 10.dp, end = 10.dp, top = 8.dp, bottom = 80.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            item { Resumo(c.dado, contas, mes) }
             item {
                 Cartao(modifier = Modifier.alvo("lancFiltros")) {
                     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        Seletor("Mês", listOf("" to "todos os meses") + meses.map { it to mesLongo(it) }, mes, Modifier.weight(1f)) { mes = it }
+                        // Mês ou intervalo: um limpa o outro (no intervalo, tudo conta pela data).
+                        Seletor("Mês", listOf("" to "todos os meses") + meses.map { it to mesLongo(it) }, mes, Modifier.weight(1f)) {
+                            mes = it; if (it.isNotEmpty()) { de = ""; ate = "" }
+                        }
                         Seletor("Tipo", listOf("" to "todos os tipos") + TIPOS.map { it to it }, tipo, Modifier.weight(1f)) { tipo = it }
                     }
-                    Spacer(Modifier.height(8.dp))
+                    Spacer(Modifier.height(6.dp))
+                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        CampoData("De", de, Modifier.weight(1f)) { de = it; if (it.isNotEmpty()) mes = "" }
+                        CampoData("Até", ate, Modifier.weight(1f)) { ate = it; if (it.isNotEmpty()) mes = "" }
+                    }
+                    Spacer(Modifier.height(6.dp))
                     Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
                         var escolher by remember { mutableStateOf(false) }
                         CampoToque("Categoria", if (categoria.isEmpty()) "todas" else Vocab.categoria(categoria)?.s("nome"), Modifier.weight(1f)) { escolher = true }
@@ -110,8 +121,10 @@ fun TelaLancamentos() {
                             Vocab.categorias.map { it.s("id") to "${it.s("grupo")}: ${it.s("nome")}" }, { escolher = false }) { categoria = it }
                         Campo(busca, { busca = it }, "Buscar", Modifier.weight(1f))
                     }
-                    if (mes.isNotEmpty() || categoria.isNotEmpty() || tipo.isNotEmpty() || busca.isNotEmpty())
-                        TextButton(onClick = { mes = ""; categoria = ""; tipo = ""; busca = "" }) { Text("Limpar filtros", color = cores.acento) }
+                    if (mes.isNotEmpty() || de.isNotEmpty() || ate.isNotEmpty() || categoria.isNotEmpty() || tipo.isNotEmpty() || busca.isNotEmpty())
+                        TextButton(onClick = { mes = ""; de = ""; ate = ""; categoria = ""; tipo = ""; busca = "" }) {
+                            Text("Limpar filtros", color = cores.acento, fontSize = 13.sp)
+                        }
                 }
             }
             val ls = c.dado
@@ -132,10 +145,13 @@ fun TelaLancamentos() {
 }
 
 @Composable
-private fun Resumo(dados: List<JSONObject>?, contas: List<JSONObject>) {
-    val ps = dados.orEmpty().flatMap { it.lista("partes") }
-    val ent = ps.filter { it.s("natureza") == "renda" }.sumOf { it.d("valor") }
-    val gas = -ps.filter { it.s("natureza") == "gasto" }.sumOf { it.d("valor") }
+private fun Resumo(dados: List<JSONObject>?, contas: List<JSONObject>, mes: String) {
+    // Com um mês escolhido, a renda conta no mês em que entra (Ajustes > Mês da entrada, a mesma regra do Painel)
+    // e o gasto conta pela data.
+    val ls = dados.orEmpty()
+    fun soma(linhas: List<JSONObject>, natureza: String) = linhas.flatMap { it.lista("partes") }.filter { it.s("natureza") == natureza }.sumOf { it.d("valor") }
+    val ent = soma(ls.filter { mes.isEmpty() || it.s("mes_renda") == mes }, "renda")
+    val gas = -soma(ls.filter { mes.isEmpty() || it.s("data").startsWith(mes) }, "gasto")
     val conta = contas.firstOrNull { it.s("id") == "nubank_conta" }
     val falta = conta?.takeIf { it.dn("saldo_real") != null }?.d("diferenca")
     var informar by remember { mutableStateOf(false) }
@@ -181,7 +197,9 @@ private fun LinhaLanc(l: JSONObject, modifier: Modifier, aoTocar: () -> Unit) {
                 Text(if (l.optBoolean("pendente")) "a classificar" else partes.joinToString(" + ") { nomeParte(it).removePrefix("acerto ") + if (partes.size > 1) " " + brl(it.d("valor")) else "" },
                     color = if (l.optBoolean("pendente")) cores.atencao else cores.texto2, fontSize = 13.sp, maxLines = 2, overflow = TextOverflow.Ellipsis)
                 val extra = listOfNotNull(l.s("descricao").takeIf { l.s("contraparte").isNotEmpty() && it.isNotEmpty() },
-                    l.sn("parcela")?.takeIf { it.isNotEmpty() }?.let { "parcela $it" }, ORIGEM[l.s("origem")], l.sn("nota")?.takeIf { it.isNotEmpty() })
+                    l.sn("parcela")?.takeIf { it.isNotEmpty() }?.let { "parcela $it" },
+                    l.s("mes_renda").takeIf { it.length == 7 && !l.s("data").startsWith(it) }?.let { "entra em ${mesCurto(it)}" },
+                    ORIGEM[l.s("origem")], l.sn("nota")?.takeIf { it.isNotEmpty() })
                 if (extra.isNotEmpty()) Text(extra.joinToString(" · "), color = cores.mudo, fontSize = 11.sp, maxLines = 2, overflow = TextOverflow.Ellipsis)
             }
             Column(horizontalAlignment = Alignment.End, modifier = Modifier.padding(start = 8.dp)) {
@@ -212,7 +230,7 @@ private fun NovoLancamento(aoFechar: () -> Unit) {
     var escolherData by remember { mutableStateOf(false) }
     var erro by remember { mutableStateOf<String?>(null) }
 
-    ModalBottomSheet(onDismissRequest = aoFechar, sheetState = folha, containerColor = cores.painel) {
+    ModalBottomSheet(onDismissRequest = aoFechar, sheetState = folha, containerColor = cores.painelForte) {
         Column(Modifier.verticalScroll(rememberScrollState()).padding(horizontal = 16.dp).padding(bottom = 16.dp).navigationBarsPadding(),
             verticalArrangement = Arrangement.spacedBy(10.dp)) {
             Text("Lançar", color = cores.texto, fontSize = 20.sp, fontWeight = FontWeight.Bold)
@@ -272,3 +290,22 @@ private fun NovoLancamento(aoFechar: () -> Unit) {
     }
 }
 
+
+/** Uma data do filtro (AAAA-MM-DD, ou vazia): toque escolhe no calendário, "Limpar" tira. */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun CampoData(rotulo: String, valor: String, modifier: Modifier = Modifier, aoEscolher: (String) -> Unit) {
+    var aberto by remember { mutableStateOf(false) }
+    CampoToque(rotulo, valor.takeIf { it.length == 10 }?.let { "${it.substring(8, 10)}/${it.substring(5, 7)}/${it.substring(2, 4)}" } ?: "qualquer", modifier) { aberto = true }
+    if (aberto) {
+        val inicial = valor.takeIf { it.length == 10 }?.let { LocalDate.parse(it) } ?: LocalDate.now()
+        val estado = rememberDatePickerState(initialSelectedDateMillis = inicial.atStartOfDay().toInstant(ZoneOffset.UTC).toEpochMilli())
+        DatePickerDialog(onDismissRequest = { aberto = false },
+            confirmButton = { TextButton(onClick = {
+                estado.selectedDateMillis?.let { aoEscolher(Instant.ofEpochMilli(it).atZone(ZoneOffset.UTC).toLocalDate().toString()) }; aberto = false
+            }) { Text("OK", color = cores.acento) } },
+            dismissButton = { TextButton(onClick = { aoEscolher(""); aberto = false }) { Text("Limpar", color = cores.texto2) } }) {
+            DatePicker(estado)
+        }
+    }
+}

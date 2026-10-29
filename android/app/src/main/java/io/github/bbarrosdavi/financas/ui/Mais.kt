@@ -71,7 +71,7 @@ fun TelaImportar() {
         }
     }
     val listas = carregar { Api.lista("/api/ignorados").objs() to Api.lista("/api/importacoes").objs() }
-    Column(Modifier.verticalScroll(rememberScrollState()).padding(12.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+    Column(Modifier.verticalScroll(rememberScrollState()).padding(horizontal = 10.dp, vertical = 8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
         Cartao("Extrato e fatura do banco", Modifier.alvo("importarArquivos"), sub = "Nubank ou Bradesco") {
             Text("Quantos quiser de uma vez: .csv ou .xlsx (o .pdf só no computador). O que já existe não duplica, e a compra que veio pelo celular é casada com a linha do arquivo. " +
                 "Extrato que não fecha com o total do banco é recusado.", color = cores.texto2, fontSize = 13.sp)
@@ -113,7 +113,7 @@ fun TelaImportar() {
         }
         Cartao("Últimas importações") {
             if (imp.isEmpty()) Vazio("Nenhuma ainda.")
-            imp.forEach { i ->
+            Recentes(imp) { i ->
                 Column(Modifier.padding(vertical = 5.dp)) {
                     Text(i.s("arquivo"), color = cores.texto, fontSize = 14.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
                     Text("${i.s("quando").take(16).replace('T', ' ')} · ${i.s("tipo")} · ${i.optInt("novos")} novo(s), ${i.optInt("casados")} casado(s), ${i.optInt("repetidos")} já existia(m)",
@@ -130,7 +130,7 @@ fun TelaImportar() {
 fun TelaPessoas() {
     val c = carregar { Api.obj("/api/painel") to Api.lista("/api/lancamentos").objs() }
     var pagou by remember { mutableStateOf(false) }
-    Column(Modifier.verticalScroll(rememberScrollState()).padding(12.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+    Column(Modifier.verticalScroll(rememberScrollState()).padding(horizontal = 10.dp, vertical = 8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
         val (p, ls) = c.dado ?: return@Column EstadoCarga(c)
         val pessoas = p.lista("pessoas").filter { it.d("saldo") != 0.0 || it.d("a_vencer") != 0.0 }
         Cartao("Saldos", Modifier.alvo("pessoasSaldos"), sub = "positivo: te deve") {
@@ -152,10 +152,11 @@ fun TelaPessoas() {
             Spacer(Modifier.height(8.dp))
             BotaoPrimario("Lançar conta que alguém pagou", Modifier.fillMaxWidth()) { pagou = true }
         }
-        val acertos = ls.flatMap { l -> l.lista("partes").filter { it.s("natureza") == "acerto" }.map { l to it } }.take(60)
+        CadastroPessoas()
+        val acertos = ls.flatMap { l -> l.lista("partes").filter { it.s("natureza") == "acerto" }.map { l to it } }
         Cartao("Acertos recentes") {
             if (acertos.isEmpty()) Vazio("Nenhum acerto ainda.")
-            acertos.forEach { (l, pt) ->
+            Recentes(acertos) { (l, pt) ->
                 Row(Modifier.padding(vertical = 5.dp), verticalAlignment = Alignment.CenterVertically) {
                     Column(Modifier.weight(1f)) {
                         Text("${Vocab.pessoa(pt.s("pessoa"))?.s("nome") ?: ""} · ${l.s("contraparte").ifEmpty { l.s("descricao") }}", color = cores.texto, fontSize = 14.sp,
@@ -180,7 +181,7 @@ private fun AlguemPagou(aoFechar: () -> Unit) {
     var desc by remember { mutableStateOf("") }
     var data by remember { mutableStateOf(hojeISO()) }
     var erro by remember { mutableStateOf<String?>(null) }
-    AlertDialog(onDismissRequest = aoFechar, containerColor = cores.painel, title = { Text("Alguém pagou por você") },
+    AlertDialog(onDismissRequest = aoFechar, containerColor = cores.painelForte, title = { Text("Alguém pagou por você") },
         text = {
             Column(Modifier.verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 if (Vocab.pessoas.isEmpty()) Text("Cadastre a pessoa em Ajustes > Pessoas.", color = cores.atencao)
@@ -220,7 +221,7 @@ fun TelaProjecao() {
     var evento by remember { mutableStateOf<JSONObject?>(null) }
     var novo by remember { mutableStateOf(false) }
     var premissas by remember { mutableStateOf(false) }
-    Column(Modifier.verticalScroll(rememberScrollState()).padding(12.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+    Column(Modifier.verticalScroll(rememberScrollState()).padding(horizontal = 10.dp, vertical = 8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
         val (p, prm, evs) = c.dado ?: return@Column EstadoCarga(c)
         val pl = p.getJSONObject("plano")
         val linhas = pl.lista("linhas")
@@ -309,7 +310,7 @@ private fun Premissas(prm: JSONObject, horizonte: String, aoFechar: () -> Unit) 
     var salario by remember { mutableStateOf(prm.optString("salario_mensal")) }
     var hz by remember { mutableStateOf(horizonte) }
     var taxa by remember { mutableStateOf(prm.optString("taxa_ponte_picpay")) }
-    AlertDialog(onDismissRequest = aoFechar, containerColor = cores.painel, title = { Text("Premissas") },
+    AlertDialog(onDismissRequest = aoFechar, containerColor = cores.painelForte, title = { Text("Premissas") },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 Campo(salario, { salario = it }, "Renda mensal base", numerico = true)
@@ -341,7 +342,7 @@ private fun EditarEvento(e: JSONObject?, aoFechar: () -> Unit) {
     var valor by remember { mutableStateOf(e?.d("valor")?.let(::valorTexto) ?: "") }
     var ativo by remember { mutableStateOf(e == null || e.optInt("ativo", 1) == 1) }
     var erro by remember { mutableStateOf<String?>(null) }
-    AlertDialog(onDismissRequest = aoFechar, containerColor = cores.painel, title = { Text(if (e == null) "Novo evento" else e.s("nome")) },
+    AlertDialog(onDismissRequest = aoFechar, containerColor = cores.painelForte, title = { Text(if (e == null) "Novo evento" else e.s("nome")) },
         text = {
             Column(Modifier.verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 Campo(nome, { nome = it }, "Nome", dica = "Estágio, bolsa nova, viagem...")
@@ -369,4 +370,14 @@ private fun EditarEvento(e: JSONObject?, aoFechar: () -> Unit) {
             }
         }) { Text("Salvar", color = cores.acento) } },
         dismissButton = { TextButton(onClick = aoFechar) { Text("Cancelar", color = cores.texto2) } })
+}
+
+/** Lista que cresce sem fim (acertos, importações): só as mais recentes, e mais sob demanda. */
+@Composable
+private fun <T> Recentes(itens: List<T>, passo: Int = 10, linha: @Composable (T) -> Unit) {
+    var n by remember(itens.size) { mutableStateOf(passo) }
+    itens.take(n).forEach { linha(it) }
+    if (itens.size > n) TextButton(onClick = { n += passo }) {
+        Text("mostrar mais (${itens.size - n} restantes)", color = cores.acento, fontSize = 13.sp)
+    }
 }

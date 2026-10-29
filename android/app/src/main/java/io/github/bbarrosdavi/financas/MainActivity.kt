@@ -1,5 +1,6 @@
 package io.github.bbarrosdavi.financas
 
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -8,15 +9,20 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.lifecycleScope
 import io.github.bbarrosdavi.financas.ui.Api
+import io.github.bbarrosdavi.financas.ui.Aparencia
 import io.github.bbarrosdavi.financas.ui.AppFinancas
 import io.github.bbarrosdavi.financas.ui.Estado
 import io.github.bbarrosdavi.financas.ui.FinancasTema
 import io.github.bbarrosdavi.financas.ui.Vocab
 import io.github.bbarrosdavi.financas.ui.cores
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import org.json.JSONObject
 import java.lang.ref.WeakReference
 
 /**
@@ -26,6 +32,7 @@ import java.lang.ref.WeakReference
 class MainActivity : ComponentActivity() {
     private lateinit var ajustes: Ajustes
     private var tema by mutableStateOf("sistema")
+    private var aparencia by mutableStateOf(Aparencia())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,8 +40,9 @@ class MainActivity : ComponentActivity() {
         Api.ctx = applicationContext
         ajustes = Ajustes(this)
         tema = ajustes.tema
+        aparencia = Aparencia(modo = tema)
         setContent {
-            FinancasTema(tema) {
+            FinancasTema(aparencia) {
                 val escuro = cores.escuro
                 LaunchedEffect(escuro) {
                     WindowCompat.getInsetsController(window, window.decorView).apply {
@@ -42,7 +50,8 @@ class MainActivity : ComponentActivity() {
                         isAppearanceLightNavigationBars = !escuro
                     }
                 }
-                AppFinancas(ajustes, tema, aoTrocarTema = { tema = it; ajustes.tema = it }, aoSair = { finish() })
+                AppFinancas(ajustes, tema, aoTrocarTema = { tema = it; ajustes.tema = it; aparencia = aparencia.copy(modo = it) },
+                    aoSair = { finish() })
             }
         }
         atual = WeakReference(this)
@@ -61,7 +70,31 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun recarregar() {
-        lifecycleScope.launch { runCatching { Vocab.carregar() }; Estado.mudou() }
+        lifecycleScope.launch {
+            runCatching { Vocab.carregar() }; Estado.mudou()
+            runCatching { lerAparencia() }.onSuccess { aparencia = it }
+        }
+    }
+
+    /**
+     * A aparência da conta no servidor (tema, claro ou escuro, desfoque, estilo e papel de parede), trazida pela
+     * sincronização. Sem servidor, vale o modo escolhido aqui e o papel de parede deste aparelho.
+     */
+    private suspend fun lerAparencia(): Aparencia {
+        val conta = Api.obj("/api/aparencia-conta")
+        val v = conta.optJSONObject("valores") ?: JSONObject()
+        val nomePapel = conta.optString("papel").ifEmpty { Api.obj("/api/papeis").optString("atual") }
+        val papel = nomePapel.takeIf { it.isNotEmpty() }?.let { nome ->
+            runCatching {
+                val b = Api.bytes("/papel/" + Api.q(nome).replace("+", "%20"))
+                withContext(Dispatchers.Default) { BitmapFactory.decodeByteArray(b, 0, b.size)?.asImageBitmap() }
+            }.getOrNull()
+        }
+        if (v.length() == 0) return Aparencia(modo = tema, papel = papel)
+        // Os padrões são os do site: escuro, Goth Neotribal, sem desfoque.
+        val prefs = runCatching { JSONObject(v.optString("prefs", "{}")) }.getOrDefault(JSONObject())
+        return Aparencia(tema = v.optString("ape-em-dia-theme", "neotribal"), modo = if (v.optString("tema") == "light") "claro" else "escuro",
+            desfoque = v.optString("desfoque") == "com", estilo = prefs.optString("estilo", "vidro"), papel = papel, daConta = true)
     }
 
     companion object {

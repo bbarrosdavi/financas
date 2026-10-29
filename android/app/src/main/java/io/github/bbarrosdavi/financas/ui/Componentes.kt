@@ -25,7 +25,9 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -36,8 +38,6 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -50,6 +50,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -65,12 +67,12 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun Cartao(titulo: String? = null, modifier: Modifier = Modifier, sub: String? = null, acao: (@Composable RowScope.() -> Unit)? = null,
            conteudo: @Composable ColumnScope.() -> Unit) {
-    Surface(modifier = modifier.fillMaxWidth(), shape = RoundedCornerShape(14.dp), color = cores.painel,
-        shadowElevation = if (cores.escuro) 0.dp else 2.dp, border = BorderStroke(1.dp, cores.linha)) {
-        Column(Modifier.padding(14.dp)) {
+    Surface(modifier = modifier.fillMaxWidth(), shape = RoundedCornerShape(12.dp), color = cores.painel,
+        shadowElevation = 0.dp, border = BorderStroke(1.dp, cores.linha)) {
+        Column(Modifier.padding(horizontal = 12.dp, vertical = 10.dp)) {
             if (titulo != null) {
-                Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(bottom = 8.dp)) {
-                    Text(titulo.uppercase(), color = cores.texto2, fontSize = 12.sp, fontWeight = FontWeight.Bold, letterSpacing = 0.8.sp,
+                Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(bottom = 6.dp)) {
+                    Text(titulo.uppercase(), color = cores.texto2, fontSize = 11.sp, fontWeight = FontWeight.Bold, letterSpacing = 0.8.sp,
                         modifier = Modifier.weight(1f))
                     if (sub != null) Text(sub, color = cores.mudo, fontSize = 11.sp)
                     acao?.invoke(this)
@@ -85,7 +87,7 @@ fun Cartao(titulo: String? = null, modifier: Modifier = Modifier, sub: String? =
 fun Rotulo(texto: String, modifier: Modifier = Modifier) = Text(texto, color = cores.mudo, fontSize = 12.sp, modifier = modifier)
 
 @Composable
-fun Grande(texto: String, cor: Color = cores.texto) = Text(texto, color = cor, fontSize = 28.sp, fontWeight = FontWeight.Bold)
+fun Grande(texto: String, cor: Color = cores.texto) = Text(texto, color = cor, fontSize = 22.sp, fontWeight = FontWeight.Bold)
 
 @Composable
 fun LinhaKV(rotulo: String, valor: String, cor: Color = cores.texto, negrito: Boolean = true) {
@@ -118,7 +120,7 @@ fun Vazio(texto: String) = Text(texto, color = cores.mudo, fontSize = 13.sp, mod
 @Composable
 fun EstadoCarga(c: Carga<*>) {
     if (c.erro != null) Text(c.erro ?: "", color = cores.ruim, modifier = Modifier.padding(16.dp))
-    else if (c.dado == null) Text("Carregando...", color = cores.mudo, modifier = Modifier.padding(16.dp))
+    else if (c.dado == null) Text("Carregando...", color = cores.mudo, fontSize = 13.sp, modifier = Modifier.padding(12.dp))
 }
 
 /** Segmentos (Semana | Mês | Ano), como os botões agrupados do site. */
@@ -128,8 +130,8 @@ fun Segmentos(opcoes: List<Pair<String, String>>, atual: String, modifier: Modif
         opcoes.forEach { (k, nome) ->
             val on = k == atual
             Box(Modifier.weight(1f).clip(RoundedCornerShape(8.dp)).background(if (on) cores.painel else Color.Transparent)
-                .clickable { aoEscolher(k) }.padding(vertical = 8.dp), contentAlignment = Alignment.Center) {
-                Text(nome, color = if (on) cores.texto else cores.texto2, fontSize = if (opcoes.size > 3) 12.sp else 13.sp, maxLines = 1,
+                .clickable { aoEscolher(k) }.padding(vertical = 5.dp), contentAlignment = Alignment.Center) {
+                Text(nome, color = if (on) cores.texto else cores.texto2, fontSize = 12.sp, maxLines = 1,
                     overflow = TextOverflow.Ellipsis, fontWeight = if (on) FontWeight.SemiBold else FontWeight.Normal)
             }
         }
@@ -142,8 +144,8 @@ fun Ficha(texto: String, primario: Boolean = false, ativo: Boolean = false, modi
     val fundo = when { primario -> cores.acento; ativo -> cores.acentoSuave; else -> cores.painel }
     val cor = when { primario -> Color.White; ativo -> cores.acento; else -> cores.texto }
     Box(modifier.clip(RoundedCornerShape(18.dp)).background(fundo).border(1.dp, if (primario) cores.acento else cores.linha, RoundedCornerShape(18.dp))
-        .clickable(onClick = aoTocar).padding(horizontal = 12.dp, vertical = 7.dp)) {
-        Text(texto, color = cor, fontSize = 13.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
+        .clickable(onClick = aoTocar).padding(horizontal = 10.dp, vertical = 5.dp)) {
+        Text(texto, color = cor, fontSize = 12.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
     }
 }
 
@@ -153,33 +155,44 @@ fun Fichas(conteudo: @Composable RowScope.() -> Unit) =
 
 @Composable
 fun BotaoPrimario(texto: String, modifier: Modifier = Modifier, habilitado: Boolean = true, aoTocar: () -> Unit) =
-    Button(onClick = aoTocar, enabled = habilitado, modifier = modifier, shape = RoundedCornerShape(10.dp),
-        colors = ButtonDefaults.buttonColors(containerColor = cores.acento, contentColor = Color.White)) { Text(texto) }
+    Button(onClick = aoTocar, enabled = habilitado, modifier = modifier.height(36.dp), shape = RoundedCornerShape(9.dp),
+        contentPadding = PaddingValues(horizontal = 14.dp), colors = ButtonDefaults.buttonColors(containerColor = cores.acento,
+            contentColor = Color.White)) { Text(texto, fontSize = 13.sp, fontWeight = FontWeight.SemiBold) }
 
 @Composable
 fun BotaoSecundario(texto: String, modifier: Modifier = Modifier, aoTocar: () -> Unit) =
-    OutlinedButton(onClick = aoTocar, modifier = modifier, shape = RoundedCornerShape(10.dp), border = BorderStroke(1.dp, cores.linha)) {
-        Text(texto, color = cores.texto)
+    OutlinedButton(onClick = aoTocar, modifier = modifier.height(36.dp), shape = RoundedCornerShape(9.dp),
+        contentPadding = PaddingValues(horizontal = 14.dp), border = BorderStroke(1.dp, cores.linha)) {
+        Text(texto, color = cores.texto, fontSize = 13.sp)
     }
 
 @Composable
 fun Campo(valor: String, aoMudar: (String) -> Unit, rotulo: String, modifier: Modifier = Modifier, numerico: Boolean = false,
           dica: String? = null, linhas: Int = 1) {
-    OutlinedTextField(value = valor, onValueChange = aoMudar, label = { Text(rotulo) }, modifier = modifier.fillMaxWidth(),
-        singleLine = linhas == 1, minLines = linhas, placeholder = dica?.let { { Text(it, color = cores.mudo) } },
-        keyboardOptions = if (numerico) KeyboardOptions(keyboardType = KeyboardType.Decimal) else KeyboardOptions.Default,
-        colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = cores.acento, unfocusedBorderColor = cores.linha,
-            focusedTextColor = cores.texto, unfocusedTextColor = cores.texto))
+    Column(modifier.fillMaxWidth()) {
+        Text(rotulo, color = cores.mudo, fontSize = 11.sp, modifier = Modifier.padding(bottom = 3.dp))
+        BasicTextField(value = valor, onValueChange = aoMudar, singleLine = linhas == 1, minLines = linhas,
+            textStyle = TextStyle(color = cores.texto, fontSize = 14.sp), cursorBrush = SolidColor(cores.acento),
+            keyboardOptions = if (numerico) KeyboardOptions(keyboardType = KeyboardType.Decimal) else KeyboardOptions.Default,
+            modifier = Modifier.fillMaxWidth(),
+            decorationBox = { campo ->
+                Box(Modifier.fillMaxWidth().clip(RoundedCornerShape(8.dp)).background(cores.painelForte)
+                    .border(1.dp, cores.linha, RoundedCornerShape(8.dp)).padding(horizontal = 10.dp, vertical = 9.dp)) {
+                    if (valor.isEmpty() && dica != null) Text(dica, color = cores.mudo, fontSize = 14.sp, maxLines = 1)
+                    campo()
+                }
+            })
+    }
 }
 
 /** Um campo que mostra o escolhido e abre a escolha ao toque (lista suspensa, lista com busca, data). */
 @Composable
 fun CampoToque(rotulo: String, texto: String?, modifier: Modifier = Modifier, aoTocar: () -> Unit) {
-    Column(modifier.fillMaxWidth().clip(RoundedCornerShape(6.dp)).border(1.dp, cores.linha, RoundedCornerShape(6.dp))
-        .clickable(onClick = aoTocar).padding(horizontal = 14.dp, vertical = 8.dp)) {
-        Text(rotulo, color = cores.mudo, fontSize = 11.sp)
+    Column(modifier.fillMaxWidth().clip(RoundedCornerShape(8.dp)).background(cores.painelForte).border(1.dp, cores.linha, RoundedCornerShape(8.dp))
+        .clickable(onClick = aoTocar).padding(horizontal = 10.dp, vertical = 5.dp)) {
+        Text(rotulo, color = cores.mudo, fontSize = 10.sp)
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(texto ?: "escolha...", color = if (texto == null) cores.mudo else cores.texto, fontSize = 15.sp,
+            Text(texto ?: "escolha...", color = if (texto == null) cores.mudo else cores.texto, fontSize = 14.sp,
                 modifier = Modifier.weight(1f), maxLines = 1, overflow = TextOverflow.Ellipsis)
             Text("▾", color = cores.mudo)
         }
@@ -211,7 +224,7 @@ fun SeletorCategoria(tipo: String, valor: String?, modifier: Modifier = Modifier
 fun Marcar(texto: String, marcado: Boolean, aoMudar: (Boolean) -> Unit) {
     Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.clickable { aoMudar(!marcado) }) {
         Checkbox(checked = marcado, onCheckedChange = aoMudar, colors = CheckboxDefaults.colors(checkedColor = cores.acento))
-        Text(texto, color = cores.texto, fontSize = 14.sp)
+        Text(texto, color = cores.texto, fontSize = 13.sp)
     }
 }
 
@@ -227,14 +240,14 @@ fun negrito(texto: String): AnnotatedString = buildAnnotatedString {
 fun Confirmar(titulo: String, texto: String, sim: String = "Confirmar", aoFechar: () -> Unit, aoConfirmar: () -> Unit) {
     AlertDialog(onDismissRequest = aoFechar, title = { Text(titulo) }, text = { Text(texto) },
         confirmButton = { TextButton(onClick = { aoFechar(); aoConfirmar() }) { Text(sim, color = cores.acento) } },
-        dismissButton = { TextButton(onClick = aoFechar) { Text("Cancelar", color = cores.texto2) } }, containerColor = cores.painel)
+        dismissButton = { TextButton(onClick = aoFechar) { Text("Cancelar", color = cores.texto2) } }, containerColor = cores.painelForte)
 }
 
 /** Escolher um item de uma lista longa, com busca (categorias, pessoas). */
 @Composable
 fun EscolherDaLista(titulo: String, itens: List<Pair<String, String>>, aoFechar: () -> Unit, aoEscolher: (String) -> Unit) {
     var busca by remember { mutableStateOf("") }
-    AlertDialog(onDismissRequest = aoFechar, title = { Text(titulo) }, containerColor = cores.painel, confirmButton = {},
+    AlertDialog(onDismissRequest = aoFechar, title = { Text(titulo) }, containerColor = cores.painelForte, confirmButton = {},
         dismissButton = { TextButton(onClick = aoFechar) { Text("Fechar", color = cores.texto2) } },
         text = {
             Column {

@@ -81,7 +81,7 @@ object Tour {
         },
         PassoTour("painel", "abas", "As abas") {
             "**Painel**: o resumo. **Pendentes**: o que falta classificar (o número diz quantos). **Lançamentos**: tudo que entrou e saiu. " +
-                "**Orçamento**: quanto você planeja gastar. Em **Mais** ficam Importar, Pessoas, Projeção e Ajustes."
+                "**Pessoas**: quem te deve e a quem você deve. **Orçamento**: quanto você planeja gastar. No alto, à direita: Importar, Projeção e Ajustes."
         },
         PassoTour("painel", "periodo", "Qual período ver") {
             "Semana, mês ou ano; as setas andam no tempo e **Hoje** volta ao atual. Salário que cai do dia 25 em diante conta no mês seguinte."
@@ -110,7 +110,7 @@ object Tour {
         },
         PassoTour("painel", "cobrancas", "Próximas cobranças no cartão") { "As parcelas que ainda vão cair, por mês da fatura. Aparecem sozinhas quando uma compra parcelada entra." },
         PassoTour("painel", "destinos", "Maiores destinos") { "Onde mais saiu dinheiro no período, por lugar ou pessoa." },
-        PassoTour("painel", "projecaoPainel", "Projeção") { "Os próximos meses: resultado, quanto falta cobrir e o saldo livre. A conta completa fica em **Mais > Projeção**." },
+        PassoTour("painel", "projecaoPainel", "Projeção") { "Os próximos meses: resultado, quanto falta cobrir e o saldo livre. A conta completa fica em **Projeção**, no alto." },
         PassoTour("pendentes", "pendentes", "Pendentes") {
             "O que o sistema não classifica sozinho: lugar novo, Pix para uma pessoa, recarga do PicPay no crédito.\n\n" +
                 "**O que fazer:** toque na sugestão (azul) ou numa categoria. **Dividir** separa em partes, como a sua e a de um colega. " +
@@ -142,11 +142,11 @@ object Tour {
             "As notificações dos apps de banco marcados viram lançamentos aqui na hora, mesmo sem servidor.\n\n**O que fazer:** toque em **Acesso a notificações** e ligue o Finanças. " +
                 "Se tiver o Finanças no computador, coloque o endereço e a chave que aparecem em Ajustes no computador e toque em **Testar conexão**."
         },
-        PassoTour("ajustes", "ajPessoas", "Pessoas") { "**O que colocar:** quem divide contas com você, com o nome como aparece no extrato. Assim o Pix dessa pessoa vem com sugestão." },
+        PassoTour("pessoas", "pessoasCadastro", "Cadastro de pessoas") { "**O que colocar:** quem divide contas com você, com o nome como aparece no extrato. Assim o Pix dessa pessoa vem com sugestão." },
         PassoTour("painel", null, "Pronto para começar") {
             (if (Estado.demo) "Explore à vontade com os dados de demonstração. Para começar de verdade, toque em **Remover** na faixa do topo e então:\n\n" else "Um bom começo:\n\n") +
                 "1. No **Orçamento**, dê um teto para as categorias.\n2. Em **Ajustes**, cadastre quem divide contas com você e libere o acesso a notificações.\n" +
-                "3. Em **Mais > Importar**, traga o extrato e a fatura do mês.\n4. Classifique o que aparecer em **Pendentes**."
+                "3. Em **Importar** (no alto), traga o extrato e a fatura do mês.\n4. Classifique o que aparecer em **Pendentes**."
         },
     )
 }
@@ -210,7 +210,7 @@ fun TourCamada(irPara: (String) -> Unit) {
                 drawRoundRect(corAnel, Offset(it.left, it.top), Size(it.width, it.height), raio, style = Stroke(2.dp.toPx()))
             }
         }
-        Surface(shape = RoundedCornerShape(12.dp), color = cores.painel, shadowElevation = 8.dp,
+        Surface(shape = RoundedCornerShape(12.dp), color = cores.painelForte, shadowElevation = 8.dp,
             modifier = Modifier.padding(horizontal = 10.dp).fillMaxWidth().heightIn(max = 420.dp)
                 .offset { IntOffset(0, yBalao.coerceIn(min(acima, max(0f, abaixo - alturaBalao)), max(acima, abaixo - alturaBalao)).roundToInt()) }
                 .onSizeChanged { alturaBalao = it.height }) {

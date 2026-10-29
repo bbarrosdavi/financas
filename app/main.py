@@ -12,6 +12,7 @@ import hmac
 import io
 import json
 import secrets
+import sqlite3
 import time
 from contextlib import asynccontextmanager
 from datetime import date, datetime
@@ -126,7 +127,43 @@ def sincronizar(body: Sincronia):
     with db.conectar_real() as con:
         r = sync.servir(con, body.cursor, body.mudancas, settings.TITULAR)
     r.pop("lancamentos")
+    r["aparencia"] = _aparencia_do_dono()
     return r
+
+
+def _papel_do_dono() -> Path | None:
+    with db.conectar_real() as con:
+        nome = db.parametro(con, "papel_de_parede", "") or ""
+    f = Path(settings.PAPEIS_DIR) / Path(nome).name if nome else None
+    return f if f and f.is_file() else None
+
+
+def _aparencia_do_dono() -> dict:
+    """A aparência da conta do dono no Apê (tema, claro ou escuro, desfoque, preferências) e o papel de parede
+    dele: o app do celular passa a usar a mesma. Sem o Apê (Finanças sozinho), vai só o papel."""
+    valores = {}
+    ape_db = Path(settings.DATABASE_PATH).parent / "ape.db"
+    if ape_db.is_file():
+        try:
+            c = sqlite3.connect(f"file:{ape_db}?mode=ro", uri=True)
+            r = c.execute("SELECT s.value FROM app_settings s JOIN users u ON s.key = 'aparencia:' || u.id "
+                          "WHERE u.username = ?", (getattr(settings, "FINANCAS_DONO", ""),)).fetchone()
+            c.close()
+            valores = json.loads(r[0]) if r else {}
+        except (sqlite3.Error, ValueError):
+            valores = {}
+    f = _papel_do_dono()
+    return {"valores": valores, "papel": f.name if f else "",
+            "papel_versao": f"{f.stat().st_size}-{int(f.stat().st_mtime)}" if f else ""}
+
+
+@app.get("/api/v1/papel", dependencies=[Depends(bearer)])
+def papel_do_dono():
+    """O papel de parede do dono, para o app do celular (a mesma chave da sincronização)."""
+    f = _papel_do_dono()
+    if not f:
+        raise HTTPException(404, "Sem papel de parede.")
+    return FileResponse(f)
 
 
 # ---------------------------------------------------------------------------
@@ -651,6 +688,18 @@ def _papeis() -> Path:
     p = Path(settings.PAPEIS_DIR)
     p.mkdir(parents=True, exist_ok=True)
     return p
+
+
+@app.get("/api/aparencia-conta", dependencies=[api])
+def aparencia_conta():
+    """No celular: a aparência da conta no servidor, trazida pela sincronização (vazia sem servidor)."""
+    with db.conectar() as con:
+        try:
+            v = {r[0]: r[1] for r in con.execute(
+                "SELECT chave, valor FROM sync_cliente WHERE chave IN ('aparencia', 'papel_servidor')")}
+        except sqlite3.Error:
+            v = {}
+    return {"valores": json.loads(v.get("aparencia") or "{}"), "papel": v.get("papel_servidor", "")}
 
 
 @app.get("/api/papeis", dependencies=[api])

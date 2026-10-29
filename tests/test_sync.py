@@ -182,3 +182,26 @@ def test_servidor_sabe_quais_lancamentos_o_celular_mudou(par):
         r = sync.servir(s, 0, envio)
         lid = s.execute("SELECT id FROM lancamentos WHERE descricao = 'Banca Exemplo'").fetchone()[0]
     assert lid in r["lancamentos"]
+
+
+def test_papel_do_servidor_chega_ao_celular(par, monkeypatch, tmp_path):
+    """Sem o Apê ao lado (Finanças sozinho), a aparência vem vazia e o papel de parede chega."""
+    import json
+    monkeypatch.setattr(settings, "PAPEIS_DIR", str(tmp_path / "papeis"))
+    (tmp_path / "papeis").mkdir()
+    (tmp_path / "papeis" / "fundo.jpg").write_bytes(b"imagem")
+    with par.srv() as s:
+        db.definir_parametro(s, "papel_de_parede", "fundo.jpg")
+    cliente, baixados = TestClient(app), []
+
+    def baixar(url, chave, timeout):
+        baixados.append(url)
+        return cliente.get("/" + url.split("://", 1)[1].split("/", 1)[1], headers={"Authorization": f"Bearer {chave}"}).content
+
+    monkeypatch.setattr(sync, "_baixar", baixar)
+    par.trocar()
+    assert _um(par.cel, "SELECT valor FROM sync_cliente WHERE chave = 'papel_servidor'")[0] == "fundo.jpg"
+    assert json.loads(_um(par.cel, "SELECT valor FROM sync_cliente WHERE chave = 'aparencia'")[0]) == {}
+    par.trocar()
+    assert baixados == ["http://pc:8095/api/v1/papel"]   # o mesmo papel não é baixado de novo
+    assert cliente.get("/api/v1/papel").status_code == 401

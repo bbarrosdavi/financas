@@ -53,7 +53,7 @@ fun TelaPainel(irPara: (String) -> Unit) {
     var periodo by rememberSaveable { mutableStateOf("") }
     val c = carregar(periodo) { Api.obj("/api/painel" + if (periodo.isNotEmpty()) "?periodo=$periodo" else "") }
     val p = c.dado ?: return EstadoCarga(c)
-    Column(Modifier.verticalScroll(rememberScrollState()).padding(12.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+    Column(Modifier.verticalScroll(rememberScrollState()).padding(horizontal = 10.dp, vertical = 8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
         Periodo(p) { periodo = it }
         Resultado(p)
         PodeGastar(p)
@@ -174,7 +174,7 @@ private fun Kpi(rotulo: String, modifier: Modifier, conteudo: @Composable () -> 
 fun InformarSaldo(aoFechar: () -> Unit) {
     var texto by remember { mutableStateOf("") }
     val escopo = rememberCoroutineScope()
-    AlertDialog(onDismissRequest = aoFechar, containerColor = cores.painel, title = { Text("Saldo do app do banco") },
+    AlertDialog(onDismissRequest = aoFechar, containerColor = cores.painelForte, title = { Text("Saldo do app do banco") },
         text = { Column { Text("O saldo que o app do Nubank mostra agora.", color = cores.texto2); Campo(texto, { texto = it }, "Saldo", numerico = true, dica = "162,18") } },
         confirmButton = { TextButton(onClick = {
             val v = numero(texto) ?: return@TextButton
@@ -241,7 +241,7 @@ private fun LinhaGasto(nome: String, cor: Color, gasto: Double, teto: Double?, a
 @Composable
 private fun Evolucao(q: String, nome: String, tipo: String, aoFechar: () -> Unit) {
     val c = carregar(q, tipo) { Api.lista("/api/evolucao?tipo=$tipo&$q").objs() }
-    AlertDialog(onDismissRequest = aoFechar, containerColor = cores.painel, title = { Text("Evolução: $nome") },
+    AlertDialog(onDismissRequest = aoFechar, containerColor = cores.painelForte, title = { Text("Evolução: $nome") },
         confirmButton = { TextButton(onClick = aoFechar) { Text("Fechar", color = cores.acento) } },
         text = {
             val s = c.dado
@@ -400,7 +400,7 @@ private fun ProjecaoResumo(p: JSONObject, irPara: (String) -> Unit) {
     val plano = p.getJSONObject("plano")
     val linhas = plano.lista("linhas").take(4)
     Cartao("Projeção até ${mesCurto(plano.s("horizonte") + "-01")}", Modifier.alvo("projecaoPainel")) {
-        if (linhas.isEmpty()) Vazio("Defina o horizonte em Mais > Projeção.")
+        if (linhas.isEmpty()) Vazio("Defina o horizonte em Projeção, no alto.")
         linhas.forEach { l ->
             Column(Modifier.padding(vertical = 5.dp)) {
                 Row(verticalAlignment = Alignment.CenterVertically) {

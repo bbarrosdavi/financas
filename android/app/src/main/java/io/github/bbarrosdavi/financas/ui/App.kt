@@ -4,11 +4,15 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -17,9 +21,6 @@ import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -34,6 +35,10 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -43,11 +48,16 @@ import kotlinx.coroutines.launch
 
 private class Aba(val chave: String, val nome: String, val icone: ImageVector)
 
+// Embaixo, as cinco de uso diário (o limite de 5 do Material 3); em cima, à vista, as outras três. Nada fica
+// escondido num "Mais" (escondido, um destino é achado bem menos vezes: Nielsen Norman Group).
 private val ABAS = listOf(
     Aba("painel", "Painel", Icones.painel), Aba("pendentes", "Pendentes", Icones.pendentes),
-    Aba("lancamentos", "Lançamentos", Icones.lancamentos), Aba("orcamento", "Orçamento", Icones.orcamento), Aba("mais", "Mais", Icones.mais),
+    Aba("lancamentos", "Lançamentos", Icones.lancamentos), Aba("pessoas", "Pessoas", Icones.pessoas),
+    Aba("orcamento", "Orçamento", Icones.orcamento),
 )
-private val DE_MAIS = mapOf("importar" to "Importar", "pessoas" to "Pessoas", "projecao" to "Projeção", "ajustes" to "Ajustes")
+private val NO_ALTO = listOf(
+    Aba("importar", "Importar", Icones.importar), Aba("projecao", "Projeção", Icones.projecao), Aba("ajustes", "Ajustes", Icones.ajustes),
+)
 
 @Composable
 fun AppFinancas(ajustes: Ajustes, tema: String, aoTrocarTema: (String) -> Unit, aoSair: () -> Unit) {
@@ -55,6 +65,7 @@ fun AppFinancas(ajustes: Ajustes, tema: String, aoTrocarTema: (String) -> Unit, 
     val escopo = rememberCoroutineScope()
     val avisos = remember { SnackbarHostState() }
     var removendo by remember { mutableStateOf(false) }
+    val ap = LocalAparencia.current
 
     LaunchedEffect(Unit) {
         runCatching {
@@ -70,43 +81,40 @@ fun AppFinancas(ajustes: Ajustes, tema: String, aoTrocarTema: (String) -> Unit, 
         if (!ajustes.tourVisto) Tour.iniciar()
     }
     LaunchedEffect(Estado.mensagem) { Estado.mensagem?.let { avisos.showSnackbar(it); Estado.mensagem = null } }
-    BackHandler(enabled = tela != "painel" && !Tour.ativo) { tela = if (tela in DE_MAIS) "mais" else "painel" }
+    BackHandler(enabled = tela != "painel" && !Tour.ativo) { tela = "painel" }
     BackHandler(enabled = Tour.ativo) { Tour.fechar() }
 
-    Box(Modifier.fillMaxSize()) {
+    FundoDoApp {
         Scaffold(
-            containerColor = cores.fundo,
+            containerColor = Color.Transparent,
             snackbarHost = { SnackbarHost(avisos) },
             topBar = {
-                Column(Modifier.background(cores.fundo).statusBarsPadding()) {
-                    Row(Modifier.fillMaxWidth().padding(start = 16.dp, end = 4.dp, top = 4.dp), verticalAlignment = Alignment.CenterVertically) {
-                        if (tela in DE_MAIS) IconButton(onClick = { tela = "mais" }) { Icon(Icones.voltar, "Voltar", tint = cores.texto) }
-                        Text(DE_MAIS[tela] ?: ABAS.first { it.chave == tela }.nome.let { if (tela == "painel") "Finanças" else it },
-                            color = cores.texto, fontSize = 20.sp, fontWeight = FontWeight.Bold, modifier = Modifier.weight(1f))
-                        val escuro = cores.escuro
-                        IconButton(onClick = { aoTrocarTema(if (escuro) "claro" else "escuro") }) {
-                            Icon(if (cores.escuro) Icones.sol else Icones.lua, "Claro ou escuro", tint = cores.texto2, modifier = Modifier.size(22.dp))
+                Column(Modifier.statusBarsPadding()) {
+                    Row(Modifier.fillMaxWidth().height(46.dp).padding(start = 14.dp, end = 2.dp), verticalAlignment = Alignment.CenterVertically) {
+                        val nome = (ABAS + NO_ALTO).firstOrNull { it.chave == tela }?.nome ?: ""
+                        Text(if (tela == "painel") "Finanças" else nome, color = cores.texto, fontSize = 17.sp, fontWeight = FontWeight.Bold,
+                            modifier = Modifier.weight(1f))
+                        NO_ALTO.forEach { a ->
+                            val on = tela == a.chave
+                            IconButton(onClick = { tela = if (on) "painel" else a.chave }, modifier = Modifier.size(40.dp)) {
+                                Box(Modifier.size(32.dp).clip(RoundedCornerShape(8.dp)).background(if (on) cores.acentoSuave else Color.Transparent),
+                                    contentAlignment = Alignment.Center) {
+                                    Icon(a.icone, a.nome, tint = if (on) cores.acento else cores.texto2, modifier = Modifier.size(19.dp))
+                                }
+                            }
+                        }
+                        // Com a aparência da conta (vinda do servidor), claro ou escuro se escolhe lá, como o resto.
+                        if (!ap.daConta) {
+                            val escuro = cores.escuro
+                            IconButton(onClick = { aoTrocarTema(if (escuro) "claro" else "escuro") }, modifier = Modifier.size(40.dp)) {
+                                Icon(if (escuro) Icones.sol else Icones.lua, "Claro ou escuro", tint = cores.texto2, modifier = Modifier.size(19.dp))
+                            }
                         }
                     }
                     if (Estado.demo) FaixaDemo { removendo = true }
                 }
             },
-            bottomBar = {
-                NavigationBar(containerColor = cores.painel, modifier = Modifier.alvo("abas")) {
-                    ABAS.forEach { a ->
-                        val on = tela == a.chave || (a.chave == "mais" && tela in DE_MAIS)
-                        NavigationBarItem(selected = on, onClick = { tela = a.chave },
-                            icon = {
-                                if (a.chave == "pendentes" && Estado.pendentes > 0)
-                                    BadgedBox(badge = { Badge(containerColor = cores.ruim) { Text("${Estado.pendentes}") } }) { Icon(a.icone, a.nome) }
-                                else Icon(a.icone, a.nome)
-                            },
-                            label = { Text(a.nome, fontSize = 11.sp, maxLines = 1) },
-                            colors = NavigationBarItemDefaults.colors(selectedIconColor = cores.acento, selectedTextColor = cores.acento,
-                                indicatorColor = cores.acentoSuave, unselectedIconColor = cores.texto2, unselectedTextColor = cores.texto2))
-                    }
-                }
-            },
+            bottomBar = { BarraDeAbas(tela) { tela = it } },
         ) { margens ->
             Box(Modifier.padding(margens).fillMaxSize()) {
                 when (tela) {
@@ -114,7 +122,6 @@ fun AppFinancas(ajustes: Ajustes, tema: String, aoTrocarTema: (String) -> Unit, 
                     "pendentes" -> TelaPendentes()
                     "lancamentos" -> TelaLancamentos()
                     "orcamento" -> TelaOrcamento()
-                    "mais" -> TelaMais { tela = it }
                     "importar" -> TelaImportar()
                     "pessoas" -> TelaPessoas()
                     "projecao" -> TelaProjecao()
@@ -130,40 +137,42 @@ fun AppFinancas(ajustes: Ajustes, tema: String, aoTrocarTema: (String) -> Unit, 
     }
 }
 
+/** A barra de baixo, compacta como a do site: ícone de 20 dp, nome em 10 sp, o número de pendentes no ícone. */
+@Composable
+private fun BarraDeAbas(tela: String, irPara: (String) -> Unit) {
+    val linha = cores.linha
+    Row(Modifier.fillMaxWidth().background(cores.painelForte).drawBehind { drawLine(linha, Offset(0f, 0f), Offset(size.width, 0f), 1f) }
+        .navigationBarsPadding().height(54.dp).alvo("abas"), horizontalArrangement = Arrangement.SpaceEvenly) {
+        ABAS.forEach { a ->
+            val on = tela == a.chave
+            val cor = if (on) cores.acento else cores.texto2
+            Column(Modifier.weight(1f).fillMaxHeight().clickable { irPara(a.chave) }, horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center) {
+                Box(Modifier.clip(RoundedCornerShape(12.dp)).background(if (on) cores.acentoSuave else Color.Transparent)
+                    .padding(horizontal = 12.dp, vertical = 3.dp)) {
+                    if (a.chave == "pendentes" && Estado.pendentes > 0)
+                        BadgedBox(badge = { Badge(containerColor = cores.ruim) { Text("${Estado.pendentes}", fontSize = 9.sp) } }) {
+                            Icon(a.icone, a.nome, tint = cor, modifier = Modifier.size(20.dp))
+                        }
+                    else Icon(a.icone, a.nome, tint = cor, modifier = Modifier.size(20.dp))
+                }
+                Text(a.nome, color = cor, fontSize = 10.sp, maxLines = 1, fontWeight = if (on) FontWeight.SemiBold else FontWeight.Normal,
+                    modifier = Modifier.padding(top = 2.dp))
+            }
+        }
+    }
+}
+
 suspend fun removerDemo() {
     gravar("Dados de demonstração removidos.") { Api.put("/api/demo", jsonDe("ativo" to false)); Estado.demo = false }
 }
 
 @Composable
 private fun FaixaDemo(aoRemover: () -> Unit) {
-    Row(Modifier.padding(horizontal = 12.dp, vertical = 6.dp).fillMaxWidth().border(1.dp, cores.atencao, RoundedCornerShape(10.dp))
-        .background(cores.painel, RoundedCornerShape(10.dp)).padding(horizontal = 12.dp, vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
-        Text(negrito("**Dados de demonstração.** Inventados, para você explorar."), color = cores.texto, fontSize = 13.sp, modifier = Modifier.weight(1f))
-        Text("Remover", color = cores.acento, fontWeight = FontWeight.SemiBold, fontSize = 14.sp,
+    Row(Modifier.padding(horizontal = 10.dp, vertical = 4.dp).fillMaxWidth().border(1.dp, cores.atencao, RoundedCornerShape(10.dp))
+        .background(cores.painel, RoundedCornerShape(10.dp)).padding(horizontal = 10.dp, vertical = 6.dp), verticalAlignment = Alignment.CenterVertically) {
+        Text(negrito("**Dados de demonstração.** Inventados, para você explorar."), color = cores.texto, fontSize = 12.sp, modifier = Modifier.weight(1f))
+        Text("Remover", color = cores.acento, fontWeight = FontWeight.SemiBold, fontSize = 13.sp,
             modifier = Modifier.clickable(onClick = aoRemover).padding(start = 10.dp, top = 4.dp, bottom = 4.dp))
-    }
-}
-
-@Composable
-private fun TelaMais(irPara: (String) -> Unit) {
-    val itens = listOf(
-        Triple("importar", Icones.importar, "Extratos e faturas (.pdf, .csv, .xlsx) e notificações descartadas"),
-        Triple("pessoas", Icones.pessoas, "Quem te deve e a quem você deve; contas que alguém pagou"),
-        Triple("projecao", Icones.projecao, "Os próximos meses e os eventos que mudam a conta"),
-        Triple("ajustes", Icones.ajustes, "Celular, servidor, pessoas, tema, demonstração e tour"),
-    )
-    Column(Modifier.padding(12.dp)) {
-        itens.forEach { (k, icone, desc) ->
-            Cartao(modifier = Modifier.padding(bottom = 10.dp).clickable { irPara(k) }) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(icone, null, tint = cores.acento, modifier = Modifier.size(26.dp))
-                    Column(Modifier.weight(1f).padding(start = 14.dp)) {
-                        Text(DE_MAIS.getValue(k), color = cores.texto, fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
-                        Text(desc, color = cores.mudo, fontSize = 13.sp)
-                    }
-                    Icon(Icones.seta, null, tint = cores.mudo)
-                }
-            }
-        }
     }
 }

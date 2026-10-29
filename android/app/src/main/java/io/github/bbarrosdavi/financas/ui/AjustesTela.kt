@@ -48,7 +48,7 @@ import kotlin.math.roundToInt
 fun TelaAjustes(ajustes: Ajustes, tema: String, aoTrocarTema: (String) -> Unit) {
     val escopo = rememberCoroutineScope()
     var removendo by remember { mutableStateOf(false) }
-    Column(Modifier.verticalScroll(rememberScrollState()).padding(12.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+    Column(Modifier.verticalScroll(rememberScrollState()).padding(horizontal = 10.dp, vertical = 8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
         if (Estado.demo) Cartao("Dados de demonstração") {
             Text("O Finanças está mostrando dados inventados. Remover apaga a demonstração e o que você mexeu nela; os seus dados de verdade ficam como estão.",
                 color = cores.texto2, fontSize = 13.sp)
@@ -56,12 +56,15 @@ fun TelaAjustes(ajustes: Ajustes, tema: String, aoTrocarTema: (String) -> Unit) 
             BotaoPrimario("Remover dados de demonstração") { removendo = true }
         }
         Cartao("Aparência") {
-            Segmentos(listOf("sistema" to "Do sistema", "claro" to "Claro", "escuro" to "Escuro"), tema) { aoTrocarTema(it) }
+            if (LocalAparencia.current.daConta)
+                Text("A mesma da sua conta no site: tema de cores, claro ou escuro, transparência e papel de parede. Mude no site " +
+                    "(Ajustes da casa) e o celular acompanha na próxima sincronização.", color = cores.texto2, fontSize = 12.sp)
+            else Segmentos(listOf("sistema" to "Do sistema", "claro" to "Claro", "escuro" to "Escuro"), tema) { aoTrocarTema(it) }
             Spacer(Modifier.height(8.dp))
             BotaoSecundario("Rever o tour") { Tour.iniciar() }
         }
         Celular(ajustes)
-        Pessoas()
+        MesDaEntrada()
         Rateio()
         Planilha()
     }
@@ -137,11 +140,12 @@ private fun Celular(ajustes: Ajustes) {
     }
 }
 
+/** O cadastro de pessoas (fica na aba Pessoas): nome no extrato e o que sugerir quando o dinheiro entra ou sai. */
 @Composable
-private fun Pessoas() {
+fun CadastroPessoas() {
     var editando by remember { mutableStateOf<JSONObject?>(null) }
     var nova by remember { mutableStateOf(false) }
-    Cartao("Pessoas", Modifier.alvo("ajPessoas"), sub = "nome no extrato e o que sugerir") {
+    Cartao("Cadastro", Modifier.alvo("pessoasCadastro"), sub = "nome no extrato e o que sugerir") {
         if (Vocab.pessoas.isEmpty()) Vazio("Ninguém cadastrado.")
         Vocab.pessoas.forEach { p ->
             Row(Modifier.fillMaxWidth().clickable { editando = p }.padding(vertical = 7.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -171,7 +175,7 @@ private fun EditarPessoa(p: JSONObject?, aoFechar: () -> Unit) {
     var saida by remember { mutableStateOf(p?.s("sugere_saida")?.ifEmpty { "acerto" } ?: "acerto") }
     var erro by remember { mutableStateOf<String?>(null) }
     val sugeridas = listOf("acerto" to "acerto") + Vocab.categorias.map { "${it.s("tipo")}:${it.s("id")}" to "${it.s("tipo")}: ${it.s("nome")}" }
-    AlertDialog(onDismissRequest = aoFechar, containerColor = cores.painel, title = { Text(if (p == null) "Nova pessoa" else p.s("nome")) },
+    AlertDialog(onDismissRequest = aoFechar, containerColor = cores.painelForte, title = { Text(if (p == null) "Nova pessoa" else p.s("nome")) },
         text = {
             Column(Modifier.verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 Campo(nome, { nome = it }, "Nome")
@@ -221,6 +225,34 @@ private fun Rateio() {
             escopo.launch { if (gravar { Api.put("/api/parametros/aluguel_rateio", jsonDe("valor" to JSONObject(r as Map<*, *>).toString())) }) msg = "Salvo." }
         }
         msg?.let { Text(it, color = cores.texto2, fontSize = 13.sp, modifier = Modifier.padding(top = 4.dp)) }
+    }
+}
+
+/** Renda que cai a partir do dia X conta como entrada do mês seguinte (Painel, Lançamentos, Orçamento, Projeção). */
+@Composable
+private fun MesDaEntrada() {
+    val escopo = rememberCoroutineScope()
+    val c = carregar { Api.obj("/api/parametros") }
+    val prm = c.dado ?: return
+    var ligado by remember(prm) { mutableStateOf(prm.optString("renda_mes_seguinte", "1") != "0") }
+    var dia by remember(prm) { mutableStateOf(prm.optString("dia_renda_mes_seguinte", "25").ifEmpty { "25" }) }
+    var msg by remember { mutableStateOf<String?>(null) }
+    Cartao("Mês da entrada", sub = "Painel, Lançamentos, Orçamento e Projeção") {
+        Marcar("Renda que cai a partir do dia abaixo conta como entrada do mês seguinte", ligado) { ligado = it }
+        Row(verticalAlignment = Alignment.Bottom, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Campo(dia, { dia = it.filter(Char::isDigit).take(2) }, "Dia", Modifier.weight(1f), numerico = true)
+            BotaoPrimario("Salvar") {
+                val d = dia.toIntOrNull()
+                if (d == null || d !in 1..31) { msg = "O dia vai de 1 a 31."; return@BotaoPrimario }
+                escopo.launch {
+                    if (gravar {
+                            Api.put("/api/parametros/renda_mes_seguinte", jsonDe("valor" to if (ligado) "1" else "0"))
+                            Api.put("/api/parametros/dia_renda_mes_seguinte", jsonDe("valor" to d.toString()))
+                        }) { msg = "Salvo."; Estado.mudou() }
+                }
+            }
+        }
+        msg?.let { Text(it, color = cores.texto2, fontSize = 12.sp, modifier = Modifier.padding(top = 4.dp)) }
     }
 }
 

@@ -63,7 +63,7 @@ fun TelaOrcamento() {
     var ano by rememberSaveable { mutableStateOf(LocalDate.now().year) }
     var mes by rememberSaveable { mutableStateOf(LocalDate.now().toString().take(7)) }
     val c = carregar(ano) { Api.obj("/api/orcamento?ano=$ano") to Api.lista("/api/metas").objs() }
-    Column(Modifier.verticalScroll(rememberScrollState()).padding(12.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+    Column(Modifier.verticalScroll(rememberScrollState()).padding(horizontal = 10.dp, vertical = 8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
         Cartao(modifier = Modifier.alvo("orcAbas")) {
             Segmentos(ABAS_ORC, aba) { aba = it }
             if (aba == "mes" || aba == "ano" || aba == "fixas") Row(Modifier.padding(top = 6.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -173,7 +173,7 @@ private fun EditarOrcado(l: LinhaOrc, mes: String, aoFechar: () -> Unit) {
     fun salvar(v: Double?) {
         escopo.launch { gravar { Api.put("/api/orcamento", jsonDe("chave" to l.chave, "mes" to mes, "valor" to v, "ate_dezembro" to repetir)) }; aoFechar() }
     }
-    AlertDialog(onDismissRequest = aoFechar, containerColor = cores.painel, title = { Text("${l.nome}: ${mesLongo(mes)}") },
+    AlertDialog(onDismissRequest = aoFechar, containerColor = cores.painelForte, title = { Text("${l.nome}: ${mesLongo(mes)}") },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 Text("Vazio volta ao padrão ($padrao${l.orcado(mes)?.takeIf { !l.definido(mes) }?.let { ": " + brl(it) } ?: ""}).", color = cores.texto2, fontSize = 13.sp)
@@ -268,7 +268,7 @@ private fun EditarItem(i: JSONObject?, gasto: List<LinhaOrc>, aoFechar: () -> Un
     var inicio by remember { mutableStateOf(i?.sn("inicio") ?: "") }
     var fim by remember { mutableStateOf(i?.sn("fim") ?: "") }
     var erro by remember { mutableStateOf<String?>(null) }
-    AlertDialog(onDismissRequest = aoFechar, containerColor = cores.painel, title = { Text(if (i == null) "Nova despesa fixa" else "Despesa fixa") },
+    AlertDialog(onDismissRequest = aoFechar, containerColor = cores.painelForte, title = { Text(if (i == null) "Nova despesa fixa" else "Despesa fixa") },
         text = {
             Column(Modifier.verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 SeletorCategoria("gasto", categoria) { categoria = it }
@@ -344,7 +344,7 @@ private fun EditarCategoria(cat: JSONObject?, aoFechar: () -> Unit) {
     var apagando by remember { mutableStateOf(false) }
     var erro by remember { mutableStateOf<String?>(null) }
     val grupos = Vocab.categorias.map { it.s("grupo") }.distinct()
-    AlertDialog(onDismissRequest = aoFechar, containerColor = cores.painel, title = { Text(if (cat == null) "Nova categoria" else if (apagando) "Apagar \"${cat.s("nome")}\"" else cat.s("nome")) },
+    AlertDialog(onDismissRequest = aoFechar, containerColor = cores.painelForte, title = { Text(if (cat == null) "Nova categoria" else if (apagando) "Apagar \"${cat.s("nome")}\"" else cat.s("nome")) },
         text = {
             Column(Modifier.verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 if (apagando && cat != null) {
@@ -437,7 +437,7 @@ private fun EditarMeta(m: JSONObject?, aoFechar: () -> Unit) {
     var onde by remember { mutableStateOf(m?.s("onde") ?: "") }
     var ativa by remember { mutableStateOf(m == null || m.optInt("ativa") == 1) }
     var erro by remember { mutableStateOf<String?>(null) }
-    AlertDialog(onDismissRequest = aoFechar, containerColor = cores.painel, title = { Text(if (m == null) "Nova meta" else m.s("nome")) },
+    AlertDialog(onDismissRequest = aoFechar, containerColor = cores.painelForte, title = { Text(if (m == null) "Nova meta" else m.s("nome")) },
         text = {
             Column(Modifier.verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 Campo(nome, { nome = it }, "Nome", dica = "Reserva de emergência")
