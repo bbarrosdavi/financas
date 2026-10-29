@@ -176,7 +176,7 @@ def dados_modelo(con, hoje: date | None = None) -> dict:
                                           for i in its]})
     return {
         "ano_inicial": ano_ini, "ano": hoje.year, "mes": hoje.month,
-        "dia_corte": int(db.parametro(con, "dia_renda_mes_seguinte", "25")),
+        "dia_corte": servicos.dia_corte(con),
         "renda": _dobrar(renda, CAPACIDADE["renda"], "Outras entradas"),
         "gastos": _dobrar(gastos, CAPACIDADE["gasto"], "Outros grupos"),
         "poupanca": _dobrar(poupanca, CAPACIDADE["poupanca"], "Outras metas") or [{"nome": "", "meses": {}}],

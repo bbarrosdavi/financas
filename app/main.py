@@ -180,9 +180,13 @@ def meses():
 
 
 @app.get("/api/lancamentos", dependencies=[api])
-def listar(mes: str | None = None, busca: str | None = None, pendentes: bool = False, categoria: str | None = None):
+def listar(mes: str | None = None, busca: str | None = None, pendentes: bool = False, categoria: str | None = None,
+           de: str | None = None, ate: str | None = None):
+    import re
+    if any(d and not re.fullmatch(r"\d{4}-\d{2}-\d{2}", d) for d in (de, ate)):
+        raise HTTPException(400, "Datas no formato AAAA-MM-DD.")
     with db.conectar() as con:
-        return servicos.lancamentos(con, mes, busca, pendentes, categoria, limite=2000)
+        return servicos.lancamentos(con, mes, busca, pendentes, categoria, limite=2000, de=de, ate=ate)
 
 
 class Parte(BaseModel):
@@ -596,7 +600,7 @@ class Param(BaseModel):
 
 @app.put("/api/parametros/{chave}", dependencies=[api])
 def definir_param(chave: str, body: Param):
-    if chave not in ("salario_mensal", "horizonte", "dia_renda_mes_seguinte", "taxa_ponte_picpay", "aluguel_rateio", "cores_grupos"):
+    if chave not in ("salario_mensal", "horizonte", "dia_renda_mes_seguinte", "renda_mes_seguinte", "taxa_ponte_picpay", "aluguel_rateio", "cores_grupos"):
         raise HTTPException(400, "Parâmetro não editável pelo site.")
     with db.conectar() as con:
         db.definir_parametro(con, chave, body.valor)

@@ -26,7 +26,7 @@ let DEMO = false;          // dados de demonstração ligados (app/demo.py)
 const cat = id => V.categorias.find(c => c.id === id);
 const pessoa = id => V.pessoas.find(p => p.id === id);
 const meta = id => V.metas.find(m => m.id === id);
-const store = {get: (k, d) => { try { return localStorage.getItem(k) ?? d; } catch (_) { return d; } }, set: (k, v) => { try { localStorage.setItem(k, v); } catch (_) {} }};
+const store = {get: (k, d) => { try { return localStorage.getItem(k) ?? d; } catch (_) { return d; } }, set: (k, v) => { try { localStorage.setItem(k, v); } catch (_) {} window.FINANCAS_APE?.guardou?.(k); }};
 
 async function api(path, opts = {}) {
   const r = await fetch(path, {credentials: 'same-origin', ...opts,
@@ -641,7 +641,8 @@ async function pendentes(t) {
     <label class="alternar"><input type="checkbox" id="lembrar" checked> sugerir a mesma classificação da próxima vez para o mesmo lugar</label>
     <div id="lista"></div></section>`;
   const lista = $('#lista');
-  L.sort((a, b) => Math.abs(b.valor) - Math.abs(a.valor)).forEach(l => lista.appendChild(itemPendente(l)));
+  // Por data, do mais recente ao mais antigo (a ordem do servidor), para a triagem seguir o extrato.
+  L.sort((a, b) => b.data.localeCompare(a.data) || b.id - a.id).forEach(l => lista.appendChild(itemPendente(l)));
 }
 
 function itemPendente(l) {
@@ -755,6 +756,7 @@ async function lancamentos(t) {
     <section class="painel vidro"><h3>Resumo <small>do que está filtrado abaixo</small></h3><div class="heroi lanc-heroi" id="lanc-heroi"></div></section>
     <section class="painel vidro">
     <div class="barra"><select id="f-mes"><option value="">todos os meses</option>${meses.map(m => `<option value="${m}">${MESES[+m.slice(5) - 1]} de ${m.slice(0, 4)}</option>`).join('')}</select>
+      <label class="nw muted">de <input type="date" id="f-de"></label><label class="nw muted">até <input type="date" id="f-ate"></label>
       <select id="f-cat"><option value="">todas as categorias</option>${V.categorias.map(c => `<option value="${c.id}">${esc(c.nome)}</option>`).join('')}</select>
       <select id="f-tipo"><option value="">todos os tipos</option><option>Entrada</option><option>Saída</option><option>Transferência</option><option>Acerto</option><option>Dividido</option><option>Estorno</option><option>Poupança</option><option>Pendente</option></select>
       <input id="f-busca" placeholder="buscar" style="flex:1;min-width:140px"><button id="f-limpar">Limpar filtros</button></div>
@@ -765,13 +767,19 @@ async function lancamentos(t) {
   async function carregar() {
     const p = new URLSearchParams();
     if ($('#f-mes').value) p.set('mes', $('#f-mes').value);
+    if ($('#f-de').value) p.set('de', $('#f-de').value);
+    if ($('#f-ate').value) p.set('ate', $('#f-ate').value);
     if ($('#f-cat').value) p.set('categoria', $('#f-cat').value);
     if ($('#f-busca').value) p.set('busca', $('#f-busca').value);
     if ($('#f-tipo').value === 'Pendente') p.set('pendentes', 'true');
     dados = (await api('/api/lancamentos?' + p)).filter(l => !$('#f-tipo').value || tipoLanc(l)[1] === $('#f-tipo').value);
-    const ps = dados.flatMap(l => l.partes);
-    const ent = ps.filter(p => p.natureza === 'renda').reduce((a, p) => a + p.valor, 0), gas = -ps.filter(p => p.natureza === 'gasto').reduce((a, p) => a + p.valor, 0);
-    const nEnt = dados.filter(l => l.partes.some(p => p.natureza === 'renda')).length, nGas = dados.filter(l => l.partes.some(p => p.natureza === 'gasto')).length;
+    // Com um mês escolhido, a renda conta no mês em que entra (Ajustes > Mês da entrada, a mesma regra do Painel)
+    // e o gasto conta pela data.
+    const mesF = $('#f-mes').value;
+    const dEnt = dados.filter(l => !mesF || l.mes_renda === mesF), dGas = dados.filter(l => !mesF || l.data.startsWith(mesF));
+    const soma = (ls, nat) => ls.flatMap(l => l.partes).filter(p => p.natureza === nat).reduce((a, p) => a + p.valor, 0);
+    const ent = soma(dEnt, 'renda'), gas = -soma(dGas, 'gasto');
+    const nEnt = dEnt.filter(l => l.partes.some(p => p.natureza === 'renda')).length, nGas = dGas.filter(l => l.partes.some(p => p.natureza === 'gasto')).length;
     // Falta lançar: diferença entre o saldo que o app mostra e o calculado pelos lançamentos (a mesma do Painel).
     const conta = contas.find(c => c.id === 'nubank_conta'), falta = conta?.saldo_real != null ? conta.diferenca : null, bate = falta != null && Math.abs(falta) < .005;
     $('#lanc-heroi').innerHTML = `
@@ -787,7 +795,7 @@ async function lancamentos(t) {
       return [`<span class="nw">${dataCurta(l.data)}</span>`, `<span class="tipo ${cls}">${nome}</span>`,
         l.pendente ? '<span class="muted">a classificar</span>' : l.partes.map(p => `<span class="chip">${esc(p.categoria ? cat(p.categoria)?.nome : p.pessoa ? pessoa(p.pessoa)?.nome : p.meta ? 'meta ' + meta(p.meta)?.nome : NAT[p.natureza])}${l.partes.length > 1 ? ' ' + brl(p.valor) : ''}</span>`).join(''),
         `<b class="${l.valor > 0 ? 'pos' : ''}">${brl(l.valor)}</b>`,
-        `${esc(l.contraparte || l.descricao)}<div class="muted">${[l.contraparte ? esc(l.descricao) : '', l.parcela ? 'parcela ' + l.parcela : '', ORIGEM[l.origem] || '', l.nota ? `<span class="obs-lanc">${esc(l.nota)}</span>` : ''].filter(Boolean).join(' · ')}</div>`,
+        `${esc(l.contraparte || l.descricao)}<div class="muted">${[l.contraparte ? esc(l.descricao) : '', l.parcela ? 'parcela ' + l.parcela : '', l.mes_renda && !l.data.startsWith(l.mes_renda) ? 'entra em ' + mesBR(l.mes_renda + '-01') : '', ORIGEM[l.origem] || '', l.nota ? `<span class="obs-lanc">${esc(l.nota)}</span>` : ''].filter(Boolean).join(' · ')}</div>`,
         `<span class="nw">${CONTA[l.conta] || l.conta}</span>`, `<span class="nw ${l.saldo_conta < 0 ? 'neg' : ''}">${brl(l.saldo_conta)}</span>`];
     }), [3, 6], () => 'click');
     $('#t-l').querySelectorAll('tbody tr').forEach((tr, i) => tr.onclick = () => dados[i] && abrirEditor(dados[i], carregar));
@@ -832,14 +840,17 @@ async function lancamentos(t) {
     tb.querySelector('tr.nova').onclick = e => e.stopPropagation();
   }
   // Limpar: todos os meses, categorias e tipos, sem busca (e tira o filtro que veio no endereço, ex.: da evolução).
-  const filtrado = () => ['f-mes', 'f-cat', 'f-tipo', 'f-busca'].some(id => $('#' + id).value);
+  const filtrado = () => ['f-mes', 'f-de', 'f-ate', 'f-cat', 'f-tipo', 'f-busca'].some(id => $('#' + id).value);
   const marcarLimpar = () => { $('#f-limpar').disabled = !filtrado(); };
   $('#f-limpar').onclick = () => {
-    ['f-mes', 'f-cat', 'f-tipo', 'f-busca'].forEach(id => { $('#' + id).value = ''; });
+    ['f-mes', 'f-de', 'f-ate', 'f-cat', 'f-tipo', 'f-busca'].forEach(id => { $('#' + id).value = ''; });
     if (location.hash.includes('?')) history.replaceState(null, '', '#lancamentos');
     marcarLimpar(); carregar();
   };
   ['f-mes', 'f-cat', 'f-tipo'].forEach(id => $('#' + id).onchange = () => { marcarLimpar(); carregar(); });
+  // Mês ou intervalo: um limpa o outro (no intervalo, tudo conta pela data).
+  $('#f-mes').onchange = () => { if ($('#f-mes').value) { $('#f-de').value = ''; $('#f-ate').value = ''; } marcarLimpar(); carregar(); };
+  ['f-de', 'f-ate'].forEach(id => $('#' + id).onchange = () => { $('#f-mes').value = ''; marcarLimpar(); carregar(); });
   let tm; $('#f-busca').oninput = () => { marcarLimpar(); clearTimeout(tm); tm = setTimeout(carregar, 300); };
   marcarLimpar();
   carregar();
@@ -874,12 +885,28 @@ async function importar(t) {
     tabela($('#t-ign'), ['Quando', 'Motivo', 'Texto', ''], ign.map(i => [i.quando.slice(0, 16), esc(i.motivo), esc(i.title + ' | ' + i.body), `<button data-r="${i.id}">resgatar</button>`]));
     $('#t-ign').querySelectorAll('[data-r]').forEach(b => b.onclick = async () => { await post(`/api/ignorados/${b.dataset.r}/resgatar`, {}); carregarListas(); contarPendentes(); });
     const imp = await api('/api/importacoes');
-    tabela($('#t-imp'), ['Quando', 'Arquivo', 'Tipo', 'Novos', 'Casados', 'Já existiam'], imp.map(i => [i.quando.slice(0, 16), esc(i.arquivo), i.tipo, i.novos, i.casados, i.repetidos]), [3, 4, 5]);
+    tabelaRecentes($('#t-imp'), ['Quando', 'Arquivo', 'Tipo', 'Novos', 'Casados', 'Já existiam'], imp.map(i => [i.quando.slice(0, 16), esc(i.arquivo), i.tipo, i.novos, i.casados, i.repetidos]), [3, 4, 5]);
   }
   carregarListas();
 }
 
 // ---------------------------------------------------------------- pessoas
+// Lista que cresce sem fim (acertos, importações): só as mais recentes, e mais sob demanda.
+function tabelaRecentes(el, cab, linhas, num, passo = 10) {
+  const caixa = el.closest('.scroll');
+  caixa.parentElement.querySelector(':scope > .mostrar-mais')?.remove();
+  const b = Object.assign(document.createElement('button'), {className: 'mostrar-mais'});
+  b.style.marginTop = '8px';
+  caixa.after(b);
+  let n = passo;
+  const desenhar = () => {
+    tabela(el, cab, linhas.slice(0, n), num);
+    b.hidden = linhas.length <= n;
+    b.textContent = `mostrar mais (${linhas.length - n} restantes)`;
+  };
+  b.onclick = () => { n += passo; desenhar(); };
+  desenhar();
+}
 async function pessoas(t) {
   const [P, L] = await Promise.all([api('/api/painel'), api('/api/lancamentos')]);
   t.innerHTML = `<div class="titulo"><h2>Pessoas</h2><span class="muted">positivo: a pessoa te deve · negativo: você deve a ela</span></div>
@@ -895,6 +922,13 @@ async function pessoas(t) {
         <label class="c">O que foi<input name="descricao" required placeholder="Copel de novembro"></label>
         <button class="prim">Lançar</button></form></section>
     </div>
+    <section class="painel vidro"><h3>Cadastro <small>como o nome aparece no extrato e o que sugerir</small></h3>
+      <div class="scroll"><table id="t-pes" class="compacta"></table></div>
+      <form class="linha" id="f-pes" style="margin-top:10px">
+        <label class="c">Nome<input name="nome" required></label>
+        <label class="c">Nome no extrato<input name="apelido_extrato" placeholder="FULANO DE TAL"></label>
+        <label class="c">Tipo<select name="tipo"><option>colega</option><option>familia</option><option>credor</option><option>outro</option></select></label>
+        <button class="prim">Adicionar</button></form></section>
     <section class="painel vidro"><h3>Acertos recentes</h3><div class="scroll"><table id="t-ac"></table></div></section>`;
   $('#f-pago').data.value = hojeISO();
   $('#f-pago').onsubmit = async e => {
@@ -906,8 +940,18 @@ async function pessoas(t) {
   };
   tabela($('#t-p'), ['Pessoa', 'Saldo', 'Situação', 'Parcelas a vencer'], P.pessoas.filter(p => p.saldo || p.a_vencer).map(p =>
     [esc(p.nome), `<b class="${p.saldo < 0 ? 'neg' : 'pos'}">${brl(p.saldo)}</b>`, p.saldo < 0 ? 'você deve' : 'te deve', p.a_vencer ? brl(p.a_vencer) : '']), [1, 3]);
-  const ac = L.flatMap(l => l.partes.filter(p => p.natureza === 'acerto').map(p => ({l, p}))).slice(0, 60);
-  tabela($('#t-ac'), ['Data', 'Pessoa', 'Lançamento', 'Valor', 'Obs'], ac.map(({l, p}) =>
+  const sugeridas = ['acerto', ...V.categorias.map(c => `${c.tipo}:${c.id}`)];
+  const opt = (sel) => sugeridas.map(s => `<option value="${s}" ${s === sel ? 'selected' : ''}>${s === 'acerto' ? 'acerto' : cat(s.split(':')[1])?.nome}</option>`).join('');
+  tabela($('#t-pes'), ['Nome', 'No extrato', 'Quando entra', 'Quando sai'], V.pessoas.map(p => [
+    `<input data-pes="${p.id}" data-k="nome" value="${esc(p.nome)}" style="width:140px">`, `<input data-pes="${p.id}" data-k="apelido_extrato" value="${esc(p.apelido_extrato)}" style="width:170px">`,
+    `<select data-pes="${p.id}" data-k="sugere_entrada">${opt(p.sugere_entrada)}</select>`, `<select data-pes="${p.id}" data-k="sugere_saida">${opt(p.sugere_saida)}</select>`]));
+  t.querySelectorAll('[data-pes]').forEach(i => i.onchange = async () => {
+    const p = V.pessoas.find(x => x.id === i.dataset.pes);
+    await put('/api/pessoas/' + p.id, {...p, [i.dataset.k]: i.value}); V = await api('/api/vocabulario');
+  });
+  $('#f-pes').onsubmit = async e => { e.preventDefault(); try { await post('/api/pessoas', Object.fromEntries(new FormData(e.target))); rota(); } catch (err) { alert(err.message); } };
+  const ac = L.flatMap(l => l.partes.filter(p => p.natureza === 'acerto').map(p => ({l, p})));
+  tabelaRecentes($('#t-ac'), ['Data', 'Pessoa', 'Lançamento', 'Valor', 'Obs'], ac.map(({l, p}) =>
     [dataCurta(l.data), esc(pessoa(p.pessoa)?.nome || ''), esc(l.contraparte || l.descricao), brl(p.valor), esc([l.nota, p.obs, p.motivo].filter(Boolean).join(' · '))]), [3]);
 }
 
@@ -1254,16 +1298,13 @@ async function ajustes(t) {
         <span class="muted">Arraste cada painel pela alça ao lado do título; o canto de baixo à direita muda largura e altura (duplo clique volta à altura automática).</span></div></section>
 
     <div class="grade meio">
-    <section class="painel vidro"><h3>Pessoas <small>como o nome aparece no extrato e o que sugerir</small></h3>
-      <div class="scroll"><table id="t-pes" class="compacta"></table></div>
-      <form class="linha" id="f-pes" style="margin-top:10px">
-        <label class="c">Nome<input name="nome" required></label>
-        <label class="c">Nome no extrato<input name="apelido_extrato" placeholder="FULANO DE TAL"></label>
-        <label class="c">Tipo<select name="tipo"><option>colega</option><option>familia</option><option>credor</option><option>outro</option></select></label>
-        <button class="prim">Adicionar</button></form></section>
     <section class="painel vidro"><h3>Rateio do aluguel <small>sugestão para o boleto da imobiliária</small></h3>
       <form class="linha" id="f-rateio">${Object.entries(rateio).map(([k, v]) => `<label class="c">${esc(k === 'eu' ? 'Você' : pessoa(k)?.nome || k)} (%)<input type="number" step="0.1" name="${esc(k)}" value="${(v * 100).toFixed(1)}"></label>`).join('')}
         <button class="prim">Salvar</button></form><p class="sub" id="rateio-msg"></p></section>
+    <section class="painel vidro"><h3>Mês da entrada <small>Painel, Lançamentos, Orçamento e Projeção</small></h3>
+      <form class="linha" id="f-corte"><label class="alternar"><input type="checkbox" name="ligado" ${prm.renda_mes_seguinte !== '0' ? 'checked' : ''}> Renda que cai a partir do dia</label>
+        <label class="c">Dia<input type="number" min="1" max="31" name="dia" value="${esc(prm.dia_renda_mes_seguinte || '25')}" style="width:70px"></label>
+        <span class="muted">conta como entrada do mês seguinte</span><button class="prim">Salvar</button></form><p class="sub" id="corte-msg"></p></section>
     </div>
 
     <div class="grade meio">
@@ -1277,23 +1318,20 @@ async function ajustes(t) {
       <p class="sub" id="ods-msg">${ods.disponivel ? '' : 'O modelo antigo (.ods) não sai aqui: ' + esc(ods.motivo) + '. A .xlsx funciona.'}</p></section>
     </div>`;
 
-  const sugeridas = ['acerto', ...V.categorias.map(c => `${c.tipo}:${c.id}`)];
-  // pessoas
-  const opt = (sel) => sugeridas.map(s => `<option value="${s}" ${s === sel ? 'selected' : ''}>${s === 'acerto' ? 'acerto' : cat(s.split(':')[1])?.nome}</option>`).join('');
-  tabela($('#t-pes'), ['Nome', 'No extrato', 'Quando entra', 'Quando sai'], V.pessoas.map(p => [
-    `<input data-pes="${p.id}" data-k="nome" value="${esc(p.nome)}" style="width:140px">`, `<input data-pes="${p.id}" data-k="apelido_extrato" value="${esc(p.apelido_extrato)}" style="width:170px">`,
-    `<select data-pes="${p.id}" data-k="sugere_entrada">${opt(p.sugere_entrada)}</select>`, `<select data-pes="${p.id}" data-k="sugere_saida">${opt(p.sugere_saida)}</select>`]));
-  t.querySelectorAll('[data-pes]').forEach(i => i.onchange = async () => {
-    const p = V.pessoas.find(x => x.id === i.dataset.pes);
-    await put('/api/pessoas/' + p.id, {...p, [i.dataset.k]: i.value}); V = await api('/api/vocabulario');
-  });
-  $('#f-pes').onsubmit = async e => { e.preventDefault(); try { await post('/api/pessoas', Object.fromEntries(new FormData(e.target))); rota(); } catch (err) { alert(err.message); } };
   $('#f-rateio').onsubmit = async e => {
     e.preventDefault();
     const r = Object.fromEntries([...new FormData(e.target)].map(([k, v]) => [k, Math.round(+v * 10) / 1000]));
     const soma = Object.values(r).reduce((a, b) => a + b, 0);
     if (Math.abs(soma - 1) > .001) return ($('#rateio-msg').textContent = `A soma dá ${(soma * 100).toFixed(1)}%; precisa dar 100%.`);
     await put('/api/parametros/aluguel_rateio', {valor: JSON.stringify(r)}); $('#rateio-msg').textContent = 'Salvo.';
+  };
+  $('#f-corte').onsubmit = async e => {
+    e.preventDefault();
+    const f = new FormData(e.target), dia = Math.round(+f.get('dia'));
+    if (!(dia >= 1 && dia <= 31)) return ($('#corte-msg').textContent = 'O dia vai de 1 a 31.');
+    await put('/api/parametros/renda_mes_seguinte', {valor: f.get('ligado') ? '1' : '0'});
+    await put('/api/parametros/dia_renda_mes_seguinte', {valor: String(dia)});
+    $('#corte-msg').textContent = 'Salvo.';
   };
   // visualização
   t.querySelectorAll('[data-pref]').forEach(b => b.onclick = () => {
@@ -1428,8 +1466,9 @@ const AJUDA = {
   'ajustes:s-aparencia': `<p>Tema claro ou escuro e papel de parede. Envie uma imagem para usar como fundo.</p>`,
   'ajustes:s-visualizacao': `<p>Vale só para este aparelho: largura, densidade, fonte, estilo dos painéis e dos gráficos, como as categorias aparecem no Painel, quais painéis mostrar e a ordem das abas.</p>
     <p>Cada painel se move pela alça ao lado do título e muda de tamanho pelo canto de baixo à direita.</p>`,
-  'ajustes:s-pessoas': `<p>Como o nome de cada pessoa aparece no extrato (para reconhecer o Pix) e o que sugerir quando entra ou sai dinheiro dela: acerto ou uma categoria.</p>`,
+  'pessoas:s-cadastro': `<p>Como o nome de cada pessoa aparece no extrato (para reconhecer o Pix) e o que sugerir quando entra ou sai dinheiro dela: acerto ou uma categoria.</p>`,
   'ajustes:s-rateio-do-aluguel': `<p>Quanto de cada boleto da imobiliária é de cada morador. Vira sugestão de divisão quando o boleto aparece: sua parte como gasto e a dos outros como acerto. A soma precisa dar 100%.</p>`,
+  'ajustes:s-mes-da-entrada': `<p>Salário que cai no fim do mês paga o mês seguinte. <b>Ligado</b>: a renda que entra a partir do dia escolhido conta como entrada do mês seguinte, no Painel, em Lançamentos, no Orçamento e na Projeção (em Lançamentos ela aparece no mês em que conta, com "entra em"). <b>Desligado</b>: cada entrada conta no mês da data.</p>`,
   'ajustes:s-celular': `<p>O endereço e a chave para o app Finanças do celular, e os dados para a macro do MacroDroid mandar as notificações do banco para o site: endereço, chave e corpo da requisição. Abra esta tela no celular e copie cada campo.</p>`,
   'ajustes:s-planilha-e-sessao': `<p>Baixa tudo em planilha: no modelo antigo (.ods, preenchido pelo LibreOffice, leva alguns segundos) ou só as tabelas (.xlsx). Sair encerra a sessão neste aparelho.</p>`,
 };
@@ -1517,7 +1556,7 @@ const PASSOS_TOUR = [
   {rota: 'pessoas', alvo: cartaoTour('s-alguem-pagou-uma-conta-por-voce'), titulo: 'Alguém pagou por você', texto: `<p class="tour-dados"><b>O que colocar:</b> quando outra pessoa paga uma conta sua (a luz, o mercado da casa), lance aqui: o gasto entra na categoria e vira dívida com ela, sem mexer no saldo da sua conta.</p>`},
   {rota: 'projecao', alvo: cartaoTour('proj-resumo'), titulo: 'Projeção', texto: `<p>Mês a mês até o horizonte: renda, custo de vida (do Orçamento), o cartão já contratado e o resultado. <b>Falta cobrir</b> soma os meses no vermelho; <b>saldo livre</b> é o que sobra depois de pagar quem você deve.</p>`},
   {rota: 'projecao', alvo: cartaoTour('proj-eventos'), titulo: 'Eventos', texto: `<p class="tour-dados"><b>O que colocar:</b> o que muda e quando: um aumento, uma renda que acaba, uma viagem, o 13º. A projeção recalcula na hora.</p>`},
-  {rota: 'ajustes', alvo: cartaoTour('s-pessoas'), titulo: 'Pessoas', texto: `<p class="tour-dados"><b>O que colocar:</b> quem divide contas com você, com o nome como aparece no extrato do banco. Assim o Pix dessa pessoa é reconhecido e vem com sugestão.</p>`},
+  {rota: 'pessoas', alvo: cartaoTour('s-cadastro'), titulo: 'Cadastro de pessoas', texto: `<p class="tour-dados"><b>O que colocar:</b> quem divide contas com você, com o nome como aparece no extrato do banco. Assim o Pix dessa pessoa é reconhecido e vem com sugestão.</p>`},
   {rota: 'ajustes', alvo: cartaoTour('s-rateio-do-aluguel'), titulo: 'Rateio do aluguel', texto: `<p class="tour-dados"><b>O que colocar:</b> se você divide o aluguel, quanto é de cada um (a soma dá 100%). O boleto da imobiliária vira sua parte como gasto e a dos outros como acerto.</p>`},
   {rota: 'ajustes', alvo: cartaoTour('s-celular'), titulo: 'Celular', texto: `<p>Para o celular mandar as compras na hora.</p>
       <p class="tour-dados"><b>O que fazer:</b> no app Finanças do celular, copie o <b>endereço</b> e a <b>chave</b> daqui. Quem usa o MacroDroid copia os três campos de baixo.</p>`},

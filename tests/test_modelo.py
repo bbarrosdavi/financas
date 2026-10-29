@@ -171,3 +171,37 @@ def test_pdf_sem_poppler_explica_o_que_fazer(monkeypatch):
     monkeypatch.setenv("PATH", "/nao/existe")
     with pytest.raises(ValueError, match="Importe o .csv ou o .xlsx"):
         importadores.ler_arquivo("extrato.pdf", b"%PDF-1.4 qualquer coisa")
+
+
+def test_mes_da_entrada_igual_no_painel_e_nos_lancamentos(con):
+    """A renda que cai a partir do dia de corte conta no mês seguinte nas duas telas; desligada, conta pela data."""
+    servicos.inserir(con, "nubank_conta", "2026-09-30", 3000.0, "Transferência recebida pelo Pix", "EMPRESA EXEMPLO", "manual",
+                     partes=[{"valor": 3000.0, "natureza": "renda", "categoria": "salario"}])
+    servicos.inserir(con, "nubank_conta", "2026-10-15", 200.0, "Transferência recebida pelo Pix", "Fulano", "manual",
+                     partes=[{"valor": 200.0, "natureza": "renda", "categoria": "pais"}])
+    servicos.inserir(con, "nubank_conta", "2026-10-26", 100.0, "Transferência recebida pelo Pix", "Fulano", "manual",
+                     partes=[{"valor": 100.0, "natureza": "renda", "categoria": "pais"}])
+    servicos.inserir(con, "nubank_conta", "2026-10-27", -50.0, "Compra no débito", "LOJA", "manual",
+                     partes=[{"valor": -50.0, "natureza": "gasto", "categoria": "outros"}])
+
+    def nas_duas_telas():
+        painel = servicos.painel(con, date(2026, 10, 29), "2026-10")["totais"]
+        ls = servicos.lancamentos(con, mes="2026-10")
+        renda = sum(p["valor"] for l in ls if l["mes_renda"] == "2026-10" for p in l["partes"] if p["natureza"] == "renda")
+        gasto = -sum(p["valor"] for l in ls if l["data"].startswith("2026-10") for p in l["partes"] if p["natureza"] == "gasto")
+        return painel["renda"], renda, painel["gasto"], gasto
+
+    assert nas_duas_telas() == (3200.0, 3200.0, 50.0, 50.0)       # 30/09 entra; 26/10 fica para novembro
+    db.definir_parametro(con, "renda_mes_seguinte", "0")
+    assert nas_duas_telas() == (300.0, 300.0, 50.0, 50.0)         # pela data
+    db.definir_parametro(con, "renda_mes_seguinte", "1")
+    db.definir_parametro(con, "dia_renda_mes_seguinte", "28")
+    assert nas_duas_telas() == (3300.0, 3300.0, 50.0, 50.0)       # dia 28: 30/09 entra, 26/10 fica em outubro
+
+
+def test_lancamentos_por_intervalo(con):
+    for d in ("2026-10-01", "2026-10-10", "2026-10-20"):
+        servicos.inserir(con, "nubank_conta", d, -10.0, "Compra", "LOJA", "manual",
+                         partes=[{"valor": -10.0, "natureza": "gasto", "categoria": "outros"}])
+    assert [l["data"] for l in servicos.lancamentos(con, de="2026-10-05", ate="2026-10-20")] == ["2026-10-20", "2026-10-10"]
+    assert [l["data"] for l in servicos.lancamentos(con, ate="2026-10-05")] == ["2026-10-01"]
