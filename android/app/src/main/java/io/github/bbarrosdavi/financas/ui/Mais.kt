@@ -229,10 +229,10 @@ fun TelaProjecao() {
         val quitado = linhas.firstOrNull { it.d("deve_pessoas") == 0.0 }
         Cartao("Até ${mesCurto(pl.s("horizonte") + "-01")}", Modifier.alvo("projResumo")) {
             Row {
-                Column(Modifier.weight(1f)) { Rotulo("Falta cobrir"); Text(brl0(pl.d("falta_total")), color = if (pl.d("falta_total") > 0) cores.atencao else cores.ok,
+                Column(Modifier.weight(1f)) { Rotulo("Falta cobrir"); Text(brl(pl.d("falta_total")), color = if (pl.d("falta_total") > 0) cores.atencao else cores.ok,
                     fontWeight = FontWeight.Bold, fontSize = 17.sp); Text("soma dos meses no vermelho", color = cores.mudo, fontSize = 11.sp) }
-                Column(Modifier.weight(1f)) { Rotulo("Saldo livre no fim"); Text(brl0(fim?.d("livre") ?: 0.0), color = if ((fim?.d("livre") ?: 0.0) > 0) cores.ok else cores.atencao,
-                    fontWeight = FontWeight.Bold, fontSize = 17.sp); Text("${brl0(fim?.d("metas") ?: 0.0)} nas metas", color = cores.mudo, fontSize = 11.sp) }
+                Column(Modifier.weight(1f)) { Rotulo("Saldo livre no fim"); Text(brl(fim?.d("livre") ?: 0.0), color = if ((fim?.d("livre") ?: 0.0) > 0) cores.ok else cores.atencao,
+                    fontWeight = FontWeight.Bold, fontSize = 17.sp); Text("${brl(fim?.d("metas") ?: 0.0)} nas metas", color = cores.mudo, fontSize = 11.sp) }
             }
             LinhaKV("Quem você deve, quitado em", quitado?.let { mesLongo(it.s("mes")) } ?: "não quita no período")
             Spacer(Modifier.height(10.dp))
@@ -245,11 +245,11 @@ fun TelaProjecao() {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(mesCurto(l.s("mes") + "-01"), color = cores.texto, fontWeight = FontWeight.SemiBold, modifier = Modifier.width(64.dp))
                         Text(sinal(l.d("resultado")), color = if (l.d("resultado") < 0) cores.ruim else cores.ok, fontWeight = FontWeight.Bold, fontSize = 14.sp, modifier = Modifier.weight(1f))
-                        if (l.d("falta") > 0) Text("falta ${brl0(l.d("falta"))}  ", color = cores.atencao, fontSize = 12.sp, fontWeight = FontWeight.SemiBold)
-                        Text("livre ${brl0(l.d("livre"))}", color = cores.texto2, fontSize = 12.sp)
+                        if (l.d("falta") > 0) Text("falta ${brl(l.d("falta"))}  ", color = cores.atencao, fontSize = 12.sp, fontWeight = FontWeight.SemiBold)
+                        Text("livre ${brl(l.d("livre"))}", color = cores.texto2, fontSize = 12.sp)
                     }
-                    Text("renda ${brl0(l.d("renda"))} · reemb. ${brl0(l.d("reembolsos"))}" + (if (l.d("unicos") != 0.0) " · únicos ${sinal(l.d("unicos"))}" else "") +
-                        " · custo ${brl0(l.d("custo"))} · cartão ${brl0(l.d("cartao"))} · metas ${brl0(l.d("aportes"))} · devo ${brl0(l.d("deve_pessoas"))}",
+                    Text("renda ${brl(l.d("renda"))} · reemb. ${brl(l.d("reembolsos"))}" + (if (l.d("unicos") != 0.0) " · únicos ${sinal(l.d("unicos"))}" else "") +
+                        " · custo ${brl(l.d("custo"))} · cartão ${brl(l.d("cartao"))} · metas ${brl(l.d("aportes"))} · devo ${brl(l.d("deve_pessoas"))}",
                         color = cores.mudo, fontSize = 11.sp)
                 }
             }

@@ -3,9 +3,9 @@
 
 const $ = (s, r = document) => r.querySelector(s);
 const brl = v => (v < 0 ? '-' : '') + 'R$ ' + Math.abs(v || 0).toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2});
-const brl0 = v => (v < 0 ? '-' : '') + 'R$ ' + Math.abs(v || 0).toLocaleString('pt-BR', {maximumFractionDigits: 0});
-const brlv = v => (Math.abs(v) < 10 && v ? brl : brl0)(v);
-const sinal = v => (v > 0 ? '+' : v < 0 ? '-' : '') + brlv(Math.abs(v)).replace('R$', 'R$');
+// Todo valor com os centavos, sem arredondar (também nos rótulos dos gráficos e nos eixos).
+const num2 = v => (v || 0).toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+const sinal = v => (v > 0 ? '+' : v < 0 ? '-' : '') + brl(Math.abs(v));
 const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]));
 const dataBR = d => d ? d.split('-').reverse().join('/') : '';
 const dataCurta = d => d ? `${d.slice(8, 10)}/${d.slice(5, 7)}/${d.slice(2, 4)}` : '';
@@ -310,7 +310,7 @@ function escalaY(max, min, alturaUtil) {
   const passo = [50, 100, 200, 250, 500, 1000, 2000, 2500, 5000, 10000, 20000, 50000].find(p => (max - min) / p <= alvo) || 100000;
   return {passo, topo: Math.ceil(max / passo) * passo || passo, base: Math.floor(min / passo) * passo};
 }
-const kRot = v => Math.abs(v) >= 1000 ? (v / 1000).toLocaleString('pt-BR', {maximumFractionDigits: 1}) + 'k' : String(v);
+const kRot = v => num2(v);
 
 // ---------------------------------------------------------------- dica (tooltip)
 const tip = $('#tip');
@@ -386,33 +386,33 @@ async function painel(t) {
       <div class="rot">Resultado ${P.tipo === 'semana' ? 'da semana' : P.tipo === 'ano' ? 'do ano' : 'do mês'}</div>
       <div class="grande ${T.resultado < 0 ? 'neg' : 'pos'}">${sinal(T.resultado)}</div>
       ${comparar ? dlt(T.resultado, TA.resultado, true) : ''}
-      <div class="linha-kv"><span>Entradas</span><b>${brl0(T.renda)}</b></div>
-      <div class="linha-kv"><span>Gastos</span><b>${brl0(T.gasto)}</b></div>
-      <div class="linha-kv"><span>Juros e taxas</span><b class="${T.juros ? 'neg' : ''}">${brlv(T.juros)}</b></div>
-      ${P.metas.some(m => m.guardado_periodo) ? `<div class="linha-kv"><span>Guardado em metas</span><b class="pos">${brl0(P.metas.reduce((a, m) => a + m.guardado_periodo, 0))}</b></div>` : ''}
-      ${comparar ? `<div class="linha-kv muted"><span>${ant}: entradas / gastos</span><span>${brl0(TA.renda)} / ${brl0(TA.gasto)}</span></div>` : ''}
+      <div class="linha-kv"><span>Entradas</span><b>${brl(T.renda)}</b></div>
+      <div class="linha-kv"><span>Gastos</span><b>${brl(T.gasto)}</b></div>
+      <div class="linha-kv"><span>Juros e taxas</span><b class="${T.juros ? 'neg' : ''}">${brl(T.juros)}</b></div>
+      ${P.metas.some(m => m.guardado_periodo) ? `<div class="linha-kv"><span>Guardado em metas</span><b class="pos">${brl(P.metas.reduce((a, m) => a + m.guardado_periodo, 0))}</b></div>` : ''}
+      ${comparar ? `<div class="linha-kv muted"><span>${ant}: entradas / gastos</span><span>${brl(TA.renda)} / ${brl(TA.gasto)}</span></div>` : ''}
     </div>
     <div>
       <div class="rot">Ainda pode gastar (categorias variáveis)</div>
-      <div class="grande ${P.pode_gastar < 0 ? 'neg' : usoVar > P.ritmo + .1 ? 'warnc' : 'pos'}">${brl0(P.pode_gastar)}</div>
+      <div class="grande ${P.pode_gastar < 0 ? 'neg' : usoVar > P.ritmo + .1 ? 'warnc' : 'pos'}">${brl(P.pode_gastar)}</div>
       <div class="barra-grande"><div class="fill" style="width:${Math.min(usoVar, 1) * 100}%;background:${usoVar > 1 ? 'var(--ruim)' : usoVar > P.ritmo + .1 ? 'var(--atencao)' : 'var(--ok)'}"></div>
         ${P.ritmo > 0 && P.ritmo < 1 ? `<div class="ritmo" style="left:${P.ritmo * 100}%"></div>` : ''}</div>
-      <div class="linha-kv"><span>Gasto</span><b>${brl0(P.gasto_variavel)} de ${brl0(P.teto_variavel)}</b></div>
-      ${P.ritmo > 0 && P.ritmo < 1 ? `<div class="linha-kv"><span>No ritmo certo, até hoje</span><b>${brl0(ideal)}</b></div>` : ''}
+      <div class="linha-kv"><span>Gasto</span><b>${brl(P.gasto_variavel)} de ${brl(P.teto_variavel)}</b></div>
+      ${P.ritmo > 0 && P.ritmo < 1 ? `<div class="linha-kv"><span>No ritmo certo, até hoje</span><b>${brl(ideal)}</b></div>` : ''}
     </div>
     <div class="kpis">
       ${kpiConta(conta)}
-      <div class="kpi"><div class="rot">Dívida do cartão</div><div class="v neg">${brl0(P.cartao.divida)}</div>
-        <div class="d">limite livre <b class="${P.cartao.limite_livre < 300 ? 'neg' : ''}">${brl0(P.cartao.limite_livre)}</b> de ${brl0(P.cartao.limite)}</div></div>
-      <div class="kpi"><div class="rot">Você deve / te devem</div><div class="v">${brl0(devo)} <span class="muted">/</span> ${brl0(meDevem)}</div>
+      <div class="kpi"><div class="rot">Dívida do cartão</div><div class="v neg">${brl(P.cartao.divida)}</div>
+        <div class="d">limite livre <b class="${P.cartao.limite_livre < 300 ? 'neg' : ''}">${brl(P.cartao.limite_livre)}</b> de ${brl(P.cartao.limite)}</div></div>
+      <div class="kpi"><div class="rot">Você deve / te devem</div><div class="v">${brl(devo)} <span class="muted">/</span> ${brl(meDevem)}</div>
         <div class="d"><a href="#pessoas">ver pessoas</a></div></div>
       <div class="kpi"><div class="rot">Pendentes</div><div class="v ${P.pendentes ? 'warnc' : 'pos'}">${P.pendentes}</div>
         <div class="d">${P.pendentes ? '<a href="#pendentes">classificar agora</a>' : 'tudo classificado'}</div></div>
     </div></div>`)}
   ${cartao('categorias', 'Categorias', `teto ${P.tipo === 'ano' ? 'acumulado no ano' : P.tipo === 'semana' ? 'do mês ÷ 4' : 'do mês'}`,
-    `${nAcima || acimaAnt ? `<div class="resumo-acima"><div><div class="rot">Acima do teto</div><div class="grande">${brl0(acimaTot)}</div></div>
+    `${nAcima || acimaAnt ? `<div class="resumo-acima"><div><div class="rot">Acima do teto</div><div class="grande">${brl(acimaTot)}</div></div>
         <div>${nAcima} categoria(s) estourada(s)</div>
-        <div>${ant}: <b>${brl0(acimaAnt)}</b> acima · ${acimaTot > acimaAnt ? `<b class="neg">piorou ${brl0(acimaTot - acimaAnt)}</b>` : acimaTot < acimaAnt ? `<b class="pos">melhorou ${brl0(acimaAnt - acimaTot)}</b>` : 'igual'}</div></div>` : ''}
+        <div>${ant}: <b>${brl(acimaAnt)}</b> acima · ${acimaTot > acimaAnt ? `<b class="neg">piorou ${brl(acimaTot - acimaAnt)}</b>` : acimaTot < acimaAnt ? `<b class="pos">melhorou ${brl(acimaAnt - acimaTot)}</b>` : 'igual'}</div></div>` : ''}
       <div id="cats"></div>`)}
   ${PREF.paineis.grafico ? cartao('grafico', 'Entradas e gastos', P.tipo === 'semana' ? 'últimas 12 semanas' : P.tipo === 'ano' ? 'jan a dez' : 'últimos 12 meses',
     `${legendaSeries()}<div class="chart grafico" id="ch"></div>`) : ''}
@@ -429,8 +429,8 @@ async function painel(t) {
   const colunas = (gasto, teto, acima) => {
     const pct = teto ? Math.round(gasto / teto * 100) + '%' : '-';
     const resto = teto == null ? '<span class="muted">sem teto</span>'
-      : acima > 0 ? `<b class="neg">+${brlv(acima)}</b>` : `<b class="pos">${brlv(Math.max(teto - gasto, 0))}</b>`;
-    return `<span class="c-gasto"><b>${brlv(gasto)}</b></span><span class="c-teto">${teto != null ? brl0(teto) : '-'}</span>
+      : acima > 0 ? `<b class="neg">+${brl(acima)}</b>` : `<b class="pos">${brl(Math.max(teto - gasto, 0))}</b>`;
+    return `<span class="c-gasto"><b>${brl(gasto)}</b></span><span class="c-teto">${teto != null ? brl(teto) : '-'}</span>
       <span class="c-pct ${teto && gasto > teto ? 'neg' : ''}">${pct}</span><span class="c-resto">${resto}</span>`;
   };
   const linhaCat = c => {
@@ -440,10 +440,10 @@ async function painel(t) {
     const varTot = c.gasto + c.parcelas - c.anterior;
     const infos = [];
     if (c.acima > 0 || c.acima_anterior > 0)
-      infos.push(c.acima_anterior > 0 ? `<span>${ant}: <b>${brlv(c.acima_anterior)}</b> acima · <span class="vs ${dAcima > 0 ? 'neg' : dAcima < 0 ? 'pos' : ''}">${dAcima > 0 ? 'piorou ' + brlv(dAcima) : dAcima < 0 ? 'melhorou ' + brlv(-dAcima) : 'igual'}</span></span>`
+      infos.push(c.acima_anterior > 0 ? `<span>${ant}: <b>${brl(c.acima_anterior)}</b> acima · <span class="vs ${dAcima > 0 ? 'neg' : dAcima < 0 ? 'pos' : ''}">${dAcima > 0 ? 'piorou ' + brl(dAcima) : dAcima < 0 ? 'melhorou ' + brl(-dAcima) : 'igual'}</span></span>`
         : `<span>${ant}: dentro do teto</span>`);
-    if (comparar) infos.push(`<span>${ant}: ${brlv(c.anterior)} <span class="vs ${varTot > 0 ? 'neg' : varTot < 0 ? 'pos' : ''}">(${sinal(varTot)}${c.anterior ? `, ${varTot > 0 ? '+' : ''}${Math.round(varTot / c.anterior * 100)}%` : ''})</span></span>`);
-    if (c.parcelas) infos.push(`<span>+ ${brlv(c.parcelas)} parcelas antigas</span>`);
+    if (comparar) infos.push(`<span>${ant}: ${brl(c.anterior)} <span class="vs ${varTot > 0 ? 'neg' : varTot < 0 ? 'pos' : ''}">(${sinal(varTot)}${c.anterior ? `, ${varTot > 0 ? '+' : ''}${Math.round(varTot / c.anterior * 100)}%` : ''})</span></span>`);
+    if (c.parcelas) infos.push(`<span>+ ${brl(c.parcelas)} parcelas antigas</span>`);
     return `<div class="cat" data-evol-cat="${c.id}" data-tip="<b>${esc(c.nome)}</b><br>${brl(c.gasto)} de ${c.teto != null ? brl(c.teto) : 'sem teto'} · ${c.n} lançamento(s)<br>toque para ver a evolução">
       <div class="nome"><i style="background:${corCat(c.id)}"></i><span>${esc(c.nome)}</span></div>
       <div class="track"><div class="fill ${cls}" style="width:${Math.min(pct, 1) * 100}%"></div>${!c.fixa && P.ritmo > 0 && P.ritmo < 1 ? `<div class="ritmo" style="left:${P.ritmo * 100}%"></div>` : ''}</div>
@@ -469,7 +469,7 @@ async function painel(t) {
       <div class="grupo-cab"><span class="nome"><svg class="seta-g" viewBox="0 0 10 10" width="10" height="10"><path d="M3 2l4 3-4 3" fill="none" stroke="currentColor" stroke-width="1.6"/></svg><i style="background:${corGrupo(b.g)}"></i>${esc(b.g)} <small class="muted">${b.cs.length}</small><button class="botao-icone" data-evol-grupo="${esc(b.g)}" title="Evolução de ${esc(b.g)}" aria-label="Evolução de ${esc(b.g)}">${ICONE_BARRAS}</button></span>
         <div class="track mini"><div class="fill ${b.acima > 0 ? 'bad' : ''}" style="width:${Math.min(pct, 1) * 100}%"></div></div>
         ${colunas(b.gasto, b.teto, b.teto != null ? Math.max(0, b.gasto - b.teto) : 0)}
-        <span class="g-extra">${b.parcelas ? `<small class="muted">+ ${brl0(b.parcelas)} de parcelas antigas</small>` : ''}${comparar ? `<small class="muted">${ant}: ${brl0(b.anterior)}</small>` : ''}</span></div>
+        <span class="g-extra">${b.parcelas ? `<small class="muted">+ ${brl(b.parcelas)} de parcelas antigas</small>` : ''}${comparar ? `<small class="muted">${ant}: ${brl(b.anterior)}</small>` : ''}</span></div>
       <div class="grupo-corpo">${b.cs.map(linhaCat).join('')}</div></div>`;
     }).join('') || '<p class="muted">Nenhum gasto no período.</p>';
     $('#cats').querySelectorAll('.grupo-cab').forEach(h => h.onclick = e => {
@@ -489,7 +489,7 @@ async function painel(t) {
   const grupos = Object.entries(P.grupos).sort((a, b) => b[1] - a[1]);
   const totG = grupos.reduce((a, [, v]) => a + v, 0) || 1;
   if ($('#comp')) $('#comp').innerHTML = `<div class="composicao">${grupos.map(([g, v]) => `<span style="width:${v / totG * 100}%;background:${corGrupo(g)}" data-tip="<b>${esc(g)}</b><br>${brl(v)} (${Math.round(v / totG * 100)}%)"></span>`).join('')}</div>
-    <table>${grupos.map(([g, v]) => `<tr><td><i style="display:inline-block;width:9px;height:9px;border-radius:50%;background:${corGrupo(g)};margin-right:7px"></i>${esc(g)}</td><td class="n">${brl0(v)}</td><td class="n muted">${Math.round(v / totG * 100)}%</td></tr>`).join('')}</table>`;
+    <table>${grupos.map(([g, v]) => `<tr><td><i style="display:inline-block;width:9px;height:9px;border-radius:50%;background:${corGrupo(g)};margin-right:7px"></i>${esc(g)}</td><td class="n">${brl(v)}</td><td class="n muted">${Math.round(v / totG * 100)}%</td></tr>`).join('')}</table>`;
   // entradas
   const ents = P.entradas.filter(e => e.valor || (comparar && e.anterior));
   if ($('#t-ent')) tabela($('#t-ent'), comparar ? ['Entrada', 'Valor', ant, 'Diferença'] : ['Entrada', 'Valor', 'Lançamentos'],
@@ -504,8 +504,8 @@ async function painel(t) {
       ${cs.map(c => `<div class="cobranca-item"><span>${esc(c.descricao.replace(/ - Parcela.*| - \d+\/\d+$/, '').replace(/^Pix no Crédito - /, 'Pix no crédito: '))} <span class="muted">${c.parcela}</span></span><span>${brl(c.valor)}</span></div>`).join('')}</div>`).join('') || '<p class="muted">Nenhuma parcela futura.</p>';
   if ($('#t-top')) tabela($('#t-top'), ['Onde', 'Vezes', 'Total'], P.top.map(r => [esc(r.nome), r.n, brl(r.total)]), [1, 2]);
   if ($('#t-plano')) tabela($('#t-plano'), ['Mês', 'Renda', 'Custo de vida', 'Cartão', 'Resultado', 'Falta cobrir', 'Ainda devo', 'Saldo livre'],
-    P.plano.linhas.slice(0, 4).map(l => [mesBR(l.mes + '-01'), brl0(l.renda + l.reembolsos + l.unicos), brl0(l.custo + l.aportes), brl0(l.cartao),
-      `<b class="${l.resultado < 0 ? 'neg' : 'pos'}">${sinal(l.resultado)}</b>`, l.falta ? `<b class="warnc">${brl0(l.falta)}</b>` : '0', brl0(l.deve_pessoas), brl0(l.livre)]), [1, 2, 3, 4, 5, 6, 7]);
+    P.plano.linhas.slice(0, 4).map(l => [mesBR(l.mes + '-01'), brl(l.renda + l.reembolsos + l.unicos), brl(l.custo + l.aportes), brl(l.cartao),
+      `<b class="${l.resultado < 0 ? 'neg' : 'pos'}">${sinal(l.resultado)}</b>`, l.falta ? `<b class="warnc">${brl(l.falta)}</b>` : '0', brl(l.deve_pessoas), brl(l.livre)]), [1, 2, 3, 4, 5, 6, 7]);
   if ($('#t-metas')) tabelaMetas($('#t-metas'), P.metas.filter(m => m.ativa), P.tipo);
   ligarDicas(t);
   t.querySelectorAll('[data-evol-cat]').forEach(el => el.onclick = () => abrirEvolucao({categoria: el.dataset.evolCat}, cat(el.dataset.evolCat)?.nome, P.tipo));
@@ -530,14 +530,14 @@ async function abrirEvolucao(alvo, nome, tipo) {
   const y = v => T + (H - T - B) * (1 - v / topo), cx = i => L + gw * i + gw / 2;
   const rot = x => tipo === 'semana' ? `${+x.inicio.slice(8)}/${+x.inicio.slice(5, 7)}` : mesBR(x.periodo + '-01').split('/')[0];
   let s = `<svg viewBox="0 0 ${W} ${H}">`;
-  for (let v = 0; v <= topo; v += passo) s += (PREF.grade !== false || v === 0 ? `<line x1="${L}" x2="${W}" y1="${y(v)}" y2="${y(v)}" stroke="var(--linha)"/>` : '') + `<text x="${L - 6}" y="${y(v) + 4}" font-size="10" text-anchor="end" fill="var(--mudo)">${v >= 1000 ? v / 1000 + 'k' : v}</text>`;
+  for (let v = 0; v <= topo; v += passo) s += (PREF.grade !== false || v === 0 ? `<line x1="${L}" x2="${W}" y1="${y(v)}" y2="${y(v)}" stroke="var(--linha)"/>` : '') + `<text x="${L - 6}" y="${y(v) + 4}" font-size="10" text-anchor="end" fill="var(--mudo)">${num2(v)}</text>`;
   S.forEach((x, i) => {
     const acima = x.teto != null && x.gasto > x.teto;
     const h1 = y(0) - y(x.gasto), h2 = y(0) - y(x.gasto + x.parcelas) - h1;
     if (h1 > 0) s += `<rect x="${cx(i) - bw / 2}" y="${y(x.gasto)}" width="${bw}" height="${h1}" rx="${raioBarra(bw, h1)}" fill="${acima ? 'var(--ruim)' : 'var(--s2)'}"/>`;
     if (h2 > 0) s += `<rect x="${cx(i) - bw / 2}" y="${y(x.gasto + x.parcelas)}" width="${bw}" height="${h2 - 2}" rx="2" fill="var(--mudo)" opacity=".45"/>`;
     const tot = x.gasto + x.parcelas;
-    if (tot > 0) s += `<text x="${cx(i)}" y="${y(tot) - 5}" font-size="10" font-weight="600" text-anchor="middle" fill="${acima ? 'var(--ruim)' : 'var(--texto-2)'}">${tot >= 1000 ? (tot / 1000).toLocaleString('pt-BR', {maximumFractionDigits: 1}) + 'k' : Math.round(tot)}</text>`;
+    if (tot > 0) s += `<text x="${cx(i)}" y="${y(tot) - 5}" font-size="10" font-weight="600" text-anchor="middle" fill="${acima ? 'var(--ruim)' : 'var(--texto-2)'}">${num2(tot)}</text>`;
     s += `<rect x="${cx(i) - gw / 2}" y="${T}" width="${gw}" height="${H - T - B}" fill="transparent" data-tip="<b>${rot(x)}</b><br>Gasto ${brl(x.gasto)}${x.parcelas ? '<br>Parcelas antigas ' + brl(x.parcelas) : ''}<br>Teto ${x.teto != null ? brl(x.teto) : 'sem teto'}${acima ? `<br><b class='neg'>+${brl(x.gasto - x.teto)} acima</b>` : ''}"/>`;
     s += `<text x="${cx(i)}" y="${H - 7}" font-size="10.5" text-anchor="middle" fill="var(--texto-2)">${rot(x)}</text>`;
   });
@@ -565,12 +565,12 @@ function tabelaMetas(el, ms, tipo) {
     const pct = m.completude_periodo != null ? Math.round(m.completude_periodo * 100) + '%' : '-';
     const alvo = m.alvo ? Math.min(m.completude_alvo || 0, 1) : null;
     return `<div class="meta-item">
-      <div class="meta-topo"><b>${esc(m.nome)}</b><span class="muted">${m.onde ? esc(m.onde) : ''}${m.data_alvo ? `${m.onde ? ' · ' : ''}até ${mesBR(m.data_alvo + '-01')}` : ''}${m.por_mes_ate_prazo ? ` · ${brl0(m.por_mes_ate_prazo)}/mês para chegar` : ''}</span></div>
-      <div class="meta-nums"><span>Planejado <b>${brl0(m.planejado_periodo)}</b></span><span>Guardado <b>${brl0(m.guardado_periodo)}</b></span><span>${pct}</span>
-        <span>${m.falta_periodo ? `Falta <b class="warnc">${brl0(m.falta_periodo)}</b>` : '<b class="pos">cumprido</b>'}</span></div>
+      <div class="meta-topo"><b>${esc(m.nome)}</b><span class="muted">${m.onde ? esc(m.onde) : ''}${m.data_alvo ? `${m.onde ? ' · ' : ''}até ${mesBR(m.data_alvo + '-01')}` : ''}${m.por_mes_ate_prazo ? ` · ${brl(m.por_mes_ate_prazo)}/mês para chegar` : ''}</span></div>
+      <div class="meta-nums"><span>Planejado <b>${brl(m.planejado_periodo)}</b></span><span>Guardado <b>${brl(m.guardado_periodo)}</b></span><span>${pct}</span>
+        <span>${m.falta_periodo ? `Falta <b class="warnc">${brl(m.falta_periodo)}</b>` : '<b class="pos">cumprido</b>'}</span></div>
       ${m.alvo ? `<div class="meta-alvo"><div class="track"><div class="fill neutro" style="width:${alvo * 100}%"></div></div>
-        <span>${brl0(m.guardado_total)} de ${brl0(m.alvo)} (${Math.round((m.completude_alvo || 0) * 100)}%)</span></div>`
-        : `<div class="meta-alvo"><span>Acumulado ${brl0(m.guardado_total)}</span></div>`}</div>`;
+        <span>${brl(m.guardado_total)} de ${brl(m.alvo)} (${Math.round((m.completude_alvo || 0) * 100)}%)</span></div>`
+        : `<div class="meta-alvo"><span>Acumulado ${brl(m.guardado_total)}</span></div>`}</div>`;
   }).join('');
 }
 
@@ -578,8 +578,8 @@ function kpiConta(c) {
   if (c.saldo_real == null)
     return `<div class="kpi"><div class="rot">Conta</div><div class="v warnc">${brl(c.saldo)}</div><div class="d">pelo extrato até ${dataBR(c.cobertura)} · <a href="#" data-saldo>informar saldo do app</a></div></div>`;
   const dif = c.diferenca, ok = Math.abs(dif) < .005;
-  return `<div class="kpi"><div class="rot">Conta (saldo do app)</div><div class="v ${c.saldo_real < 100 ? 'neg' : ''}">${brl(c.saldo_real)}</div>
-    <div class="d">em ${dataBR(c.data_real)}${c.data_real < hojeISO() ? ' (desatualizado)' : ''} · ${ok ? 'bate com os lançamentos' : `<b class="warnc">${brl(dif)}</b> não lançados`} · <a href="#" data-saldo>atualizar</a></div></div>`;
+  return `<div class="kpi"><div class="rot">Conta</div><div class="v ${c.saldo_atual < 100 ? 'neg' : ''}">${brl(c.saldo_atual)}</div>
+    <div class="d">saldo do app em ${dataBR(c.data_real)} (${brl(c.saldo_real)})${c.data_real < hojeISO() ? ' + lançamentos depois' : ''} · ${ok ? 'bate com os lançamentos' : `<b class="warnc">${brl(dif)}</b> não lançados`} · <a href="#" data-saldo>atualizar</a></div></div>`;
 }
 document.addEventListener('click', async e => {
   const a = e.target.closest('[data-saldo]'); if (!a) return;
@@ -964,9 +964,9 @@ async function plano(t) {
   t.innerHTML = `<div class="titulo"><h2>Projeção até ${mesBR(pl.horizonte + '-01')}</h2><span class="muted">renda, custo de vida e aportes de cada mês vêm do <a href="#orcamento">Orçamento</a>, mais os eventos</span></div>
     <div class="mosaico" id="mosaico">
     ${cartao('proj-resumo', 'Resumo', '', `<div class="heroi" style="grid-template-columns:repeat(3,minmax(0,1fr))">
-      <div><div class="rot">Falta cobrir no período</div><div class="grande ${pl.falta_total ? 'warnc' : 'pos'}">${brl0(pl.falta_total)}</div><div class="muted">soma dos meses no vermelho</div></div>
+      <div><div class="rot">Falta cobrir no período</div><div class="grande ${pl.falta_total ? 'warnc' : 'pos'}">${brl(pl.falta_total)}</div><div class="muted">soma dos meses no vermelho</div></div>
       <div><div class="rot">Quem você deve, quitado em</div><div class="grande">${quitado ? mesBR(quitado.mes + '-01') : 'não quita'}</div></div>
-      <div><div class="rot">Saldo livre em ${mesBR(pl.horizonte + '-01')}</div><div class="grande ${(fim.livre || 0) > 0 ? 'pos' : 'warnc'}">${brl0(fim.livre)}</div><div class="muted">${brl0(fim.metas)} nas metas</div></div></div>`)}
+      <div><div class="rot">Saldo livre em ${mesBR(pl.horizonte + '-01')}</div><div class="grande ${(fim.livre || 0) > 0 ? 'pos' : 'warnc'}">${brl(fim.livre)}</div><div class="muted">${brl(fim.metas)} nas metas</div></div></div>`)}
     ${cartao('proj-grafico', 'Resultado mês a mês', 'cartão congelado', `<div class="legend"><span><i style="background:var(--ok)"></i>Sobra</span><span><i style="background:var(--ruim)"></i>Falta</span><span><i style="background:var(--acento);height:3px"></i>Saldo livre acumulado</span></div><div class="chart grafico" id="ch-proj"></div>`)}
     ${cartao('proj-premissas', 'Premissas', '', `<form class="linha" id="f-prm">
         <label class="c">Renda mensal base<input type="number" step="0.01" name="salario_mensal" value="${prm.salario_mensal}"></label>
@@ -986,8 +986,8 @@ async function plano(t) {
         <button class="prim">Adicionar</button></form>`)}
     </div>`;
   tabela($('#t-pl'), ['Mês', 'Renda', 'Reemb.', 'Únicos', 'Custo', 'Cartão', 'Metas', 'Resultado', 'Falta', 'Devo', 'Livre'],
-    L.map(l => [`<b class="nw">${mesBR(l.mes + '-01')}</b>`, brl0(l.renda), brl0(l.reembolsos), l.unicos ? sinal(l.unicos) : '0', brl0(l.custo), brl0(l.cartao), brl0(l.aportes),
-      `<b class="${l.resultado < 0 ? 'neg' : 'pos'}">${sinal(l.resultado)}</b>`, l.falta ? `<b class="warnc">${brl0(l.falta)}</b>` : '0', brl0(l.deve_pessoas), brl0(l.livre)]), [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+    L.map(l => [`<b class="nw">${mesBR(l.mes + '-01')}</b>`, brl(l.renda), brl(l.reembolsos), l.unicos ? sinal(l.unicos) : '0', brl(l.custo), brl(l.cartao), brl(l.aportes),
+      `<b class="${l.resultado < 0 ? 'neg' : 'pos'}">${sinal(l.resultado)}</b>`, l.falta ? `<b class="warnc">${brl(l.falta)}</b>` : '0', brl(l.deve_pessoas), brl(l.livre)]), [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
   // gráfico: barras do resultado do mês e linha do saldo livre acumulado
   desenharNoTamanho($('#ch-proj'), (W, H) => {
     const Lm = 46, B = 22, Tp = 10, n = L.length || 1, gw = (W - Lm) / n, bw = Math.max(4, gw * (FRACAO_BARRA[PREF.barras_larg] || .7) * .8);
@@ -1001,7 +1001,7 @@ async function plano(t) {
       const y0 = y(0), y1 = y(l.resultado), r = raioBarra(bw, Math.abs(y1 - y0));
       g += `<rect x="${cx(i) - bw / 2}" y="${Math.min(y0, y1)}" width="${bw}" height="${Math.max(Math.abs(y1 - y0), 1)}" rx="${r}" fill="${l.resultado < 0 ? 'var(--ruim)' : 'var(--ok)'}"/>`;
       // valor na ponta da barra: acima da positiva, abaixo da negativa
-      const txt = Math.abs(l.resultado) >= 1000 ? (l.resultado / 1000).toLocaleString('pt-BR', {maximumFractionDigits: 1}) + 'k' : String(Math.round(l.resultado));
+      const txt = num2(l.resultado);
       g += `<text x="${cx(i)}" y="${l.resultado < 0 ? y1 + 12 : y1 - 4}" font-size="${gw < 30 ? 8.5 : 10}" font-weight="600" text-anchor="middle" fill="${l.resultado < 0 ? 'var(--ruim)' : 'var(--ok)'}">${txt}</text>`;
       g += `<rect x="${cx(i) - gw / 2}" y="${Tp}" width="${gw}" height="${H - Tp - B}" fill="transparent" data-tip="<b>${mesBR(l.mes + '-01')}</b><br>Resultado ${brl(l.resultado)}<br>Falta ${brl(l.falta)}<br>Saldo livre ${brl(l.livre)}"/>`;
       if (gw >= 34 || i % 2 === 0) g += `<text x="${cx(i)}" y="${H - 6}" font-size="10" text-anchor="middle" fill="var(--texto-2)">${mesBR(l.mes + '-01')}</text>`;
@@ -1033,7 +1033,7 @@ async function plano(t) {
 const ICONE_LIXO = '<svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M2.5 4h11M6 4V2.5h4V4M4 4l.7 9.5h6.6L12 4"/></svg>';
 const lixeira = (attr, id, titulo) => `<button class="botao-icone apagar" ${attr}="${esc(id)}" title="${titulo}" aria-label="${titulo}">${ICONE_LIXO}</button>`;
 const numEd = v => v == null ? '' : String(Math.round(v * 100) / 100).replace('.', ',');
-const numVer = v => v == null ? '' : (Math.round(v) || 0).toLocaleString('pt-BR');
+const numVer = v => v == null ? '' : num2(v);
 function lerNum(s) {
   s = String(s).trim().replace(/^R\$\s*/, '');
   if (!s) return null;

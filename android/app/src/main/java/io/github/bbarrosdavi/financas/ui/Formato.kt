@@ -10,13 +10,10 @@ import kotlin.math.abs
 
 private val ptBR = Locale.forLanguageTag("pt-BR")
 private val dois = DecimalFormat("#,##0.00", DecimalFormatSymbols(ptBR))
-private val zero = DecimalFormat("#,##0", DecimalFormatSymbols(ptBR))
 
-/** Como no site: R$ 1.234,56, com o sinal na frente quando negativo. */
+/** Como no site: R$ 1.234,56, sempre com os centavos, e o sinal na frente quando negativo. */
 fun brl(v: Double) = (if (v < 0) "-" else "") + "R$ " + dois.format(abs(v))
-fun brl0(v: Double) = (if (v < 0) "-" else "") + "R$ " + zero.format(abs(v))
-fun brlv(v: Double) = if (abs(v) < 10 && v != 0.0) brl(v) else brl0(v)
-fun sinal(v: Double) = (if (v > 0) "+" else if (v < 0) "-" else "") + brlv(abs(v))
+fun sinal(v: Double) = (if (v > 0) "+" else if (v < 0) "-" else "") + brl(abs(v))
 
 val MESES = listOf("janeiro", "fevereiro", "março", "abril", "maio", "junho", "julho", "agosto", "setembro", "outubro", "novembro", "dezembro")
 fun mesCurto(aaaamm: String) = MESES[aaaamm.substring(5, 7).toInt() - 1].take(3) + "/" + aaaamm.substring(2, 4)

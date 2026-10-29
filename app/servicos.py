@@ -191,12 +191,14 @@ def saldo_contas(con, ate: str | None = None) -> list[dict]:
         cobertura = con.execute("SELECT MAX(data) FROM lancamentos WHERE conta=? AND origem IN "
                                 "('extrato_pdf','extrato_csv','fatura_pdf','fatura_csv')", (c["id"],)).fetchone()[0]
         real = json.loads(db.parametro(con, f"saldo_real:{c['id']}", "null") or "null")
-        item = {**dict(c), "saldo": saldo, "cobertura": cobertura, "saldo_real": None, "diferenca": None}
+        item = {**dict(c), "saldo": saldo, "cobertura": cobertura, "saldo_real": None, "diferenca": None, "saldo_atual": saldo}
         if real:
             calc = round(c["saldo_inicial"] + con.execute(
                 "SELECT COALESCE(SUM(valor),0) FROM lancamentos WHERE conta=? AND data>=? AND data<=?",
                 (c["id"], c["data_saldo_inicial"], real["data"])).fetchone()[0], 2)
-            item.update(saldo_real=real["valor"], data_real=real["data"], diferenca=round(real["valor"] - calc, 2))
+            # O saldo de hoje parte do que o app do banco mostrou naquele dia e soma o que foi lançado depois.
+            item.update(saldo_real=real["valor"], data_real=real["data"], diferenca=round(real["valor"] - calc, 2),
+                        saldo_atual=round(real["valor"] + saldo - calc, 2))
         out.append(item)
     return out
 

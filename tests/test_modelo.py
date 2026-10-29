@@ -205,3 +205,12 @@ def test_lancamentos_por_intervalo(con):
                          partes=[{"valor": -10.0, "natureza": "gasto", "categoria": "outros"}])
     assert [l["data"] for l in servicos.lancamentos(con, de="2026-10-05", ate="2026-10-20")] == ["2026-10-20", "2026-10-10"]
     assert [l["data"] for l in servicos.lancamentos(con, ate="2026-10-05")] == ["2026-10-01"]
+
+
+def test_saldo_atual_parte_do_saldo_do_app_e_soma_o_que_veio_depois(con):
+    servicos.inserir(con, "nubank_conta", "2026-10-28", -10.0, "Compra no débito", "LOJA", "extrato_pdf")
+    servicos.informar_saldo(con, "nubank_conta", 109.40, "2026-10-28")
+    for v in (-13.50, -3.50, -10.96):
+        servicos.inserir(con, "nubank_conta", "2026-10-29", v, "Compra", "LOJA", "manual")
+    c = next(x for x in servicos.saldo_contas(con) if x["id"] == "nubank_conta")
+    assert c["saldo_real"] == 109.40 and c["saldo_atual"] == 81.44

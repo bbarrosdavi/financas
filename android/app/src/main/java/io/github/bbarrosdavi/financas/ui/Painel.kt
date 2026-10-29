@@ -97,10 +97,10 @@ private fun Resultado(p: JSONObject) {
     Cartao("Resultado " + when (tipo) { "semana" -> "da semana"; "ano" -> "do ano"; else -> "do mês" }, Modifier.alvo("resultado")) {
         Grande(sinal(t.d("resultado")), if (t.d("resultado") < 0) cores.ruim else cores.ok)
         Spacer(Modifier.height(6.dp))
-        LinhaKV("Entradas", brl0(t.d("renda")))
-        LinhaKV("Gastos", brl0(t.d("gasto")))
-        LinhaKV("Juros e taxas", brlv(t.d("juros")), if (t.d("juros") > 0) cores.ruim else cores.texto)
-        if (guardado != 0.0) LinhaKV("Guardado em metas", brl0(guardado), cores.ok)
+        LinhaKV("Entradas", brl(t.d("renda")))
+        LinhaKV("Gastos", brl(t.d("gasto")))
+        LinhaKV("Juros e taxas", brl(t.d("juros")), if (t.d("juros") > 0) cores.ruim else cores.texto)
+        if (guardado != 0.0) LinhaKV("Guardado em metas", brl(guardado), cores.ok)
     }
 }
 
@@ -110,12 +110,12 @@ private fun PodeGastar(p: JSONObject) {
     val uso = if (teto > 0) gasto / teto else 0.0
     val cor = when { pode < 0 || uso > 1 -> cores.ruim; uso > ritmo + .1 -> cores.atencao; else -> cores.ok }
     Cartao("Ainda pode gastar", Modifier.alvo("podeGastar"), sub = "categorias variáveis") {
-        Grande(brl0(pode), if (pode < 0) cores.ruim else if (uso > ritmo + .1) cores.atencao else cores.ok)
+        Grande(brl(pode), if (pode < 0) cores.ruim else if (uso > ritmo + .1) cores.atencao else cores.ok)
         Spacer(Modifier.height(8.dp))
         Barra(uso, cor, ritmo, 10.dp)
         Spacer(Modifier.height(6.dp))
-        LinhaKV("Gasto", "${brl0(gasto)} de ${brl0(teto)}")
-        if (ritmo > 0 && ritmo < 1) LinhaKV("No ritmo certo, até hoje", brl0(teto * ritmo))
+        LinhaKV("Gasto", "${brl(gasto)} de ${brl(teto)}")
+        if (ritmo > 0 && ritmo < 1) LinhaKV("No ritmo certo, até hoje", brl(teto * ritmo))
         if (teto == 0.0) Vazio("Sem teto nas categorias variáveis: defina em Orçamento > Categorias.")
     }
 }
@@ -130,7 +130,7 @@ private fun Kpis(p: JSONObject, irPara: (String) -> Unit) {
     var informar by remember { mutableStateOf(false) }
     Cartao(modifier = Modifier.alvo("kpis")) {
         Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            Kpi("Conta" + if (conta?.dn("saldo_real") != null) " (saldo do app)" else "", Modifier.weight(1f).clickable { informar = true }) {
+            Kpi("Conta", Modifier.weight(1f).clickable { informar = true }) {
                 if (conta == null) Vazio("-")
                 else if (conta.dn("saldo_real") == null) {
                     Text(brl(conta.d("saldo")), color = cores.atencao, fontWeight = FontWeight.Bold, fontSize = 17.sp)
@@ -138,21 +138,24 @@ private fun Kpis(p: JSONObject, irPara: (String) -> Unit) {
                         " · toque para informar o saldo do app", color = cores.mudo, fontSize = 11.sp)
                 } else {
                     val dif = conta.d("diferenca")
-                    Text(brl(conta.d("saldo_real")), color = cores.texto, fontWeight = FontWeight.Bold, fontSize = 17.sp)
-                    Text("em ${dataBR(conta.s("data_real"))} · " + if (kotlin.math.abs(dif) < .005) "bate com os lançamentos" else "${brl(dif)} não lançados",
+                    // O saldo de hoje: o que o app do banco mostrou naquele dia mais o que foi lançado depois.
+                    Text(brl(conta.d("saldo_atual")), color = cores.texto, fontWeight = FontWeight.Bold, fontSize = 17.sp)
+                    Text("saldo do app em ${dataBR(conta.s("data_real"))} (${brl(conta.d("saldo_real"))})" +
+                        (if (conta.s("data_real") < hojeISO()) " + lançamentos depois" else "") + " · " +
+                        if (kotlin.math.abs(dif) < .005) "bate com os lançamentos" else "${brl(dif)} não lançados",
                         color = if (kotlin.math.abs(dif) < .005) cores.mudo else cores.atencao, fontSize = 11.sp)
                 }
             }
             Kpi("Dívida do cartão", Modifier.weight(1f)) {
-                Text(brl0(cartao.d("divida")), color = cores.ruim, fontWeight = FontWeight.Bold, fontSize = 17.sp)
-                Text("limite livre ${brl0(cartao.d("limite_livre"))} de ${brl0(cartao.d("limite"))}",
+                Text(brl(cartao.d("divida")), color = cores.ruim, fontWeight = FontWeight.Bold, fontSize = 17.sp)
+                Text("limite livre ${brl(cartao.d("limite_livre"))} de ${brl(cartao.d("limite"))}",
                     color = if (cartao.d("limite") > 0 && cartao.d("limite_livre") < 300) cores.ruim else cores.mudo, fontSize = 11.sp)
             }
         }
         Spacer(Modifier.height(12.dp))
         Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             Kpi("Você deve / te devem", Modifier.weight(1f).clickable { irPara("pessoas") }) {
-                Text("${brl0(devo)} / ${brl0(devem)}", color = cores.texto, fontWeight = FontWeight.Bold, fontSize = 17.sp)
+                Text("${brl(devo)} / ${brl(devem)}", color = cores.texto, fontWeight = FontWeight.Bold, fontSize = 17.sp)
                 Text("ver pessoas", color = cores.acento, fontSize = 11.sp)
             }
             Kpi("Pendentes", Modifier.weight(1f).clickable { irPara("pendentes") }) {
@@ -195,7 +198,7 @@ private fun Categorias(p: JSONObject) {
     var evolucao by remember { mutableStateOf<Pair<String, String>?>(null) }
     val acimaTot = cats.sumOf { it.d("acima") }
     Cartao("Categorias", Modifier.alvo("categorias"), sub = when (p.s("tipo")) { "ano" -> "teto acumulado no ano"; "semana" -> "teto do mês ÷ 4"; else -> "teto do mês" }) {
-        if (acimaTot > 0) Text("${brl0(acimaTot)} acima do teto em ${cats.count { it.d("acima") > 0 }} categoria(s)", color = cores.ruim,
+        if (acimaTot > 0) Text("${brl(acimaTot)} acima do teto em ${cats.count { it.d("acima") > 0 }} categoria(s)", color = cores.ruim,
             fontWeight = FontWeight.SemiBold, fontSize = 13.sp, modifier = Modifier.padding(bottom = 6.dp))
         if (grupos.isEmpty()) Vazio("Nenhum gasto no período.")
         grupos.forEach { (g, cs, tot) ->
@@ -224,17 +227,17 @@ private fun LinhaGasto(nome: String, cor: Color, gasto: Double, teto: Double?, a
             Bolinha(cor)
             Text("  $nome $sufixo", color = cores.texto, fontSize = 14.sp, fontWeight = if (negrito) FontWeight.SemiBold else FontWeight.Normal,
                 modifier = Modifier.weight(1f), maxLines = 1, overflow = TextOverflow.Ellipsis)
-            Text(brlv(gasto), color = cores.texto, fontWeight = FontWeight.SemiBold, fontSize = 14.sp)
+            Text(brl(gasto), color = cores.texto, fontWeight = FontWeight.SemiBold, fontSize = 14.sp)
         }
         Spacer(Modifier.height(5.dp))
         Barra(pct, corBarra, ritmo, 6.dp)
         Row(Modifier.padding(top = 3.dp)) {
-            Text(if (teto != null) "de ${brl0(teto)} · ${if (teto > 0) (gasto / teto * 100).roundToInt() else 0}%" else "sem teto", color = cores.mudo,
+            Text(if (teto != null) "de ${brl(teto)} · ${if (teto > 0) (gasto / teto * 100).roundToInt() else 0}%" else "sem teto", color = cores.mudo,
                 fontSize = 11.sp, modifier = Modifier.weight(1f))
-            if (teto != null) Text(if (acima > 0) "+${brlv(acima)} acima" else "resta ${brlv(max(teto - gasto, 0.0))}",
+            if (teto != null) Text(if (acima > 0) "+${brl(acima)} acima" else "resta ${brl(max(teto - gasto, 0.0))}",
                 color = if (acima > 0) cores.ruim else cores.ok, fontSize = 11.sp, fontWeight = FontWeight.SemiBold)
         }
-        if (parcelas != 0.0) Text("+ ${brlv(parcelas)} de parcelas antigas", color = cores.mudo, fontSize = 11.sp)
+        if (parcelas != 0.0) Text("+ ${brl(parcelas)} de parcelas antigas", color = cores.mudo, fontSize = 11.sp)
     }
 }
 
@@ -312,9 +315,9 @@ private fun Grafico(p: JSONObject) {
         serie.getOrNull(sel)?.let { m ->
             Spacer(Modifier.height(6.dp))
             Text(if (tipo == "semana") "Semana de ${dataBR(m.s("inicio"))}" else mesLongo(m.s("mes")), color = cores.texto, fontWeight = FontWeight.SemiBold, fontSize = 13.sp)
-            LinhaKV("Entradas", "${brl(m.d("renda"))} de ${brl0(m.d("orc_renda"))}", negrito = false)
-            LinhaKV("Gastos", "${brl(m.d("gasto"))} de ${brl0(m.d("orc_gasto"))}", negrito = false)
-            LinhaKV("Poupança", "${brl(m.d("poupanca"))} de ${brl0(m.d("orc_poupanca"))}", negrito = false)
+            LinhaKV("Entradas", "${brl(m.d("renda"))} de ${brl(m.d("orc_renda"))}", negrito = false)
+            LinhaKV("Gastos", "${brl(m.d("gasto"))} de ${brl(m.d("orc_gasto"))}", negrito = false)
+            LinhaKV("Poupança", "${brl(m.d("poupanca"))} de ${brl(m.d("orc_poupanca"))}", negrito = false)
             LinhaKV("Resultado", brl(m.d("resultado")), if (m.d("resultado") < 0) cores.ruim else cores.ok)
         }
     }
@@ -334,7 +337,7 @@ private fun Composicao(p: JSONObject) {
         grupos.forEach { (n, v) ->
             Row(Modifier.padding(vertical = 3.dp), verticalAlignment = Alignment.CenterVertically) {
                 Bolinha(corGrupo(n)); Text("  $n", color = cores.texto, fontSize = 14.sp, modifier = Modifier.weight(1f))
-                Text(brl0(v), color = cores.texto, fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
+                Text(brl(v), color = cores.texto, fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
                 Text("  ${(v / total * 100).roundToInt()}%", color = cores.mudo, fontSize = 12.sp, modifier = Modifier.width(44.dp))
             }
         }
@@ -359,15 +362,15 @@ private fun Metas(p: JSONObject, irPara: (String) -> Unit) {
         ms.forEach { m ->
             Column(Modifier.padding(vertical = 6.dp)) {
                 Row { Text(m.s("nome"), color = cores.texto, fontWeight = FontWeight.SemiBold, fontSize = 14.sp, modifier = Modifier.weight(1f))
-                    Text(if (m.d("falta_periodo") > 0) "falta ${brl0(m.d("falta_periodo"))}" else "cumprido",
+                    Text(if (m.d("falta_periodo") > 0) "falta ${brl(m.d("falta_periodo"))}" else "cumprido",
                         color = if (m.d("falta_periodo") > 0) cores.atencao else cores.ok, fontSize = 13.sp, fontWeight = FontWeight.SemiBold) }
-                Text("Planejado ${brl0(m.d("planejado_periodo"))} · guardado ${brl0(m.d("guardado_periodo"))}" +
-                    (m.dn("por_mes_ate_prazo")?.let { " · ${brl0(it)}/mês para chegar" } ?: ""), color = cores.mudo, fontSize = 12.sp)
+                Text("Planejado ${brl(m.d("planejado_periodo"))} · guardado ${brl(m.d("guardado_periodo"))}" +
+                    (m.dn("por_mes_ate_prazo")?.let { " · ${brl(it)}/mês para chegar" } ?: ""), color = cores.mudo, fontSize = 12.sp)
                 m.dn("alvo")?.let { alvo ->
                     Spacer(Modifier.height(4.dp))
                     Barra(m.d("completude_alvo"), cores.acento, null, 6.dp)
-                    Text("${brl0(m.d("guardado_total"))} de ${brl0(alvo)} (${(m.d("completude_alvo") * 100).roundToInt()}%)", color = cores.texto2, fontSize = 12.sp)
-                } ?: Text("Acumulado ${brl0(m.d("guardado_total"))}", color = cores.texto2, fontSize = 12.sp)
+                    Text("${brl(m.d("guardado_total"))} de ${brl(alvo)} (${(m.d("completude_alvo") * 100).roundToInt()}%)", color = cores.texto2, fontSize = 12.sp)
+                } ?: Text("Acumulado ${brl(m.d("guardado_total"))}", color = cores.texto2, fontSize = 12.sp)
             }
         }
     }
@@ -407,10 +410,10 @@ private fun ProjecaoResumo(p: JSONObject, irPara: (String) -> Unit) {
                     Text(mesCurto(l.s("mes") + "-01"), color = cores.texto, fontWeight = FontWeight.SemiBold, modifier = Modifier.width(64.dp))
                     Text(sinal(l.d("resultado")), color = if (l.d("resultado") < 0) cores.ruim else cores.ok, fontWeight = FontWeight.Bold, fontSize = 14.sp,
                         modifier = Modifier.weight(1f))
-                    if (l.d("falta") > 0) Text("falta ${brl0(l.d("falta"))}  ", color = cores.atencao, fontSize = 12.sp, fontWeight = FontWeight.SemiBold)
-                    Text("livre ${brl0(l.d("livre"))}", color = cores.texto2, fontSize = 12.sp)
+                    if (l.d("falta") > 0) Text("falta ${brl(l.d("falta"))}  ", color = cores.atencao, fontSize = 12.sp, fontWeight = FontWeight.SemiBold)
+                    Text("livre ${brl(l.d("livre"))}", color = cores.texto2, fontSize = 12.sp)
                 }
-                Text("renda ${brl0(l.d("renda") + l.d("reembolsos") + l.d("unicos"))} · custo ${brl0(l.d("custo") + l.d("aportes"))} · cartão ${brl0(l.d("cartao"))}",
+                Text("renda ${brl(l.d("renda") + l.d("reembolsos") + l.d("unicos"))} · custo ${brl(l.d("custo") + l.d("aportes"))} · cartão ${brl(l.d("cartao"))}",
                     color = cores.mudo, fontSize = 11.sp, modifier = Modifier.padding(start = 64.dp))
             }
         }

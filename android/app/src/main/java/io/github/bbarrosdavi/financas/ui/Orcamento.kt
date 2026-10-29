@@ -152,11 +152,11 @@ private fun LinhaValores(nome: String, cor: Color, orcado: Double?, realizado: D
         Bolinha(cor)
         Text("  $nome", color = cores.texto, fontSize = 14.sp, fontWeight = if (negrito) FontWeight.SemiBold else FontWeight.Normal,
             modifier = Modifier.weight(1f), maxLines = 1, overflow = TextOverflow.Ellipsis)
-        Text(orcado?.let { brl0(it).removePrefix("R$ ") } ?: "–", color = if (padrao) cores.mudo else cores.texto, fontSize = 13.sp,
+        Text(orcado?.let { brl(it).removePrefix("R$ ") } ?: "–", color = if (padrao) cores.mudo else cores.texto, fontSize = 13.sp,
             fontWeight = if (negrito || !padrao) FontWeight.SemiBold else FontWeight.Normal, modifier = Modifier.width(68.dp), textAlign = TextAlign.End)
         if (realizado != null) {
-            Text(brl0(realizado).removePrefix("R$ "), color = cores.texto, fontSize = 13.sp, modifier = Modifier.width(68.dp), textAlign = TextAlign.End)
-            Text((if (dif!! > .5) "+" else "") + brl0(dif).replace("R$ ", ""), fontSize = 13.sp, fontWeight = FontWeight.SemiBold,
+            Text(brl(realizado).removePrefix("R$ "), color = cores.texto, fontSize = 13.sp, modifier = Modifier.width(68.dp), textAlign = TextAlign.End)
+            Text((if (dif!! > .5) "+" else "") + brl(dif).replace("R$ ", ""), fontSize = 13.sp, fontWeight = FontWeight.SemiBold,
                 color = if (dif < -.5) cores.ruim else if (dif > .5) cores.ok else cores.mudo, modifier = Modifier.width(68.dp), textAlign = TextAlign.End)
         }
     }
@@ -198,9 +198,9 @@ private fun AbaAno(linhas: List<LinhaOrc>, meses: List<String>, parcelas: JSONOb
     val renda = linhas.filter { it.tipo == "renda" }; val gasto = linhas.filter { it.tipo == "gasto" }
     val poup = linhas.filter { it.tipo == "poupanca" && (it.j.optInt("ativa") == 1 || orc(it) != 0.0 || real(it) != 0.0) }
     Cartao("O ano", sub = if (passados.size in 1 until meses.size) "realizado até ${mesCurto(passados.last() + "-01")}" else null) {
-        LinhaKV("Entradas orçadas", brl0(renda.sumOf(::orc)))
-        LinhaKV("Gastos orçados", brl0(gasto.sumOf(::orc)))
-        LinhaKV("Poupança orçada", brl0(poup.sumOf(::orc)))
+        LinhaKV("Entradas orçadas", brl(renda.sumOf(::orc)))
+        LinhaKV("Gastos orçados", brl(gasto.sumOf(::orc)))
+        LinhaKV("Poupança orçada", brl(poup.sumOf(::orc)))
         val alocar = renda.sumOf(::orc) - gasto.sumOf(::orc) - poup.sumOf(::orc)
         LinhaKV("A alocar no ano", sinal(alocar), if (alocar < -.5) cores.ruim else cores.ok)
         Text("Real e diferença comparam só os meses que já passaram com o orçado deles.", color = cores.mudo, fontSize = 12.sp, modifier = Modifier.padding(top = 4.dp))
@@ -316,7 +316,7 @@ private fun AbaCategorias() {
                         Bolinha(corCategoria(cat.s("id")))
                         Text("  ${cat.s("nome")}", color = cores.texto, fontSize = 14.sp, modifier = Modifier.weight(1f), maxLines = 1, overflow = TextOverflow.Ellipsis)
                         if (cat.optInt("fixa") == 1) Text("  fixa  ", color = cores.mudo, fontSize = 11.sp)
-                        if (tipo == "gasto") Text(cat.dn("teto")?.let { brl0(it) } ?: "sem teto", color = if (cat.dn("teto") == null) cores.mudo else cores.texto,
+                        if (tipo == "gasto") Text(cat.dn("teto")?.let { brl(it) } ?: "sem teto", color = if (cat.dn("teto") == null) cores.mudo else cores.texto,
                             fontSize = 13.sp, fontWeight = FontWeight.SemiBold)
                         Text("  ${cat.optInt("uso")}", color = cores.mudo, fontSize = 11.sp, modifier = Modifier.width(36.dp), textAlign = TextAlign.End)
                     }
@@ -418,8 +418,8 @@ private fun AbaMetas(metas: List<JSONObject>) {
                 Text(m.s("nome"), color = if (m.optInt("ativa") == 1) cores.texto else cores.mudo, fontWeight = FontWeight.SemiBold, fontSize = 15.sp, modifier = Modifier.weight(1f))
                 if (m.optInt("ativa") != 1) Text("inativa", color = cores.mudo, fontSize = 12.sp)
             }
-            Text(listOfNotNull(m.dn("alvo")?.let { "objetivo ${brl0(it)}" }, m.sn("data_alvo")?.takeIf { it.isNotEmpty() }?.let { "até ${mesCurto("$it-01")}" },
-                "aporte ${brl0(m.d("aporte_mensal"))}/mês", m.s("onde").takeIf { it.isNotEmpty() }).joinToString(" · "), color = cores.texto2, fontSize = 12.sp)
+            Text(listOfNotNull(m.dn("alvo")?.let { "objetivo ${brl(it)}" }, m.sn("data_alvo")?.takeIf { it.isNotEmpty() }?.let { "até ${mesCurto("$it-01")}" },
+                "aporte ${brl(m.d("aporte_mensal"))}/mês", m.s("onde").takeIf { it.isNotEmpty() }).joinToString(" · "), color = cores.texto2, fontSize = 12.sp)
             Text("Guardado ${brl(m.d("guardado_total"))}", color = cores.ok, fontSize = 13.sp, fontWeight = FontWeight.SemiBold)
         }
     }
